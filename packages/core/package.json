@@ -1,0 +1,14 @@
+{
+  "name": "@spotless/core",
+  "version": "1.0.0",
+  "description": "Core logic for the app, independent of the UI",
+  "main": "index.js",
+  "dependencies": {
+    "rxjs": "^7.8.0",
+    "spotify-web-api-js": "^1.5.2",
+    "typed-rest-client": "^1.8.9"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  }
+}

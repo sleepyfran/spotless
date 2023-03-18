@@ -1,0 +1,19 @@
+{
+  "name": "spotless",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "bugs": {
+    "url": "https://github.com/sleepyfran/spotless/issues"
+  },
+  "homepage": "https://github.com/sleepyfran/spotless#readme",
+  "scripts": {
+    "app:dev": "vite serve packages/app",
+    "app:build": "tsc && vite build packages/app",
+    "app:preview": "vite preview"
+  },
+  "workspaces": [
+    "packages/app",
+    "packages/core"
+  ]
+}
