@@ -3,6 +3,9 @@
   "dependencies": {
     "@react-rxjs/core": "^0.10.4",
     "@spotless/core": "^1.0.0",
+    "@fluentui/react-icons": "^2.0.198",
+    "@fluentui/react-components": "^9.18.6",
+    "@fluentui/react-migration-v8-v9": "^9.2.5",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.9.0"
