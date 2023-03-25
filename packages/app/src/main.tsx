@@ -3,9 +3,12 @@ import { RouterProvider } from "react-router-dom";
 import { Subscribe } from "@react-rxjs/core";
 import { FluentProvider, webDarkTheme } from "@fluentui/react-components";
 import { router } from "./router";
-import * as Services from "./service-context";
+import {
+  ServiceContext,
+  initializeServices,
+} from "@spotless/component-services-context";
 
-const services = Services.initialize({
+const services = initializeServices({
   baseUrl: import.meta.env.VITE_BASE_APP,
   clientId: import.meta.env.VITE_CLIENT_ID,
   clientSecret: import.meta.env.VITE_CLIENT_SECRET,
@@ -15,9 +18,9 @@ const root = createRoot(document.getElementById("root") as HTMLElement);
 root.render(
   <FluentProvider theme={webDarkTheme}>
     <Subscribe>
-      <Services.ServiceContext.Provider value={services}>
+      <ServiceContext.Provider value={services}>
         <RouterProvider router={router} />
-      </Services.ServiceContext.Provider>
+      </ServiceContext.Provider>
     </Subscribe>
   </FluentProvider>
 );

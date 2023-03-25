@@ -1,8 +1,6 @@
 {
   "include": [
     "src"
-,
-"../services-context/src/service-context.ts"
-],
+  ],
   "extends": "../../../tsconfig.json"
 }

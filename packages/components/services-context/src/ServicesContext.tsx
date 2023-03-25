@@ -1,10 +1,8 @@
 import { createContext, useContext } from "react";
-import {
-  AppConfig,
-  AppState,
-  SpotifyAuthService,
-  LocalStorage,
-} from "@spotless/core";
+import { AppState } from "@spotless/core-state";
+import { AppConfig } from "@spotless/core-types";
+import { LocalStorage } from "@spotless/core-storage";
+import { SpotifyAuthService } from "@spotless/core-auth";
 
 interface IServiceContext {
   authService: SpotifyAuthService;

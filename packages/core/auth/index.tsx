@@ -1,1 +1,1 @@
-export { AuthService } from "./src/auth-service";
+export { SpotifyAuthService } from "./src/auth-service";
