@@ -19,13 +19,18 @@ module.exports = {
     },
     {
       type: "add",
-      path: "packages/components/{{dashCase name}}/src/{{dashCase name}}.tsx",
+      path: "packages/components/{{dashCase name}}/src/{{properCase name}}.tsx",
       templateFile: `${__dirname}/template/component.tsx.hbs`,
     },
     {
       type: "add",
       path: "packages/components/{{dashCase name}}/package.json",
       templateFile: `${__dirname}/template/package.json.hbs`,
+    },
+    {
+      type: "add",
+      path: "packages/components/{{dashCase name}}/tsconfig.json",
+      templateFile: `${__dirname}/template/tsconfig.json.hbs`,
     },
   ],
 };

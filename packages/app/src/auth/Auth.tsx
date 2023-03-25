@@ -2,8 +2,7 @@ import { PropsWithChildren, useCallback, useEffect, useState } from "react";
 import { Button, makeStyles, Title3 } from "@fluentui/react-components";
 import { useServices } from "../service-context";
 import { useNavigate } from "react-router-dom";
-import { Flex } from "../shared/Flex";
-import { useErrorStyles } from "../shared/shared-styles";
+import { Flex, useErrorStyles } from "@spotless/component-shared";
 
 const useStyles = makeStyles({
   root: {

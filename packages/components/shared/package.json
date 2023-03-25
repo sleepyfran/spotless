@@ -1,8 +1,6 @@
 {
-  "name": "@spotless/app",
+  "name": "@spotless/component-shared",
   "dependencies": {
-    "@react-rxjs/core": "^0.10.4",
-    "@spotless/component-shared": "^1.0.0",
     "@spotless/core-state": "^1.0.0",
     "@fluentui/react-icons": "^2.0.198",
     "@fluentui/react-components": "^9.18.6",
