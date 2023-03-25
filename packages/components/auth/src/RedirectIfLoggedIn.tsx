@@ -1,6 +1,6 @@
 import { PropsWithChildren } from "react";
 import { Navigate } from "react-router-dom";
-import { useStateKey } from "@spotless/component-shared";
+import { useStateKey, Paths } from "@spotless/component-shared";
 
 /**
  * Wraps a component and only shows it if the user is not currently authenticated
@@ -12,6 +12,6 @@ export const RedirectIfLoggedIn = ({ children }: PropsWithChildren) => {
   return authState.__status === "unauthenticated" ? (
     <>{children}</>
   ) : (
-    <Navigate to="/" />
+    <Navigate to={Paths.root} />
   );
 };

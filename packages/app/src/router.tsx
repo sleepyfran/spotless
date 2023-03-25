@@ -7,14 +7,6 @@ import {
 import { RedirectIfLoggedIn } from "../../components/auth/src/RedirectIfLoggedIn";
 import { Root } from "@spotless/component-layout";
 
-export const Paths = {
-  root: "/",
-  auth: {
-    root: "/auth",
-    callback: "/auth/callback",
-  },
-};
-
 export const router = createBrowserRouter([
   {
     path: "/",
