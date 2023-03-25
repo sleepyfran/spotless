@@ -1,6 +1,6 @@
-import { AppConfig } from "../types/config.types";
-import { AppState } from "../state";
-import * as Http from "../http";
+import { AppConfig } from "@spotless/core-types";
+import { AppState } from "@spotless/core-state";
+import { Http } from "@spotless/core-http";
 
 const SPOTIFY_AUTH_URL = "https://accounts.spotify.com/authorize";
 const SPOTIFY_TOKEN_URL = "https://accounts.spotify.com/api/token";

@@ -1,0 +1,12 @@
+{
+    "name": "@spotless/core-auth",
+    "version": "1.0.0",
+    "description": "Contains the AuthService",
+    "main": "index.js",
+    "dependencies": {
+        "@spotless/core-http": "^1.0.0",
+        "@spotless/core-state": "^1.0.0",
+        "@spotless/core-types": "^1.0.0",
+        "rxjs": "^7.8.0"
+    }
+}

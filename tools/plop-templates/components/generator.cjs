@@ -14,7 +14,7 @@ module.exports = {
   actions: [
     {
       type: "add",
-      path: "packages/components/{{dashCase name}}/index.tsx",
+      path: "packages/components/{{dashCase name}}/index.ts",
       templateFile: `${__dirname}/template/index.ts.hbs`,
     },
     {

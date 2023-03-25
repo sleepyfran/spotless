@@ -5,9 +5,8 @@ import {
   Observable,
   startWith,
 } from "rxjs";
-import { IStorage } from "./storage/storage.interface";
-
-import { State } from "./types/state.types";
+import { IStorage } from "@spotless/core-storage";
+import { State } from "./state.types";
 
 const initialState: State = {
   auth: {

@@ -1,65 +1,65 @@
-import { makeStyles, shorthands } from '@fluentui/react-components';
+import { makeStyles, shorthands } from "@fluentui/react-components";
 
 const gapValues = {
-  smaller: '8px',
-  small: '10px',
-  medium: '15px',
-  large: '30px',
+  smaller: "8px",
+  small: "10px",
+  medium: "15px",
+  large: "30px",
 };
 
 const paddingValues = {
-  medium: '10px',
+  medium: "10px",
 };
 
 export const useFlexStyles = makeStyles({
   flex: {
-    display: 'flex',
+    display: "flex",
   },
   inline: {
-    display: 'inline-flex',
+    display: "inline-flex",
   },
   column: {
-    flexDirection: 'column',
+    flexDirection: "column",
   },
   alignItemsFlexStart: {
-    alignItems: 'flex-start',
+    alignItems: "flex-start",
   },
   alignItemsCenter: {
-    alignItems: 'center',
+    alignItems: "center",
   },
   alignItemsFlexEnd: {
-    alignItems: 'flex-end',
+    alignItems: "flex-end",
   },
   alignItemsStretch: {
-    alignItems: 'stretch',
+    alignItems: "stretch",
   },
   justifyContentFlexStart: {
-    justifyContent: 'flex-start',
+    justifyContent: "flex-start",
   },
   justifyContentCenter: {
-    justifyContent: 'center',
+    justifyContent: "center",
   },
   justifyContentFlexEnd: {
-    justifyContent: 'flex-end',
+    justifyContent: "flex-end",
   },
   justifyContentStretch: {
-    justifyContent: 'stretch',
+    justifyContent: "stretch",
   },
   justifyContentSpaceAround: {
-    justifyContent: 'space-around',
+    justifyContent: "space-around",
   },
   justifyContentSpaceBetween: {
-    justifyContent: 'space-between',
+    justifyContent: "space-between",
   },
   justifyContentSpaceEvenly: {
-    justifyContent: 'space-evenly',
+    justifyContent: "space-evenly",
   },
   wrap: {
-    flexWrap: 'wrap',
+    flexWrap: "wrap",
   },
   fill: {
-    width: '100%',
-    height: '100%',
+    width: "100%",
+    height: "100%",
   },
   gapForColumnFlexSmall: {
     rowGap: gapValues.small,

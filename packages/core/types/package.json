@@ -1,0 +1,9 @@
+{
+    "name": "@spotless/core-types",
+    "version": "1.0.0",
+    "description": "Contains all types that are common to the entire application",
+    "main": "index.js",
+    "dependencies": {
+        "rxjs": "^7.8.0"
+    }
+}
