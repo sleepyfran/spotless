@@ -10,10 +10,17 @@
   "scripts": {
     "app:dev": "vite serve packages/app",
     "app:build": "tsc && vite build packages/app",
-    "app:preview": "vite preview"
+    "app:preview": "vite preview",
+    "gen": "plop",
+    "format": "prettier --write ."
+  },
+  "devDependencies": {
+    "plop": "^3.1.2",
+    "prettier": "^2.8.7"
   },
   "workspaces": [
     "packages/app",
-    "packages/core"
+    "packages/components/*",
+    "packages/core/*"
   ]
 }
