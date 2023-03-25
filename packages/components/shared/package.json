@@ -1,5 +1,6 @@
 {
   "name": "@spotless/component-shared",
+  "version": "1.0.0",
   "dependencies": {
     "@spotless/core-state": "^1.0.0",
     "@fluentui/react-icons": "^2.0.198",

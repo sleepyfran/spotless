@@ -1,4 +1,4 @@
 {
-  "include": ["src"],
+  "include": ["src", "../components/layout/src/Root.tsx"],
   "extends": "../../tsconfig.json"
 }

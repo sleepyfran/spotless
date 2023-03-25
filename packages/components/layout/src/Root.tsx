@@ -1,6 +1,6 @@
 import { makeStyles, shorthands, Title1 } from "@fluentui/react-components";
-import { Flex } from "../shared/Flex";
-import { Sidebar } from "./sidebar";
+import { Flex } from "@spotless/component-shared";
+import { Sidebar } from "./Sidebar";
 
 const useStyles = makeStyles({
   root: {

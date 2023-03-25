@@ -11,7 +11,7 @@ import {
   Person24Regular,
 } from "@fluentui/react-icons";
 import { HTMLAttributes } from "react";
-import { Flex } from "../shared/Flex";
+import { Flex } from "@spotless/component-shared";
 
 const useButtonStyles = makeStyles({
   button: {
