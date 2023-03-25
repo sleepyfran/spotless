@@ -12,7 +12,7 @@
     "app:build": "tsc && vite build packages/app",
     "app:preview": "vite preview",
     "gen": "plop",
-    "format": "prettier --write ."
+    "format": "prettier --write ./packages/**/*.{ts,tsx,json}"
   },
   "devDependencies": {
     "plop": "^3.1.2",
