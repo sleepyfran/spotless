@@ -1,6 +1,7 @@
 import { PropsWithChildren } from "react";
 import { Navigate } from "react-router-dom";
-import { useStateKey, Paths } from "@spotless/component-shared";
+import { Paths } from "@spotless/component-shared";
+import { useStateKey } from "@spotless/component-core-context";
 
 /**
  * Wraps a component and only shows it if the user is not currently authenticated

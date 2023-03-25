@@ -1,6 +1,6 @@
 import { PropsWithChildren, useCallback, useEffect, useState } from "react";
 import { Button, makeStyles, Title3 } from "@fluentui/react-components";
-import { useServices } from "@spotless/component-services-context";
+import { useServices } from "@spotless/component-core-context";
 import { useNavigate } from "react-router-dom";
 import { Flex, useErrorStyles } from "@spotless/component-shared";
 

@@ -1,6 +1,6 @@
 import { PropsWithChildren } from "react";
 import { AuthLanding } from "./Auth";
-import { useStateKey } from "@spotless/component-shared";
+import { useStateKey } from "@spotless/component-core-context";
 
 /**
  * Wraps a component and only shows it if the user is currently authenticated

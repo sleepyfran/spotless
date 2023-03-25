@@ -1,6 +1,6 @@
 import { bind } from "@react-rxjs/core";
 import { AppState, State } from "@spotless/core-state";
-import { useServices } from "@spotless/component-services-context";
+import { useServices } from "./ServicesContext";
 
 const [_useStateKey] = bind(
   <K extends keyof State>({ state, key }: { state: AppState; key: K }) =>

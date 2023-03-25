@@ -1,5 +1,6 @@
 {
-  "name": "@spotless/component-services-context",
+  "name": "@spotless/component-core-context",
+  "description": "Contains access to the core context, which has access to services and other core elements",
   "version": "1.0.0",
   "dependencies": {
     "@spotless/component-shared": "^1.0.0",

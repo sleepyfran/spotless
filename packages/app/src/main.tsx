@@ -6,7 +6,7 @@ import { router } from "./router";
 import {
   ServiceContext,
   initializeServices,
-} from "@spotless/component-services-context";
+} from "@spotless/component-core-context";
 
 const services = initializeServices({
   baseUrl: import.meta.env.VITE_BASE_APP,
