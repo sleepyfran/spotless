@@ -2,6 +2,7 @@ import { createBrowserRouter, Outlet } from "react-router-dom";
 import { AuthLanding, ProcessAuthCallback } from "./auth/Auth";
 import { RequireLogin } from "./auth/RequireLogin";
 import { RedirectIfLoggedIn } from "./auth/RedirectIfLoggedIn";
+import { Root } from "./layout/root";
 
 export const Paths = {
   root: "/",
@@ -16,7 +17,7 @@ export const router = createBrowserRouter([
     path: "/",
     element: (
       <RequireLogin>
-        <h1>Welcome!</h1>
+        <Root />
       </RequireLogin>
     ),
   },
