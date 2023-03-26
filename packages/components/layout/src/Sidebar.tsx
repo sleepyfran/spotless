@@ -12,6 +12,7 @@ import {
 } from "@fluentui/react-icons";
 import { HTMLAttributes } from "react";
 import { Flex } from "@spotless/component-shared";
+import { Player } from "@spotless/component-player";
 
 const useButtonStyles = makeStyles({
   button: {
@@ -54,6 +55,7 @@ export const Sidebar = ({ className }: HTMLAttributes<HTMLDivElement>) => {
       <SidebarButton title="Artists" icon={<Person24Regular />} />
       <SidebarButton title="Albums" icon={<Album24Regular />} />
       <SidebarButton title="Genres" icon={<DocumentPageNumber24Regular />} />
+      <Player />
     </Flex>
   );
 };

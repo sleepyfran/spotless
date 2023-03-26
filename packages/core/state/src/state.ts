@@ -1,10 +1,4 @@
-import {
-  BehaviorSubject,
-  distinctUntilChanged,
-  map,
-  Observable,
-  startWith,
-} from "rxjs";
+import { BehaviorSubject, distinctUntilChanged, map, Observable } from "rxjs";
 import { IStorage } from "@spotless/core-storage";
 import { State } from "./state.types";
 
@@ -49,8 +43,6 @@ export class AppState {
    */
   public observe<K extends keyof State>(path: K): Observable<State[K]> {
     return this.state$.pipe(
-      startWith(initialState),
-
       // Retrieve the specific part of the state.
       map((state) => state[path]),
 

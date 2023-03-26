@@ -2,11 +2,13 @@ import { createContext, useContext } from "react";
 import { AppState } from "@spotless/core-state";
 import { AppConfig } from "@spotless/core-types";
 import { LocalStorage } from "@spotless/core-storage";
+import { PlayerService } from "@spotless/core-player";
 import { SpotifyAuthService } from "@spotless/core-auth";
 
 interface IServiceContext {
   authService: SpotifyAuthService;
   state: AppState;
+  playerService: PlayerService;
 }
 
 /**
@@ -21,6 +23,7 @@ export const initialize = (appConfig: AppConfig): IServiceContext => {
   return {
     authService: new SpotifyAuthService(appState, appConfig),
     state: appState,
+    playerService: new PlayerService(appState),
   };
 };
 

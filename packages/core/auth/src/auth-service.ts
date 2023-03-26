@@ -4,7 +4,7 @@ import { Http } from "@spotless/core-http";
 
 const SPOTIFY_AUTH_URL = "https://accounts.spotify.com/authorize";
 const SPOTIFY_TOKEN_URL = "https://accounts.spotify.com/api/token";
-const DEFAULT_SCOPES = "user-read-private user-read-email";
+const DEFAULT_SCOPES = "streaming user-read-private user-read-email";
 
 export type SpotifyAuthResult = "success" | "errored";
 
