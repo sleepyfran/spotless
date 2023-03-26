@@ -1,6 +1,7 @@
 import { AppConfig } from "@spotless/core-types";
-import { AppState } from "@spotless/core-state";
+import { AppState, AuthenticatedStatus } from "@spotless/core-state";
 import { Http } from "@spotless/core-http";
+import { concatMap, EMPTY, Observable, Subscription } from "rxjs";
 
 const SPOTIFY_AUTH_URL = "https://accounts.spotify.com/authorize";
 const SPOTIFY_TOKEN_URL = "https://accounts.spotify.com/api/token";
@@ -20,7 +21,7 @@ type SpotifyAuthResponse = {
  * Service dealing with all things auth. Can perform the initial authentication
  * against the Spotify API and deal with the expiration of tokens.
  */
-export class SpotifyAuthService {
+export class AuthService {
   constructor(readonly appState: AppState, readonly appConfig: AppConfig) {}
 
   /**
@@ -63,6 +64,42 @@ export class SpotifyAuthService {
     }
 
     return this.retrieveToken(code);
+  }
+
+  /**
+   * Listens to the authentication state and calls the callback when the user is
+   * authenticated.
+   * @param callback callback to be called when the user is authenticated.
+   * @returns the subscription to the observable.
+   */
+  public onAuthorized<T>(
+    callback: (result: AuthenticatedStatus) => Observable<T>
+  ): Subscription {
+    return this.appState
+      .observe("auth")
+      .pipe(
+        concatMap((auth) =>
+          auth.__status === "authenticated" ? callback(auth) : EMPTY
+        )
+      )
+      .subscribe();
+  }
+
+  /**
+   * Listens to the authentication state and calls the callback when the user is
+   * unauthenticated.
+   * @param callback callback to be called when the user is unauthenticated.
+   * @returns the subscription to the observable.
+   */
+  public onUnauthorized<T>(callback: () => Observable<T>): Subscription {
+    return this.appState
+      .observe("auth")
+      .pipe(
+        concatMap((auth) =>
+          auth.__status === "unauthenticated" ? callback() : EMPTY
+        )
+      )
+      .subscribe();
   }
 
   private get redirectUri(): string {

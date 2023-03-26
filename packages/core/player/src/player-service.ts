@@ -1,6 +1,7 @@
-import { AppState } from "@spotless/core-state";
+import { AppState, AuthenticatedStatus } from "@spotless/core-state";
 import { from, Observable, of } from "rxjs";
-import { concatMap, tap } from "rxjs/operators";
+import { concatMap } from "rxjs/operators";
+import { AuthService } from "@spotless/core-auth";
 
 type ConnectedPlayer = {
   __status: "connected";
@@ -32,21 +33,11 @@ export class PlayerService {
   private player?: Spotify.Player;
   private status: ConnectionStatus = disconnected;
 
-  constructor(readonly appState: AppState) {
+  constructor(readonly appState: AppState, readonly auth: AuthService) {
     window.onSpotifyWebPlaybackSDKReady = () => {
       // Set the status of the player based on the auth state.
-      appState
-        .observe("auth")
-        .pipe(
-          concatMap((auth) => {
-            if (auth.__status === "authenticated") {
-              return this.initializePlayer(auth.accessToken);
-            } else {
-              return this.disconnectPlayer();
-            }
-          })
-        )
-        .subscribe();
+      auth.onAuthorized((auth) => this.initializePlayer(auth));
+      auth.onUnauthorized(() => this.disconnectPlayer());
     };
   }
 
@@ -76,10 +67,12 @@ export class PlayerService {
     }
   }
 
-  private initializePlayer = (token: string): Observable<boolean> => {
+  private initializePlayer(
+    authState: AuthenticatedStatus
+  ): Observable<boolean> {
     this.player = new window.Spotify.Player({
       name: "Spotless",
-      getOAuthToken: (cb: any) => cb(token),
+      getOAuthToken: (cb: any) => cb(authState.accessToken),
       volume: 1.0,
     });
 
@@ -106,7 +99,7 @@ export class PlayerService {
     });
 
     return from(this.player.connect());
-  };
+  }
 
   private disconnectPlayer(): Observable<boolean> {
     this.player?.disconnect();

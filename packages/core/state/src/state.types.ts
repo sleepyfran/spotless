@@ -1,4 +1,4 @@
-type AuthenticatedStatusState = {
+export type AuthenticatedStatus = {
   __status: "authenticated";
   accessToken: string;
   tokenType: string;
@@ -7,11 +7,11 @@ type AuthenticatedStatusState = {
   refreshToken: string;
 };
 
-type UnauthenticatedStatusState = {
+export type UnauthenticatedStatus = {
   __status: "unauthenticated";
 };
 
-export type AuthState = AuthenticatedStatusState | UnauthenticatedStatusState;
+export type AuthState = AuthenticatedStatus | UnauthenticatedStatus;
 
 /**
  * Holds the shared application state.
