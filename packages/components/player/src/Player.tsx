@@ -1,5 +1,5 @@
 import { useCallback, useState } from "react";
-import { Button } from "@fluentui/react-components";
+import { Button } from "@mantine/core";
 import { useServices } from "@spotless/component-core-context";
 import { WithScript } from "@spotless/component-shared";
 

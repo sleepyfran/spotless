@@ -1,10 +1,9 @@
-import { makeStyles, tokens } from "@fluentui/react-components";
+import { useMantineTheme } from "@mantine/core";
 
 /**
- * Styles for showing errors to the user.
+ * Color for showing errors to the user.
  */
-export const useErrorStyles = makeStyles({
-  text: {
-    color: tokens.colorPaletteRedForeground1,
-  },
-});
+export const useErrorColor = () => {
+  const theme = useMantineTheme();
+  return theme.colors.red[7];
+};

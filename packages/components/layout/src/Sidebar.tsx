@@ -1,61 +1,40 @@
+import { Stack, Button, Navbar } from "@mantine/core";
 import {
-  ToggleButton,
-  makeStyles,
-  mergeClasses,
-  tokens,
-} from "@fluentui/react-components";
-import {
-  Album24Regular,
-  DocumentPageNumber24Regular,
-  Home24Regular,
-  Person24Regular,
-} from "@fluentui/react-icons";
-import { HTMLAttributes } from "react";
-import { Flex } from "@spotless/component-shared";
+  IconDisc,
+  IconHome2,
+  IconPalette,
+  IconSitemap,
+} from "@tabler/icons-react";
 import { Player } from "@spotless/component-player";
-
-const useButtonStyles = makeStyles({
-  button: {
-    justifyContent: "start",
-  },
-});
 
 type SidebarButtonProps = {
   title: string;
   icon: JSX.Element;
 };
 const SidebarButton = ({ title, icon }: SidebarButtonProps) => {
-  const styles = useButtonStyles();
-
   return (
-    <ToggleButton appearance="subtle" icon={icon} className={styles.button}>
+    <Button variant="subtle" leftIcon={icon}>
       {title}
-    </ToggleButton>
+    </Button>
   );
 };
-
-const useSidebarStyles = makeStyles({
-  root: {
-    paddingTop: "2rem",
-    backgroundColor: tokens.colorNeutralBackground2,
-  },
-});
 
 /**
  * Shows the sidebar which allows the user to quickly navigate between the
  * different sections of the app... Well, you know what a sidebar usually is :^)
  */
-export const Sidebar = ({ className }: HTMLAttributes<HTMLDivElement>) => {
-  const sidebarStyles = useSidebarStyles();
-  const styles = mergeClasses(sidebarStyles.root, className);
-
+export const Sidebar = () => {
   return (
-    <Flex column className={styles}>
-      <SidebarButton title="Home" icon={<Home24Regular />} />
-      <SidebarButton title="Artists" icon={<Person24Regular />} />
-      <SidebarButton title="Albums" icon={<Album24Regular />} />
-      <SidebarButton title="Genres" icon={<DocumentPageNumber24Regular />} />
+    <Navbar width={{ base: 250 }}>
+      <Navbar.Section grow mt="md">
+        <Stack>
+          <SidebarButton title="Home" icon={<IconHome2 />} />
+          <SidebarButton title="Artists" icon={<IconPalette />} />
+          <SidebarButton title="Albums" icon={<IconDisc />} />
+          <SidebarButton title="Genres" icon={<IconSitemap />} />
+        </Stack>
+      </Navbar.Section>
       <Player />
-    </Flex>
+    </Navbar>
   );
 };

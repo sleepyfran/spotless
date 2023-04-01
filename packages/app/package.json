@@ -3,13 +3,14 @@
   "version": "1.0.0",
   "dependencies": {
     "@react-rxjs/core": "^0.10.4",
+    "@emotion/react": "^11.10.6",
+    "@mantine/core": "^6.0.5",
+    "@mantine/hooks": "^6.0.5",
     "@spotless/component-auth": "^1.0.0",
     "@spotless/component-layout": "^1.0.0",
     "@spotless/component-core-context": "^1.0.0",
     "@spotless/component-shared": "^1.0.0",
     "@spotless/core-state": "^1.0.0",
-    "@fluentui/react-icons": "^2.0.198",
-    "@fluentui/react-components": "^9.18.6",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.9.0"

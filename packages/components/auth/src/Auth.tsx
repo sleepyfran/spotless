@@ -1,32 +1,14 @@
 import { PropsWithChildren, useCallback, useEffect, useState } from "react";
-import { Button, makeStyles, Title3 } from "@fluentui/react-components";
+import { Center, Stack, Button, Title } from "@mantine/core";
 import { useServices } from "@spotless/component-core-context";
 import { useNavigate } from "react-router-dom";
-import { Flex, useErrorStyles } from "@spotless/component-shared";
+import { useErrorColor } from "@spotless/component-shared";
 
-const useStyles = makeStyles({
-  root: {
-    display: "grid",
-    alignItems: "center",
-    justifyItems: "center",
-    height: "100vh",
-  },
-  content: {
-    maxWidth: "25rem",
-  },
-});
-
-const AuthLayout = ({ children }: PropsWithChildren) => {
-  const styles = useStyles();
-
-  return (
-    <main className={styles.root}>
-      <Flex gap="gap.medium" column className={styles.content}>
-        {children}
-      </Flex>
-    </main>
-  );
-};
+const AuthLayout = ({ children }: PropsWithChildren) => (
+  <Center maw={400} mx="auto" h="100%">
+    <Stack>{children}</Stack>
+  </Center>
+);
 
 export const AuthLanding = () => {
   const { authService } = useServices();
@@ -38,9 +20,9 @@ export const AuthLanding = () => {
 
   return (
     <AuthLayout>
-      <Title3>
+      <Title order={3}>
         To use Spotless you first need to authenticate your Spotify account.
-      </Title3>
+      </Title>
       <Button onClick={authorizeAccount}>Open Spotify login</Button>
     </AuthLayout>
   );
@@ -51,7 +33,7 @@ type AuthStatus = "not-requested" | "loading" | "errored";
 export const ProcessAuthCallback = () => {
   const { authService } = useServices();
   const navigate = useNavigate();
-  const errorStyles = useErrorStyles();
+  const errorColor = useErrorColor();
 
   const [status, setStatus] = useState<AuthStatus>("not-requested");
 
@@ -67,11 +49,11 @@ export const ProcessAuthCallback = () => {
   return (
     <AuthLayout>
       {status === "errored" ? (
-        <Title3 className={errorStyles.text}>
+        <Title order={3} color={errorColor}>
           There was an error while logging you in. Please try again
-        </Title3>
+        </Title>
       ) : (
-        <Title3>Working on it...</Title3>
+        <Title order={3}>Working on it...</Title>
       )}
     </AuthLayout>
   );

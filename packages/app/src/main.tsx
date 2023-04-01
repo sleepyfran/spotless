@@ -1,7 +1,7 @@
 import { createRoot } from "react-dom/client";
 import { RouterProvider } from "react-router-dom";
+import { MantineProvider } from "@mantine/core";
 import { Subscribe } from "@react-rxjs/core";
-import { FluentProvider, webDarkTheme } from "@fluentui/react-components";
 import { router } from "./router";
 import {
   ServiceContext,
@@ -16,11 +16,15 @@ const services = initializeServices({
 
 const root = createRoot(document.getElementById("root") as HTMLElement);
 root.render(
-  <FluentProvider theme={webDarkTheme}>
+  <MantineProvider
+    withNormalizeCSS
+    withGlobalStyles
+    theme={{ colorScheme: "dark" }}
+  >
     <Subscribe>
       <ServiceContext.Provider value={services}>
         <RouterProvider router={router} />
       </ServiceContext.Provider>
     </Subscribe>
-  </FluentProvider>
+  </MantineProvider>
 );
