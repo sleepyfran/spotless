@@ -37,6 +37,16 @@ export class AppState {
   }
 
   /**
+   * Returns the current value of a specific portion of the state. Prefer
+   * subscribing via `observe` since this will not trigger in case of updates.
+   * @param path key of the state to retrieve.
+   * @returns the value of the key.
+   */
+  public get<K extends keyof State>(path: K): State[K] {
+    return this.state[path];
+  }
+
+  /**
    * Returns an observable that triggers when a specific portion of the state
    * changes.
    * @param path key of the state to observe.

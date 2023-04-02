@@ -1,7 +1,14 @@
 import { AppConfig } from "@spotless/core-types";
 import { AppState, AuthenticatedStatus } from "@spotless/core-state";
 import { Http } from "@spotless/core-http";
-import { concatMap, EMPTY, Observable, Subscription } from "rxjs";
+import {
+  concatMap,
+  EMPTY,
+  interval,
+  Observable,
+  startWith,
+  Subscription,
+} from "rxjs";
 
 const SPOTIFY_AUTH_URL = "https://accounts.spotify.com/authorize";
 const SPOTIFY_TOKEN_URL = "https://accounts.spotify.com/api/token";
@@ -22,9 +29,11 @@ type SpotifyAuthResponse = {
  * against the Spotify API and deal with the expiration of tokens.
  */
 export class AuthService {
-  constructor(readonly appState: AppState, readonly appConfig: AppConfig) {}
+  constructor(readonly appState: AppState, readonly appConfig: AppConfig) {
+    this.startTokenRefresher();
+  }
 
-  /**
+  /*
    * Returns the auth URL that we should follow to authenticate a new client.
    * @param redirectUri URL that Spotify should redirect to after authentication
    * @param clientId client ID that was assigned to the app on the API dashboard
@@ -106,32 +115,88 @@ export class AuthService {
     return `${this.appConfig.baseUrl}/auth/callback`;
   }
 
-  private retrieveToken(code: string): Promise<SpotifyAuthResult> {
-    const encodedClientInformation = btoa(
-      `${this.appConfig.clientId}:${this.appConfig.clientSecret}`
-    );
+  private get encodedClientInformation(): string {
+    return btoa(`${this.appConfig.clientId}:${this.appConfig.clientSecret}`);
+  }
 
+  private saveAuthResponse(response: SpotifyAuthResponse) {
+    const expirationTimestamp =
+      new Date().getTime() + response.expires_in * 1000;
+
+    this.appState.patch("auth", {
+      __status: "authenticated",
+      accessToken: response.access_token,
+      tokenType: response.token_type,
+      expirationTimestamp,
+      refreshToken: response.refresh_token,
+      scope: response.scope,
+    });
+  }
+
+  private retrieveToken(code: string): Promise<SpotifyAuthResult> {
     return Http.post(
       `${SPOTIFY_TOKEN_URL}?grant_type=authorization_code&code=${code}&redirect_uri=${this.redirectUri}`,
       {
         headers: {
-          Authorization: `Basic ${encodedClientInformation}`,
+          Authorization: `Basic ${this.encodedClientInformation}`,
           ["Content-Type"]: "application/x-www-form-urlencoded",
         },
       }
     )
       .then((response) => response.json())
       .then((response: SpotifyAuthResponse) => {
-        this.appState.patch("auth", {
-          __status: "authenticated",
-          accessToken: response.access_token,
-          tokenType: response.token_type,
-          expiresIn: response.expires_in,
-          refreshToken: response.refresh_token,
-          scope: response.scope,
-        });
-
+        this.saveAuthResponse(response);
         return "success";
+      });
+  }
+
+  private startTokenRefresher() {
+    const intervalCheckTime = 1000 * 60 * 30; // Thirty minutes in milliseconds.
+    interval(intervalCheckTime)
+      .pipe(
+        // Start the interval immediately.
+        startWith(0)
+      )
+      .subscribe(() => {
+        const auth = this.appState.get("auth");
+
+        if (auth.__status === "authenticated") {
+          this.refreshTokenIfNeeded(auth);
+        }
+      });
+  }
+
+  private refreshTokenIfNeeded(auth: AuthenticatedStatus) {
+    const now = new Date();
+    const expirationTime = new Date(auth.expirationTimestamp);
+
+    if (now > expirationTime) {
+      this.refreshToken(auth);
+    }
+  }
+
+  private refreshToken(auth: AuthenticatedStatus): Promise<SpotifyAuthResult> {
+    return Http.post(
+      `${SPOTIFY_TOKEN_URL}?grant_type=refresh_token&refresh_token=${auth.refreshToken}`,
+      {
+        headers: {
+          Authorization: `Basic ${this.encodedClientInformation}`,
+          ["Content-Type"]: "application/x-www-form-urlencoded",
+        },
+      }
+    )
+      .then((response) => response.json())
+      .then((response: SpotifyAuthResponse) => {
+        this.saveAuthResponse({
+          ...response,
+          refresh_token: auth.refreshToken,
+        });
+        return "success" as SpotifyAuthResult;
+      })
+      .catch(() => {
+        // Probably the refresh token expired or it's invalid. Log the user out.
+        this.appState.patch("auth", { __status: "unauthenticated" });
+        return "errored";
       });
   }
 }

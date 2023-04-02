@@ -3,7 +3,7 @@ export type AuthenticatedStatus = {
   accessToken: string;
   tokenType: string;
   scope: string;
-  expiresIn: number;
+  expirationTimestamp: number;
   refreshToken: string;
 };
 
