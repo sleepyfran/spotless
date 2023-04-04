@@ -4,7 +4,7 @@
   "description": "Contains the Auth related services",
   "main": "index.js",
   "dependencies": {
-    "@spotless/logger": "^1.0.0",
+    "@spotless/services-logger": "^1.0.0",
     "@spotless/types": "^1.0.0"
   }
 }

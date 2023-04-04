@@ -7,6 +7,7 @@
     "@mantine/core": "^6.0.5",
     "@mantine/hooks": "^6.0.5",
     "@spotless/component-auth": "^1.0.0",
+    "@spotless/component-root": "^1.0.0",
     "@spotless/component-shared": "^1.0.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",

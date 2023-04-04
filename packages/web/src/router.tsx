@@ -5,14 +5,14 @@ import {
   RequireLogin,
   RedirectIfLoggedIn,
 } from "@spotless/components-auth";
-import { Title } from "@mantine/core";
+import { Root } from "@spotless/components-root";
 
 export const router = createBrowserRouter([
   {
     path: "/",
     element: (
       <RequireLogin>
-        <Title>Well, hello there :^)</Title>
+        <Root />
       </RequireLogin>
     ),
   },

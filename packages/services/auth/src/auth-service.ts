@@ -108,7 +108,7 @@ export class AuthService {
    * needed. If there is not authentication information or the token is not
    * refreshable anymore, throws an error.
    */
-  public authenticationHeaders(): Promise<{ Authorization: string }> {
+  public authenticationHeaders(): Promise<string> {
     if (this._authUser.__type === "UnauthorizedUser") {
       return Promise.reject("User is not authenticated");
     }
@@ -123,10 +123,8 @@ export class AuthService {
     });
   }
 
-  private createAuthHeader(auth: AuthenticatedUser): { Authorization: string } {
-    return {
-      Authorization: `${auth.tokenType} ${auth.accessToken}`,
-    };
+  private createAuthHeader(auth: AuthenticatedUser): string {
+    return `${auth.tokenType} ${auth.accessToken}`;
   }
 
   /**
