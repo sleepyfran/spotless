@@ -7,6 +7,7 @@ import {
 } from "@spotless/components-auth";
 import { Paths } from "@spotless/components-shared";
 import { Root } from "@spotless/components-root";
+import { Home } from "@spotless/components-home";
 import { Title } from "@mantine/core";
 
 export const router = createBrowserRouter([
@@ -22,7 +23,7 @@ export const router = createBrowserRouter([
     children: [
       {
         path: "",
-        element: <Title>Home</Title>,
+        element: <Home />,
       },
       {
         path: Paths.artists,

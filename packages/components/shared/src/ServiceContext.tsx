@@ -1,12 +1,13 @@
 import { createContext, useContext } from "react";
 import { AppConfig } from "@spotless/types";
 import { AuthService } from "@spotless/services-auth";
-import { Api, SpotifyApi } from "@spotless/services-api";
+import { SpotifyApi } from "@spotless/services-api";
+import { AlbumsService } from "@spotless/services-albums";
 import { ConsoleLogger } from "@spotless/services-logger";
 
 interface IServiceContext {
+  albumsService: AlbumsService;
   authService: AuthService;
-  api: Api;
 }
 
 /**
@@ -22,10 +23,11 @@ export const initialize = async (appConfig: AppConfig) => {
   await authService.initAuthState();
 
   const api = new SpotifyApi(authService);
+  const albumsService = new AlbumsService(api);
 
   return {
+    albumsService,
     authService,
-    api,
   };
 };
 

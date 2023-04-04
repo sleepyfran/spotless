@@ -2,6 +2,7 @@
   "name": "@spotless/components-shared",
   "version": "1.0.0",
   "dependencies": {
+    "@spotless/services-albums": "^1.0.0",
     "@spotless/services-auth": "^1.0.0",
     "@spotless/services-api": "^1.0.0",
     "@emotion/react": "^11.10.6",

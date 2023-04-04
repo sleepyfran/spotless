@@ -27,3 +27,14 @@ export type UnauthorizedUser = {
 };
 
 export type AuthUser = AuthenticatedUser | UnauthorizedUser;
+
+/**
+ * Represents a simple album, which contains the basic metadata to display
+ * it inside of a list.
+ */
+export type SimpleAlbum = {
+  id: string;
+  name: string;
+  artistName: string;
+  coverUrl: string;
+};

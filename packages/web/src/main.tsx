@@ -1,6 +1,7 @@
 import { createRoot } from "react-dom/client";
 import { RouterProvider } from "react-router-dom";
 import { MantineProvider } from "@mantine/core";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { router } from "./router";
 import {
   ServiceContext,
@@ -25,6 +26,8 @@ const init = async () => {
     clientSecret,
   });
 
+  const queryClient = new QueryClient();
+
   const root = createRoot(document.getElementById("root") as HTMLElement);
   root.render(
     <MantineProvider
@@ -33,7 +36,9 @@ const init = async () => {
       theme={{ colorScheme: "dark" }}
     >
       <ServiceContext.Provider value={services}>
-        <RouterProvider router={router} />
+        <QueryClientProvider client={queryClient}>
+          <RouterProvider router={router} />
+        </QueryClientProvider>
       </ServiceContext.Provider>
     </MantineProvider>
   );

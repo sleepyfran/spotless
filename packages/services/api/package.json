@@ -6,7 +6,7 @@
     "dependencies": {
         "@spotless/services-auth": "^1.0.0",
         "@spotless/types": "^1.0.0",
-        "axios": "^1.3.4"
+        "ky": "^0.33.3"
     },
     "devDependencies": {
         "@types/spotify-api": "^0.0.21"
