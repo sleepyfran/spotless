@@ -8,17 +8,22 @@
   },
   "homepage": "https://github.com/sleepyfran/spotless#readme",
   "scripts": {
+    "ci": "yarn lint && yarn format",
     "web:dev": "vite serve packages/web",
     "web:build": "tsc && vite build packages/web",
     "web:preview": "vite preview",
+    "lint": "eslint --ext .ts,.tsx .",
+    "lint:fix": "eslint --ext .ts,.tsx . --fix",
     "gen": "plop",
-    "format": "prettier --write ./packages/**/*.{ts,tsx,json}",
+    "format": "prettier --check ./packages/**/*.{ts,tsx,json}",
+    "format:fix": "prettier --write ./packages/**/*.{ts,tsx,json}",
     "prepare": "husky install"
   },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^5.57.1",
     "@typescript-eslint/parser": "^5.57.1",
     "eslint": "^8.37.0",
+    "eslint-plugin-import": "^2.27.5",
     "eslint-plugin-react": "^7.32.2",
     "husky": "^8.0.3",
     "plop": "^3.1.2",

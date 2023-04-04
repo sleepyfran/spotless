@@ -19,8 +19,6 @@ export interface ILogger {
  * Implementation of the logger interface that logs to the browser's console.
  */
 export class ConsoleLogger implements ILogger {
-  constructor() {}
-
   log(message: string): void {
     console.log(message);
   }
