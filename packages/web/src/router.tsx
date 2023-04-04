@@ -5,19 +5,45 @@ import {
   RequireLogin,
   RedirectIfLoggedIn,
 } from "@spotless/components-auth";
+import { Paths } from "@spotless/components-shared";
 import { Root } from "@spotless/components-root";
+import { Title } from "@mantine/core";
 
 export const router = createBrowserRouter([
   {
-    path: "/",
+    path: Paths.root,
     element: (
       <RequireLogin>
-        <Root />
+        <Root>
+          <Outlet />
+        </Root>
       </RequireLogin>
     ),
+    children: [
+      {
+        path: "",
+        element: <Title>Home</Title>,
+      },
+      {
+        path: Paths.artists,
+        element: <Title>Artists</Title>,
+      },
+      {
+        path: Paths.albums,
+        element: <Title>Albums</Title>,
+      },
+      {
+        path: Paths.genres,
+        element: <Title>Genres</Title>,
+      },
+      {
+        path: Paths.explore,
+        element: <Title>Explore</Title>,
+      },
+    ],
   },
   {
-    path: "/auth",
+    path: Paths.auth.root,
     element: (
       <RedirectIfLoggedIn>
         <Outlet />

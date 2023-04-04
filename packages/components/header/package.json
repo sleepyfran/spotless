@@ -1,8 +1,7 @@
 {
-  "name": "@spotless/components-root",
+  "name": "@spotless/components-header",
   "version": "1.0.0",
   "dependencies": {
-    "@spotless/components-header": "^1.0.0",
     "@spotless/components-shared": "^1.0.0",
     "@emotion/react": "^11.10.6",
     "@mantine/core": "^6.0.5",
