@@ -1,0 +1,7 @@
+{
+    "name": "@spotless/services-logger",
+    "version": "1.0.0",
+    "description": "Contains abstractions over logging",
+    "main": "index.js",
+    "dependencies": {}
+}

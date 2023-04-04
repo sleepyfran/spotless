@@ -1,6 +1,7 @@
 import { AppConfig, AuthUser, AuthenticatedUser } from "@spotless/types";
 import { retrieveFromCache, saveToCache } from "./auth-cache";
 import { checkTokenValidity } from "./auth-common";
+import { ILogger } from "@spotless/services-logger";
 
 const SPOTIFY_AUTH_URL = "https://accounts.spotify.com/authorize";
 const SPOTIFY_TOKEN_URL = "https://accounts.spotify.com/api/token";
@@ -22,7 +23,7 @@ type SpotifyAuthResponse = {
 export class AuthService {
   private _authUser: AuthUser;
 
-  constructor(readonly appConfig: AppConfig) {
+  constructor(readonly appConfig: AppConfig, readonly logger: ILogger) {
     this._authUser = {
       __type: "UnauthorizedUser",
     };
@@ -38,9 +39,16 @@ export class AuthService {
 
     if (cachedAuth) {
       this._authUser = cachedAuth.item;
-      return this.refreshToken(this._authUser as AuthenticatedUser);
+
+      if (cachedAuth.needsRefresh) {
+        return this.refreshToken(this._authUser as AuthenticatedUser);
+      }
+
+      this.logger.log("Tokens retrieved from cache");
+      return Promise.resolve();
     }
 
+    this.logger.log("No tokens found in cache, setting to unauthorized");
     this._authUser = {
       __type: "UnauthorizedUser",
     };
@@ -179,6 +187,8 @@ export class AuthService {
    * Refreshes the token using the refresh token from the auth state.
    */
   private refreshToken(auth: AuthenticatedUser): Promise<void> {
+    this.logger.log("Refreshing token...");
+
     return fetch(
       `${SPOTIFY_TOKEN_URL}?grant_type=refresh_token&refresh_token=${auth.refreshToken}`,
       {
@@ -191,12 +201,16 @@ export class AuthService {
     )
       .then((response) => response.json())
       .then((response: SpotifyAuthResponse) => {
+        this.logger.log("Token refreshed successfully");
+
         this.saveAuthResponse({
           ...response,
           refresh_token: auth.refreshToken,
         });
       })
       .catch(() => {
+        this.logger.warn("Token refresh failed, setting user to unauthorized");
+
         // Probably the refresh token expired or it's invalid. Log the user out.
         this._authUser = { __type: "UnauthorizedUser" };
       });
