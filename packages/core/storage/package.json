@@ -1,9 +1,0 @@
-{
-    "name": "@spotless/core-storage",
-    "version": "1.0.0",
-    "description": "Contains interfaces to interact with the application storage",
-    "main": "index.js",
-    "dependencies": {
-        "rxjs": "^7.8.0"
-    }
-}

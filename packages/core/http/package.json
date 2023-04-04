@@ -1,9 +1,0 @@
-{
-    "name": "@spotless/core-http",
-    "version": "1.0.0",
-    "description": "A set of utilities on top of fetch to ease the usage of HTTP APIs",
-    "main": "index.js",
-    "dependencies": {
-        "rxjs": "^7.8.0"
-    }
-}

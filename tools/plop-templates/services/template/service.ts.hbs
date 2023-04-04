@@ -1,15 +1,8 @@
-import { AppConfig } from "@spotless/core-types";
-import { AppState } from "@spotless/core-state";
+import { AppConfig } from "@spotless/types";
 
 /**
- * Service dealing with stuff.
+ * Service dealing with {{properCase name}} related stuff.
  */
 export class {{pascalCase name}}Service {
-  constructor(readonly appState: AppState, readonly appConfig: AppConfig) {}
-
-  /**
-   * Does stuff.
-   */
-  public doStuff() {
-  }
+  constructor(readonly appConfig: AppConfig) {}
 }

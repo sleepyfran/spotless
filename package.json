@@ -8,9 +8,9 @@
   },
   "homepage": "https://github.com/sleepyfran/spotless#readme",
   "scripts": {
-    "app:dev": "vite serve packages/app",
-    "app:build": "tsc && vite build packages/app",
-    "app:preview": "vite preview",
+    "web:dev": "vite serve packages/web",
+    "web:build": "tsc && vite build packages/web",
+    "web:preview": "vite preview",
     "gen": "plop",
     "format": "prettier --write ./packages/**/*.{ts,tsx,json}",
     "prepare": "husky install"
@@ -23,6 +23,7 @@
   "workspaces": [
     "packages/app",
     "packages/components/*",
-    "packages/core/*"
+    "packages/services/*",
+    "packages/types"
   ]
 }

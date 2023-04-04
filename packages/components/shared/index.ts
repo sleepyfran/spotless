@@ -1,3 +1,3 @@
-export { useErrorColor } from "./src/shared-styles";
-export { Paths } from "./src/paths";
-export { WithScript } from "./src/script-loader";
+export * from "./src/use-colors";
+export * from "./src/ServiceContext";
+export * from "./src/paths";

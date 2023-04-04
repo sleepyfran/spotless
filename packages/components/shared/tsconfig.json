@@ -1,10 +1,4 @@
 {
-  "include": [
-    "src"
-,
-"../services-context/src/service-context.ts"
-,
-"../core-context/src/use-state.ts"
-],
+  "include": ["src"],
   "extends": "../../../tsconfig.json"
 }

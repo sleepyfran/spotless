@@ -1,11 +1,13 @@
 {
-  "name": "@spotless/components-{{dashCase name}}",
+  "name": "@spotless/web",
+  "description": "Contains the shell for the web application",
   "version": "1.0.0",
   "dependencies": {
-    "@spotless/component-shared": "^1.0.0",
     "@emotion/react": "^11.10.6",
     "@mantine/core": "^6.0.5",
     "@mantine/hooks": "^6.0.5",
+    "@spotless/component-auth": "^1.0.0",
+    "@spotless/component-shared": "^1.0.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.9.0"

@@ -1,8 +1,7 @@
 import { PropsWithChildren, useCallback, useEffect, useState } from "react";
 import { Center, Stack, Button, Title } from "@mantine/core";
-import { useServices } from "@spotless/component-core-context";
 import { useNavigate } from "react-router-dom";
-import { useErrorColor } from "@spotless/component-shared";
+import { useColors, useServices } from "@spotless/components-shared";
 
 const AuthLayout = ({ children }: PropsWithChildren) => (
   <Center maw={400} mx="auto" h="100%">
@@ -10,6 +9,10 @@ const AuthLayout = ({ children }: PropsWithChildren) => (
   </Center>
 );
 
+/**
+ * Landing for the authentication, which allows the user to start the
+ * authentication flow.
+ */
 export const AuthLanding = () => {
   const { authService } = useServices();
 
@@ -30,10 +33,15 @@ export const AuthLanding = () => {
 
 type AuthStatus = "not-requested" | "loading" | "errored";
 
+/**
+ * Landing after the user has been redirected back to the app from the auth
+ * flow, which will process the auth callback and redirect to the home page
+ * or show an error if the auth failed.
+ */
 export const ProcessAuthCallback = () => {
-  const { authService } = useServices();
   const navigate = useNavigate();
-  const errorColor = useErrorColor();
+  const { authService } = useServices();
+  const colors = useColors();
 
   const [status, setStatus] = useState<AuthStatus>("not-requested");
 
@@ -49,7 +57,7 @@ export const ProcessAuthCallback = () => {
   return (
     <AuthLayout>
       {status === "errored" ? (
-        <Title order={3} color={errorColor}>
+        <Title order={3} color={colors.error}>
           There was an error while logging you in. Please try again
         </Title>
       ) : (
