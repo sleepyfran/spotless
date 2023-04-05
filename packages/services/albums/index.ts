@@ -6,4 +6,4 @@ export * from "./src/albums-service";
  */
 export const albumCacheKeys = {
   albums: "albums",
-}
+};
