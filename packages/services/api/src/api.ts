@@ -38,26 +38,38 @@ export class SpotifyApi implements Api {
     next,
     limit,
   }: PaginatedProps): Observable<SpotifyApi.UsersSavedAlbumsResponse> {
-    const endpoint = next ? next : `/me/albums?limit=${limit || 50}`;
-    return this.get(endpoint);
+    return this.getNextOrDefault(`/me/albums?limit=${limit || 50}`, next);
   }
 
   public getUserArtists({
     next,
     limit,
   }: PaginatedProps): Observable<SpotifyApi.UsersFollowedArtistsResponse> {
-    const endpoint = next
-      ? next
-      : `/me/following?type=artist&limit=${limit || 50}`;
-    return this.get(endpoint);
+    return this.getNextOrDefault(
+      `/me/following?type=artist&limit=${limit || 50}`,
+      next
+    );
   }
 
-  private get<T>(endpoint: string): Observable<T> {
+  private buildUrl(endpoint: string): string {
+    return `${BASE_URL}${endpoint}`;
+  }
+
+  private getNextOrDefault<T>(
+    defaultEndpoint: string,
+    next?: string
+  ): Observable<T> {
+    return next
+      ? this.get<T>(next)
+      : this.get<T>(this.buildUrl(defaultEndpoint));
+  }
+
+  private get<T>(url: string): Observable<T> {
     return from(this.authService.authenticationHeaders()).pipe(
       switchMap((authHeaders) => {
         return from(
           ky
-            .get(`${BASE_URL}${endpoint}`, {
+            .get(url, {
               headers: authHeaders,
             })
             .json() as Promise<T>

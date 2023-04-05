@@ -8,7 +8,7 @@ import { useQuery } from "@tanstack/react-query";
  * Component for the home page, which shows the last 50 albums added to the
  * user's library.
  */
-export const Home = () => {
+export const HomePage = () => {
   const { spacing } = useMantineTheme();
   const { albumsService, cacheKeys } = useServices();
 
@@ -20,7 +20,9 @@ export const Home = () => {
   return (
     <PageLayout isLoading={isLoading || isFetching} title="Home">
       <Flex direction="column" gap={spacing.md}>
-        <Title order={5}>Your last 50 albums</Title>
+        <Title order={5}>
+          {data ? `Your last ${data.length} albums` : "Your latest albums"}
+        </Title>
         <AlbumGrid albums={data} />
       </Flex>
     </PageLayout>

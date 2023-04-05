@@ -6,9 +6,10 @@ import {
   RedirectIfLoggedIn,
 } from "@spotless/components-auth";
 import { ArtistsPage } from "@spotless/components-artists";
+import { AlbumsPage } from "@spotless/components-albums";
 import { Paths } from "@spotless/components-shared";
 import { Root } from "@spotless/components-root";
-import { Home } from "@spotless/components-home";
+import { HomePage } from "@spotless/components-home";
 import { Title } from "@mantine/core";
 
 export const router = createBrowserRouter([
@@ -24,7 +25,7 @@ export const router = createBrowserRouter([
     children: [
       {
         path: "",
-        element: <Home />,
+        element: <HomePage />,
       },
       {
         path: Paths.artists,
@@ -32,7 +33,7 @@ export const router = createBrowserRouter([
       },
       {
         path: Paths.albums,
-        element: <Title>Albums</Title>,
+        element: <AlbumsPage />,
       },
       {
         path: Paths.genres,

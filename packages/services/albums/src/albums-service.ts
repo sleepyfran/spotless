@@ -1,6 +1,6 @@
 import { Api } from "@spotless/services-api";
 import { SimpleAlbum } from "@spotless/types";
-import { Observable, map, mergeMap } from "rxjs";
+import { EMPTY, Observable, expand, map, mergeMap } from "rxjs";
 
 /**
  * Service for retrieving albums tailored for each different part of the app.
@@ -13,7 +13,25 @@ export class AlbumsService {
    * ordered by date.
    */
   public fetchForHome(): Observable<SimpleAlbum> {
-    return this.api.getUserAlbums({ limit: 50 }).pipe(
+    return this.api.getUserAlbums({ limit: 20 }).pipe(
+      mergeMap((response) => response.items),
+      map((savedAlbum) => ({
+        id: savedAlbum.album.id,
+        name: savedAlbum.album.name,
+        artistName: savedAlbum.album.artists[0].name,
+        coverUrl: savedAlbum.album.images[0].url,
+      }))
+    );
+  }
+
+  /**
+   * Recursively retrieves all the albums in the user's library.
+   */
+  public fetchForAlbumsPage(): Observable<SimpleAlbum> {
+    return this.api.getUserAlbums({}).pipe(
+      expand((response) =>
+        response.next ? this.api.getUserAlbums({ next: response.next }) : EMPTY
+      ),
       mergeMap((response) => response.items),
       map((savedAlbum) => ({
         id: savedAlbum.album.id,

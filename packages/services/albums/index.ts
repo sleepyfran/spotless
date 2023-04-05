@@ -5,5 +5,6 @@ export * from "./src/albums-service";
  * in the cache.
  */
 export const albumCacheKeys = {
-  albums: "albums",
+  homeAlbums: "home-albums",
+  allAlbums: "all-albums",
 };
