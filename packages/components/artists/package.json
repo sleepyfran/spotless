@@ -1,16 +1,11 @@
 {
-  "name": "@spotless/web",
-  "description": "Contains the shell for the web application",
+  "name": "@spotless/components-artists",
   "version": "1.0.0",
   "dependencies": {
+    "@spotless/components-shared": "^1.0.0",
     "@emotion/react": "^11.10.6",
     "@mantine/core": "^6.0.5",
     "@mantine/hooks": "^6.0.5",
-    "@spotless/components-auth": "^1.0.0",
-    "@spotless/components-artists": "^1.0.0",
-    "@spotless/components-home": "^1.0.0",
-    "@spotless/components-root": "^1.0.0",
-    "@spotless/components-shared": "^1.0.0",
     "@tanstack/react-query": "^4.28.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",

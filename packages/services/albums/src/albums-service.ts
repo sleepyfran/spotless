@@ -11,7 +11,7 @@ export class AlbumsService {
    * Retrieves the albums for the home page, which fetches the most recent albums
    * ordered by date.
    */
-  public home(): Promise<SimpleAlbum[]> {
+  public fetchForHome(): Promise<SimpleAlbum[]> {
     return this.api.getUserAlbums({ limit: 50 }).then((savedAlbums) => {
       return savedAlbums.items.map((savedAlbum) => ({
         id: savedAlbum.album.id,

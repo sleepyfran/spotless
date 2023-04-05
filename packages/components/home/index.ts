@@ -1,1 +1,1 @@
-export * from "./src/Home";
+export * from "./src/HomePage";

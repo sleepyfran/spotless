@@ -5,6 +5,7 @@ import {
   RequireLogin,
   RedirectIfLoggedIn,
 } from "@spotless/components-auth";
+import { ArtistsPage } from "@spotless/components-artists";
 import { Paths } from "@spotless/components-shared";
 import { Root } from "@spotless/components-root";
 import { Home } from "@spotless/components-home";
@@ -27,7 +28,7 @@ export const router = createBrowserRouter([
       },
       {
         path: Paths.artists,
-        element: <Title>Artists</Title>,
+        element: <ArtistsPage />,
       },
       {
         path: Paths.albums,

@@ -6,7 +6,7 @@ import { ILogger } from "@spotless/services-logger";
 const SPOTIFY_AUTH_URL = "https://accounts.spotify.com/authorize";
 const SPOTIFY_TOKEN_URL = "https://accounts.spotify.com/api/token";
 const DEFAULT_SCOPES =
-  "streaming user-read-private user-read-email user-library-read";
+  "streaming user-read-private user-read-email user-library-read user-follow-read";
 
 type SpotifyAuthResponse = {
   access_token: string;

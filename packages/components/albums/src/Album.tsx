@@ -1,25 +1,16 @@
-import { Flex, Image, Text, createStyles } from "@mantine/core";
+import { Flex, Image, Text } from "@mantine/core";
+import { useCardStyles } from "@spotless/components-shared";
 import { SimpleAlbum } from "@spotless/types";
 
 type AlbumProps = {
   album: SimpleAlbum;
 };
 
-const useStyles = createStyles((theme) => ({
-  card: {
-    padding: theme.spacing.sm,
-    ":hover": {
-      backgroundColor: theme.colors.gray[9],
-      borderRadius: theme.radius.md,
-    },
-  },
-}));
-
 /**
  * Component that displays an album, including its name, artist name and cover image.
  */
 export const AlbumCard = ({ album }: AlbumProps) => {
-  const styles = useStyles();
+  const styles = useCardStyles();
 
   return (
     <Flex direction="column" align="center" className={styles.classes.card}>

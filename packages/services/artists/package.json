@@ -1,0 +1,9 @@
+{
+    "name": "@spotless/services-artists",
+    "version": "1.0.0",
+    "description": "Contains the Artists related services",
+    "main": "index.js",
+    "dependencies": {
+        "@spotless/types": "^1.0.0"
+    }
+}

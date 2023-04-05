@@ -18,6 +18,16 @@ export interface Api {
   getUserAlbums(
     props: PaginatedProps
   ): Promise<SpotifyApi.UsersSavedAlbumsResponse>;
+
+  /**
+   * Retrieves a specified limit or 50 of the user's followed artists.
+   * @param props object containing one or more of the following properties:
+   * - next: the next page of results to retrieve
+   * - limit: the number of results to retrieve. Defaults to 50.
+   */
+  getUserArtists(
+    props: PaginatedProps
+  ): Promise<SpotifyApi.UsersFollowedArtistsResponse>;
 }
 
 export class SpotifyApi implements Api {
@@ -28,6 +38,16 @@ export class SpotifyApi implements Api {
     limit,
   }: PaginatedProps): Promise<SpotifyApi.UsersSavedAlbumsResponse> {
     const endpoint = next ? next : `/me/albums?limit=${limit || 50}`;
+    return this.get(endpoint);
+  }
+
+  public getUserArtists({
+    next,
+    limit,
+  }: PaginatedProps): Promise<SpotifyApi.UsersFollowedArtistsResponse> {
+    const endpoint = next
+      ? next
+      : `/me/following?type=artist&limit=${limit || 50}`;
     return this.get(endpoint);
   }
 

@@ -9,11 +9,11 @@ import { useQuery } from "@tanstack/react-query";
  */
 export const Home = () => {
   const { spacing } = useMantineTheme();
-  const { albumsService } = useServices();
+  const { albumsService, cacheKeys } = useServices();
 
   const { data, isLoading, isFetching } = useQuery({
-    queryKey: ["home-albums"],
-    queryFn: () => albumsService.home(),
+    queryKey: [cacheKeys.albums],
+    queryFn: () => albumsService.fetchForHome(),
   });
 
   return (

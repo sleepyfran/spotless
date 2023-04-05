@@ -38,3 +38,13 @@ export type SimpleAlbum = {
   artistName: string;
   coverUrl: string;
 };
+
+/**
+ * Represents a simple artist, which contains the basic metadata to display it
+ * inside of a list.
+ */
+export type SimpleArtist = {
+  id: string;
+  name: string;
+  imageUrl: string;
+};
