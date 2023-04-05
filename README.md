@@ -7,8 +7,8 @@ Spotless is an alternative Spotify client that focuses on albums and genres inst
 Spotless is a web application developed with React and TypeScript, and uses Vite for building. To get started locally, clone this repository, make sure you have Node.js installed locally and `yarn` installed globally. Then, inside of the repository's folder:
 
 ```bash
-yarn install
-yarn app:dev
+yarn
+yarn web:dev
 ```
 
 This will compile the app and run a local server exposing it at `localhost:5173`.
