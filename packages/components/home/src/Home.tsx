@@ -24,7 +24,7 @@ export const Home = () => {
       {data && (
         <Grid>
           {data?.map((album) => (
-            <Grid.Col key={album.id} xs={4} sm={3} md={2} xl={1}>
+            <Grid.Col key={album.id} xs={5} sm={4} md={3} xl={2}>
               <AlbumCard album={album} />
             </Grid.Col>
           ))}

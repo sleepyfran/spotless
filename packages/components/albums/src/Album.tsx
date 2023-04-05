@@ -23,7 +23,7 @@ export const AlbumCard = ({ album }: AlbumProps) => {
 
   return (
     <Flex direction="column" align="center" className={styles.classes.card}>
-      <Image src={album.coverUrl} width={150} height={150} radius="sm" />
+      <Image src={album.coverUrl} width={180} height={180} radius="sm" />
       <Text fz="lg" variant="gradient" lineClamp={1}>
         {album.name}
       </Text>

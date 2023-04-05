@@ -1,7 +1,13 @@
-import { AppShell } from "@mantine/core";
+import { AppShell, useMantineTheme } from "@mantine/core";
 import { Header } from "@spotless/components-header";
 import { PropsWithChildren } from "react";
 
 export const Root = ({ children }: PropsWithChildren) => {
-  return <AppShell header={<Header />}>{children}</AppShell>;
+  const theme = useMantineTheme();
+
+  return (
+    <AppShell header={<Header />} px={theme.spacing.xl}>
+      {children}
+    </AppShell>
+  );
 };
