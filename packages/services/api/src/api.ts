@@ -1,5 +1,6 @@
 import ky from "ky";
 import { AuthService } from "@spotless/services-auth";
+import { Observable, from, switchMap } from "rxjs";
 
 const BASE_URL = "https://api.spotify.com/v1";
 
@@ -17,7 +18,7 @@ export interface Api {
    */
   getUserAlbums(
     props: PaginatedProps
-  ): Promise<SpotifyApi.UsersSavedAlbumsResponse>;
+  ): Observable<SpotifyApi.UsersSavedAlbumsResponse>;
 
   /**
    * Retrieves a specified limit or 50 of the user's followed artists.
@@ -27,7 +28,7 @@ export interface Api {
    */
   getUserArtists(
     props: PaginatedProps
-  ): Promise<SpotifyApi.UsersFollowedArtistsResponse>;
+  ): Observable<SpotifyApi.UsersFollowedArtistsResponse>;
 }
 
 export class SpotifyApi implements Api {
@@ -36,7 +37,7 @@ export class SpotifyApi implements Api {
   public getUserAlbums({
     next,
     limit,
-  }: PaginatedProps): Promise<SpotifyApi.UsersSavedAlbumsResponse> {
+  }: PaginatedProps): Observable<SpotifyApi.UsersSavedAlbumsResponse> {
     const endpoint = next ? next : `/me/albums?limit=${limit || 50}`;
     return this.get(endpoint);
   }
@@ -44,20 +45,24 @@ export class SpotifyApi implements Api {
   public getUserArtists({
     next,
     limit,
-  }: PaginatedProps): Promise<SpotifyApi.UsersFollowedArtistsResponse> {
+  }: PaginatedProps): Observable<SpotifyApi.UsersFollowedArtistsResponse> {
     const endpoint = next
       ? next
       : `/me/following?type=artist&limit=${limit || 50}`;
     return this.get(endpoint);
   }
 
-  private async get<T>(endpoint: string): Promise<T> {
-    const authHeaders = await this.authService.authenticationHeaders();
-
-    return ky
-      .get(`${BASE_URL}${endpoint}`, {
-        headers: authHeaders,
+  private get<T>(endpoint: string): Observable<T> {
+    return from(this.authService.authenticationHeaders()).pipe(
+      switchMap((authHeaders) => {
+        return from(
+          ky
+            .get(`${BASE_URL}${endpoint}`, {
+              headers: authHeaders,
+            })
+            .json() as Promise<T>
+        );
       })
-      .json();
+    );
   }
 }

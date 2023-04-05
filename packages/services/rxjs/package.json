@@ -1,0 +1,9 @@
+{
+    "name": "@spotless/services-rxjs",
+    "version": "1.0.0",
+    "description": "Set of utility functions that can be used with RxJS",
+    "main": "index.js",
+    "dependencies": {
+        "@spotless/types": "^1.0.0"
+    }
+}

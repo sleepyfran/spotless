@@ -1,5 +1,6 @@
 import { Flex, useMantineTheme, Grid } from "@mantine/core";
 import { PageLayout, useServices } from "@spotless/components-shared";
+import { collectIntoArray } from "@spotless/services-rxjs";
 import { useQuery } from "@tanstack/react-query";
 import { Artist } from "./Artist";
 
@@ -12,7 +13,7 @@ export const ArtistsPage = () => {
 
   const { data, isLoading, isFetching } = useQuery({
     queryKey: [cacheKeys.artists],
-    queryFn: () => artistsService.fetchForArtistsPage(),
+    queryFn: () => collectIntoArray(artistsService.fetchForArtistsPage()),
   });
 
   return (

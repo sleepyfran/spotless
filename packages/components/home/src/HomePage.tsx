@@ -1,6 +1,7 @@
-import { Flex, Grid, Title, useMantineTheme } from "@mantine/core";
-import { AlbumCard } from "@spotless/components-albums";
+import { Flex, Title, useMantineTheme } from "@mantine/core";
+import { AlbumGrid } from "@spotless/components-albums";
 import { PageLayout, useServices } from "@spotless/components-shared";
+import { collectIntoArray } from "@spotless/services-rxjs";
 import { useQuery } from "@tanstack/react-query";
 
 /**
@@ -13,22 +14,14 @@ export const Home = () => {
 
   const { data, isLoading, isFetching } = useQuery({
     queryKey: [cacheKeys.albums],
-    queryFn: () => albumsService.fetchForHome(),
+    queryFn: () => collectIntoArray(albumsService.fetchForHome()),
   });
 
   return (
     <PageLayout isLoading={isLoading || isFetching} title="Home">
       <Flex direction="column" gap={spacing.md}>
         <Title order={5}>Your last 50 albums</Title>
-        {data && (
-          <Grid>
-            {data?.map((album) => (
-              <Grid.Col key={album.id} xs={5} sm={4} md={3} xl={2}>
-                <AlbumCard album={album} />
-              </Grid.Col>
-            ))}
-          </Grid>
-        )}
+        <AlbumGrid albums={data} />
       </Flex>
     </PageLayout>
   );
