@@ -3,7 +3,7 @@ import { Center, Stack, Button, Title } from "@mantine/core";
 import { useNavigate } from "react-router-dom";
 import { useColors, useServices } from "@spotless/components-shared";
 
-const AuthLayout = ({ children }: PropsWithChildren) => (
+export const AuthLayout = ({ children }: PropsWithChildren) => (
   <Center maw={400} mx="auto" h="100%">
     <Stack>{children}</Stack>
   </Center>

@@ -19,5 +19,10 @@ module.exports = {
     "react/react-in-jsx-scope": 0,
     "import/no-unresolved": 0,
   },
-  ignorePatterns: ["node_modules", ".eslintrc.cjs", "plopfile.cjs"],
+  ignorePatterns: [
+    "node_modules",
+    ".eslintrc.cjs",
+    "plopfile.cjs",
+    "generator.cjs",
+  ],
 };

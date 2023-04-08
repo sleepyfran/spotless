@@ -1,0 +1,11 @@
+{
+    "name": "@spotless/services-bootstrap",
+    "version": "1.0.0",
+    "description": "Contains the Bootstrap related services",
+    "main": "index.js",
+    "dependencies": {
+        "@spotless/types": "^1.0.0",
+        "@spotless/data-albums": "^1.0.0",
+        "@spotless/data-auth": "^1.0.0"
+    }
+}

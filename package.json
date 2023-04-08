@@ -32,7 +32,9 @@
   "workspaces": [
     "packages/app",
     "packages/components/*",
+    "packages/data/*",
     "packages/services/*",
-    "packages/types"
+    "packages/types",
+    "packages/workers"
   ]
 }

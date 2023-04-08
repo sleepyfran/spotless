@@ -1,21 +1,18 @@
 import { AlbumGrid } from "@spotless/components-albums";
-import { PageLayout, useServices } from "@spotless/components-shared";
-import { collectIntoArray } from "@spotless/services-rxjs";
-import { useQuery } from "@tanstack/react-query";
+import { PageLayout, useData } from "@spotless/components-shared";
+import { useLiveQuery } from "dexie-react-hooks";
 
 /**
  * Component for the albums page, which shows all the albums in the user's library.
  */
 export const AlbumsPage = () => {
-  const { albumsService, cacheKeys } = useServices();
+  const { albums } = useData();
 
-  const { data, isLoading, isFetching } = useQuery({
-    queryKey: [cacheKeys.allAlbums],
-    queryFn: () => collectIntoArray(albumsService.fetchForAlbumsPage()),
-  });
+  const data = useLiveQuery(() => albums.allAlbumsByName());
+  const isLoading = !data;
 
   return (
-    <PageLayout isLoading={isLoading || isFetching} title="Albums">
+    <PageLayout isLoading={isLoading} title="Albums">
       <AlbumGrid albums={data} />
     </PageLayout>
   );

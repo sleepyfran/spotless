@@ -1,12 +1,26 @@
-import { AppConfig, AuthUser, AuthenticatedUser } from "@spotless/types";
-import { retrieveFromCache, saveToCache } from "./auth-cache";
-import { checkTokenValidity } from "./auth-common";
+import { AppConfig, AuthenticatedUser, Single } from "@spotless/types";
+import { isValidToken } from "./auth-common";
 import { ILogger } from "@spotless/services-logger";
+import { Database } from "@spotless/data-db";
+import {
+  EMPTY,
+  Subscription,
+  concatMap,
+  from,
+  ignoreElements,
+  interval,
+  map,
+  of,
+  tap,
+} from "rxjs";
+import ky from "ky";
 
 const SPOTIFY_AUTH_URL = "https://accounts.spotify.com/authorize";
 const SPOTIFY_TOKEN_URL = "https://accounts.spotify.com/api/token";
 const DEFAULT_SCOPES =
   "streaming user-read-private user-read-email user-library-read user-follow-read";
+
+const DEFAULT_TOKEN_REFRESH_INTERVAL = 30 * 60 * 1000; // 30 minutes.
 
 type SpotifyAuthResponse = {
   access_token: string;
@@ -21,39 +35,29 @@ type SpotifyAuthResponse = {
  * and refreshing them when needed.
  */
 export class AuthService {
-  private _authUser: AuthUser;
+  private _dbSubscription: Subscription;
+  private _timerSubscription: Subscription;
 
-  constructor(readonly appConfig: AppConfig, readonly logger: ILogger) {
-    this._authUser = {
-      __type: "UnauthorizedUser",
-    };
-  }
+  constructor(
+    private readonly appConfig: AppConfig,
+    private readonly logger: ILogger,
+    private readonly db: Database
+  ) {
+    this._timerSubscription = interval(DEFAULT_TOKEN_REFRESH_INTERVAL)
+      .pipe(
+        concatMap(() => from(this.db.auth.toArray())),
+        map((cachedAuthResults) => cachedAuthResults.at(0)),
+        concatMap((cachedAuth) => this.refreshTokenIfNeeded(cachedAuth))
+      )
+      .subscribe();
 
-  /**
-   * Initializes the authentication state from the cache, if available. If not,
-   * sets it to unauthorized. If there is a token in the cache, it will attempt
-   * to refresh it if it's needed.
-   */
-  public initAuthState(): Promise<void> {
-    const cachedAuth = retrieveFromCache();
-
-    if (cachedAuth) {
-      this._authUser = cachedAuth.item;
-
-      if (cachedAuth.needsRefresh) {
-        return this.refreshToken(this._authUser as AuthenticatedUser);
-      }
-
-      this.logger.log("Tokens retrieved from cache");
-      return Promise.resolve();
-    }
-
-    this.logger.log("No tokens found in cache, setting to unauthorized");
-    this._authUser = {
-      __type: "UnauthorizedUser",
-    };
-
-    return Promise.resolve();
+    this._dbSubscription = this.db
+      .observe(() => this.db.auth.toArray())
+      .pipe(
+        map((cachedAuthResults) => cachedAuthResults.at(0)),
+        concatMap((cachedAuth) => this.refreshTokenIfNeeded(cachedAuth))
+      )
+      .subscribe();
   }
 
   /*
@@ -97,40 +101,7 @@ export class AuthService {
   }
 
   /**
-   * Returns whether there is any authentication information available right now.
-   */
-  public isAuthenticated(): boolean {
-    return this._authUser.__type === "AuthenticatedUser";
-  }
-
-  /**
-   * Creates the authentication headers for the user, refreshing the token if
-   * needed. If there is not authentication information or the token is not
-   * refreshable anymore, throws an error.
-   */
-  public authenticationHeaders(): Promise<{ Authorization: string }> {
-    if (this._authUser.__type === "UnauthorizedUser") {
-      return Promise.reject("User is not authenticated");
-    }
-
-    const tokenNeedsRefresh = checkTokenValidity(this._authUser);
-    if (!tokenNeedsRefresh) {
-      return Promise.resolve(this.createAuthHeader(this._authUser));
-    }
-
-    return this.refreshToken(this._authUser).then(() => {
-      return this.createAuthHeader(this._authUser as AuthenticatedUser);
-    });
-  }
-
-  private createAuthHeader(auth: AuthenticatedUser): { Authorization: string } {
-    return {
-      Authorization: `${auth.tokenType} ${auth.accessToken}`,
-    };
-  }
-
-  /**
-   * Returs the default redirect URI.
+   * Returns the default redirect URI.
    */
   private get redirectUri(): string {
     return `${this.appConfig.baseUrl}/auth/callback`;
@@ -152,15 +123,17 @@ export class AuthService {
     const expirationTimestamp =
       new Date().getTime() + response.expires_in * 1000;
 
-    this._authUser = {
-      __type: "AuthenticatedUser",
-      accessToken: response.access_token,
-      tokenType: response.token_type,
-      expirationTimestamp,
-      refreshToken: response.refresh_token,
-      scope: response.scope,
-    };
-    saveToCache(this._authUser);
+    this.db.auth.put(
+      {
+        __type: "AuthenticatedUser",
+        accessToken: response.access_token,
+        tokenType: response.token_type,
+        expirationTimestamp,
+        refreshToken: response.refresh_token,
+        scope: response.scope,
+      },
+      0
+    );
   }
 
   /**
@@ -183,36 +156,54 @@ export class AuthService {
       });
   }
 
+  private refreshTokenIfNeeded(
+    cachedAuth: AuthenticatedUser | undefined
+  ): Single<never> {
+    if (!cachedAuth) {
+      this.logger.log("No tokens found in cache, setting to unauthorized");
+      return EMPTY;
+    }
+
+    if (isValidToken(cachedAuth)) {
+      this.logger.log("Tokens retrieved from cache");
+      return EMPTY;
+    }
+
+    this.logger.log(
+      "Tokens retrieved from cache, but has expired. Refreshing..."
+    );
+
+    return this.refreshToken(cachedAuth);
+  }
+
   /**
    * Refreshes the token using the refresh token from the auth state.
    */
-  private refreshToken(auth: AuthenticatedUser): Promise<void> {
+  private refreshToken(auth: AuthenticatedUser): Single<never> {
     this.logger.log("Refreshing token...");
 
-    return fetch(
-      `${SPOTIFY_TOKEN_URL}?grant_type=refresh_token&refresh_token=${auth.refreshToken}`,
-      {
-        method: "POST",
-        headers: {
-          Authorization: `Basic ${this.encodedClientInformation}`,
-          ["Content-Type"]: "application/x-www-form-urlencoded",
-        },
-      }
-    )
-      .then((response) => response.json())
-      .then((response: SpotifyAuthResponse) => {
+    return from(
+      ky
+        .post(
+          `${SPOTIFY_TOKEN_URL}?grant_type=refresh_token&refresh_token=${auth.refreshToken}`,
+          {
+            headers: {
+              Authorization: `Basic ${this.encodedClientInformation}`,
+              ["Content-Type"]: "application/x-www-form-urlencoded",
+            },
+          }
+        )
+        .json() as Promise<SpotifyAuthResponse>
+    ).pipe(
+      tap((response) => {
         this.logger.log("Token refreshed successfully");
 
         this.saveAuthResponse({
           ...response,
           refresh_token: auth.refreshToken,
         });
-      })
-      .catch(() => {
-        this.logger.warn("Token refresh failed, setting user to unauthorized");
-
-        // Probably the refresh token expired or it's invalid. Log the user out.
-        this._authUser = { __type: "UnauthorizedUser" };
-      });
+      }),
+      ignoreElements()
+    );
   }
 }

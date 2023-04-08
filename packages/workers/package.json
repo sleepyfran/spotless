@@ -1,0 +1,10 @@
+{
+    "name": "@spotless/workers",
+    "version": "1.0.0",
+    "description": "Contains all the web workers of the app",
+    "main": "index.js",
+    "dependencies": {
+        "@spotless/data-auth": "^1.0.0",
+        "rxjs": "^7.8.0"
+    }
+}

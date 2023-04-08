@@ -1,5 +1,5 @@
 import { Api } from "@spotless/services-api";
-import { SimpleArtist } from "@spotless/types";
+import { Artist } from "@spotless/types";
 import { Observable, map, mergeMap, expand, EMPTY } from "rxjs";
 
 /**
@@ -11,7 +11,7 @@ export class ArtistsService {
   /**
    * Retrieves the artists for the artists page.
    */
-  public fetchForArtistsPage(): Observable<SimpleArtist> {
+  public fetchForArtistsPage(): Observable<Artist> {
     return this.api.getUserArtists({ limit: 50 }).pipe(
       expand((response) =>
         response.artists.next

@@ -1,8 +1,7 @@
 import { Flex, Title, useMantineTheme } from "@mantine/core";
 import { AlbumGrid } from "@spotless/components-albums";
-import { PageLayout, useServices } from "@spotless/components-shared";
-import { collectIntoArray } from "@spotless/services-rxjs";
-import { useQuery } from "@tanstack/react-query";
+import { PageLayout, useData } from "@spotless/components-shared";
+import { useLiveQuery } from "dexie-react-hooks";
 
 /**
  * Component for the home page, which shows the last 50 albums added to the
@@ -10,15 +9,13 @@ import { useQuery } from "@tanstack/react-query";
  */
 export const HomePage = () => {
   const { spacing } = useMantineTheme();
-  const { albumsService, cacheKeys } = useServices();
+  const { albums } = useData();
 
-  const { data, isLoading, isFetching } = useQuery({
-    queryKey: [cacheKeys.albums],
-    queryFn: () => collectIntoArray(albumsService.fetchForHome()),
-  });
+  const data = useLiveQuery(() => albums.fetchN(10));
+  const isLoading = !data;
 
   return (
-    <PageLayout isLoading={isLoading || isFetching} title="Home">
+    <PageLayout isLoading={isLoading} title="Home">
       <Flex direction="column" gap={spacing.md}>
         <Title order={5}>
           {data ? `Your last ${data.length} albums` : "Your latest albums"}

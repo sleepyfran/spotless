@@ -1,6 +1,6 @@
 import ky from "ky";
-import { AuthService } from "@spotless/services-auth";
 import { Observable, from, switchMap } from "rxjs";
+import { AuthData } from "@spotless/data-auth";
 
 const BASE_URL = "https://api.spotify.com/v1";
 
@@ -32,7 +32,7 @@ export interface Api {
 }
 
 export class SpotifyApi implements Api {
-  constructor(private readonly authService: AuthService) {}
+  constructor(private readonly authData: AuthData) {}
 
   public getUserAlbums({
     next,
@@ -65,7 +65,7 @@ export class SpotifyApi implements Api {
   }
 
   private get<T>(url: string): Observable<T> {
-    return from(this.authService.authenticationHeaders()).pipe(
+    return from(this.authData.authenticationHeaders()).pipe(
       switchMap((authHeaders) => {
         return from(
           ky

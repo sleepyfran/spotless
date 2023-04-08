@@ -2,6 +2,8 @@
   "name": "@spotless/components-shared",
   "version": "1.0.0",
   "dependencies": {
+    "@spotless/data-db": "^1.0.0",
+    "@spotless/data-albums": "^1.0.0",
     "@spotless/services-albums": "^1.0.0",
     "@spotless/services-artists": "^1.0.0",
     "@spotless/services-auth": "^1.0.0",

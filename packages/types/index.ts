@@ -1,3 +1,10 @@
+import { Observable } from "rxjs";
+
+/**
+ * Represents an observable that emits a single value and then completes.
+ */
+export type Single<T> = Observable<T>;
+
 /**
  * Holds the secrets and settings that are passed from environment variables.
  */
@@ -29,10 +36,10 @@ export type UnauthorizedUser = {
 export type AuthUser = AuthenticatedUser | UnauthorizedUser;
 
 /**
- * Represents a simple album, which contains the basic metadata to display
+ * Represents a album, which contains the basic metadata to display
  * it inside of a list.
  */
-export type SimpleAlbum = {
+export type Album = {
   id: string;
   name: string;
   artistName: string;
@@ -40,10 +47,10 @@ export type SimpleAlbum = {
 };
 
 /**
- * Represents a simple artist, which contains the basic metadata to display it
+ * Represents a artist, which contains the basic metadata to display it
  * inside of a list.
  */
-export type SimpleArtist = {
+export type Artist = {
   id: string;
   name: string;
   imageUrl: string;

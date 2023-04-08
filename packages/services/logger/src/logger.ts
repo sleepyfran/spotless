@@ -19,13 +19,17 @@ export interface ILogger {
  * Implementation of the logger interface that logs to the browser's console.
  */
 export class ConsoleLogger implements ILogger {
-  log(message: string): void {
-    console.log(message);
+  public log(message: string): void {
+    console.log(this.decorateWithDate(message));
   }
-  warn(message: string): void {
-    console.warn(message);
+  public warn(message: string): void {
+    console.warn(this.decorateWithDate(message));
   }
-  error(message: string): void {
-    console.error(message);
+  public error(message: string): void {
+    console.error(this.decorateWithDate(message));
+  }
+
+  private decorateWithDate(message: string): string {
+    return `${new Date().toISOString()} - ${message}`;
   }
 }
