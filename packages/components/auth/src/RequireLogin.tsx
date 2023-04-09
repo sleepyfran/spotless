@@ -1,32 +1,21 @@
 import { PropsWithChildren } from "react";
 import { AuthLanding, AuthLayout } from "./Auth";
-import { useData } from "@spotless/components-shared";
-import { useLiveQuery } from "dexie-react-hooks";
-import { Loader } from "@mantine/core";
 
-type AuthState = "loading" | "authenticated" | "unauthorized";
+import { Loader } from "@mantine/core";
+import { useAuthState } from "./hooks";
 
 /**
  * Wraps a component and only shows it if the user is currently authenticated
  * correctly. Otherwise, shows the auth landing.
  */
 export const RequireLogin = ({ children }: PropsWithChildren) => {
-  const { auth } = useData();
+  const authState = useAuthState();
 
-  const authenticatedUser: AuthState = useLiveQuery(
-    () =>
-      auth
-        .authenticatedUser()
-        .then((auth) => (auth ? "authenticated" : "unauthorized")),
-    [],
-    "loading"
-  );
-
-  return authenticatedUser === "loading" ? (
+  return authState === "loading" ? (
     <AuthLayout>
       <Loader size="xl" />
     </AuthLayout>
-  ) : authenticatedUser === "authenticated" ? (
+  ) : authState === "authenticated" ? (
     <>{children}</>
   ) : (
     <AuthLanding />

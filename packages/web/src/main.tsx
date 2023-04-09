@@ -1,14 +1,13 @@
 import { createRoot } from "react-dom/client";
 import { RouterProvider } from "react-router-dom";
 import { MantineProvider } from "@mantine/core";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { router } from "./router";
 import {
   DataContext,
   ServiceContext,
   initialize as initializeContexts,
 } from "@spotless/components-shared";
-import { startAlbumsWorker } from "@spotless/workers";
+import { startAlbumsWorker, startArtistsWorker } from "@spotless/workers";
 
 const baseUrl = import.meta.env.VITE_BASE_APP;
 const clientId = import.meta.env.VITE_CLIENT_ID;
@@ -28,9 +27,8 @@ const appConfig = {
 };
 const { services, data } = initializeContexts(appConfig);
 
-const queryClient = new QueryClient();
-
 startAlbumsWorker(appConfig);
+startArtistsWorker(appConfig);
 
 const root = createRoot(document.getElementById("root") as HTMLElement);
 root.render(
@@ -41,9 +39,7 @@ root.render(
   >
     <ServiceContext.Provider value={services}>
       <DataContext.Provider value={data}>
-        <QueryClientProvider client={queryClient}>
-          <RouterProvider router={router} />
-        </QueryClientProvider>
+        <RouterProvider router={router} />
       </DataContext.Provider>
     </ServiceContext.Provider>
   </MantineProvider>

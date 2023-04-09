@@ -14,11 +14,11 @@ self.onmessage = async (event: MessageEvent<WorkerMessage>) => {
   switch (data.__type) {
     case "init":
       await initHydration(data.appConfig, (services) => {
-        return services.albumsService.hydrateDatabase();
+        return services.artistsService.hydrateDatabase();
       });
       break;
     default:
-      console.error("Unrecognized message sent to albums worker", event);
+      console.error("Unrecognized message sent to artists worker", event);
       break;
   }
 };

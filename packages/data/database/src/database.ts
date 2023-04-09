@@ -1,6 +1,6 @@
 import Dexie, { Table, liveQuery } from "dexie";
 import { Observable, from } from "rxjs";
-import { Album, AuthenticatedUser } from "@spotless/types";
+import { Album, Artist, AuthenticatedUser } from "@spotless/types";
 
 /**
  * Wrapper around Dexie that provides a way of interacting with the database.
@@ -8,12 +8,14 @@ import { Album, AuthenticatedUser } from "@spotless/types";
 export class Database extends Dexie {
   auth!: Table<AuthenticatedUser>;
   albums!: Table<Album>;
+  artists!: Table<Artist>;
 
   constructor() {
     super("spotless");
     this.version(1).stores({
       auth: ", accessToken, refreshToken, tokenType, scope, expirationTimestamp",
-      albums: "id, name, artistName, coverUrl",
+      albums: "id, name, artistName, coverUrl, addedAt",
+      artists: "id, name, imageUrl",
     });
   }
 

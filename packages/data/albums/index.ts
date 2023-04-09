@@ -15,9 +15,17 @@ export class AlbumsData {
   }
 
   /**
-   * Returns the first n records in the albums table.
+   * Returns the first `n` albums in the user's library, ordered by the given
+   * field. If not given, orders by the album's name by default.
    */
-  public fetchN(n: number): Promise<Album[]> {
-    return this.db.albums.limit(n).toArray();
+  public fetchN<K extends keyof Album>(
+    n: number,
+    orderBy?: K
+  ): Promise<Album[]> {
+    return this.db.albums
+      .orderBy(fieldNameOf<Album>(orderBy || "name"))
+      .reverse()
+      .limit(n)
+      .toArray();
   }
 }

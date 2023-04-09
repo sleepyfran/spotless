@@ -1,0 +1,10 @@
+{
+    "name": "@spotless/data-artists",
+    "version": "1.0.0",
+    "description": "Contains utilities to access the Artists table",
+    "main": "index.js",
+    "dependencies": {
+        "@spotless/data-db": "^1.0.0",
+        "@spotless/types": "^1.0.0"
+    }
+}

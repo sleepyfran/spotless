@@ -44,6 +44,7 @@ export type Album = {
   name: string;
   artistName: string;
   coverUrl: string;
+  addedAt: Date;
 };
 
 /**

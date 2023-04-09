@@ -20,7 +20,7 @@ export class AlbumsService {
    * to the local database.
    */
   public hydrateDatabase(): Observable<Album[]> {
-    this.logger.log("Starting database hydration");
+    this.logger.log("Starting albums database hydration");
 
     return this.api.getUserAlbums({}).pipe(
       expand((response) =>
@@ -32,6 +32,7 @@ export class AlbumsService {
         name: savedAlbum.album.name,
         artistName: savedAlbum.album.artists[0].name,
         coverUrl: savedAlbum.album.images[0].url,
+        addedAt: new Date(savedAlbum.added_at),
       })),
       toArray(),
       tap((albums) => {

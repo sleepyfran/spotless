@@ -11,7 +11,7 @@ export const HomePage = () => {
   const { spacing } = useMantineTheme();
   const { albums } = useData();
 
-  const data = useLiveQuery(() => albums.fetchN(10));
+  const data = useLiveQuery(() => albums.fetchN(10, "addedAt"));
   const isLoading = !data;
 
   return (

@@ -6,11 +6,12 @@ import { ArtistsService } from "@spotless/services-artists";
 import { AuthService } from "@spotless/services-auth";
 import { AppConfig } from "@spotless/types";
 import { AlbumsData } from "@spotless/data-albums";
+import { ArtistsData } from "@spotless/data-artists";
 import { AuthData } from "@spotless/data-auth";
-import { Subscription } from "rxjs";
 
 export type Data = {
   albums: AlbumsData;
+  artists: ArtistsData;
   auth: AuthData;
 };
 
@@ -38,12 +39,13 @@ export const initialize = (
   const db = new Database();
 
   const albumsData = new AlbumsData(db);
+  const artistsData = new ArtistsData(db);
   const authData = new AuthData(db);
 
   const api = new SpotifyApi(authData);
   const authService = new AuthService(appConfig, logger, db);
   const albumsService = new AlbumsService(api, db, logger);
-  const artistsService = new ArtistsService(api);
+  const artistsService = new ArtistsService(api, db, logger);
 
   return {
     services: {
@@ -57,6 +59,7 @@ export const initialize = (
     data: {
       albums: albumsData,
       auth: authData,
+      artists: artistsData,
     },
   };
 };
