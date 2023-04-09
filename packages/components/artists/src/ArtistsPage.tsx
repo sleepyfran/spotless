@@ -1,6 +1,6 @@
 import { Flex, useMantineTheme, Grid } from "@mantine/core";
 import { PageLayout, useData } from "@spotless/components-shared";
-import { Artist } from "./Artist";
+import { ArtistCard } from "./Artist";
 import { useLiveQuery } from "dexie-react-hooks";
 
 /**
@@ -20,7 +20,7 @@ export const ArtistsPage = () => {
           <Grid>
             {data.map((artist) => (
               <Grid.Col key={artist.id} xs={5} sm={4} md={3} xl={2}>
-                <Artist artist={artist} />
+                <ArtistCard artist={artist} />
               </Grid.Col>
             ))}
           </Grid>

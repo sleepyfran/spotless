@@ -1,9 +1,9 @@
 import { Grid } from "@mantine/core";
 import { AlbumCard } from "@spotless/components-albums";
-import { SimpleAlbum } from "@spotless/types";
+import { Album } from "@spotless/types";
 
 type AlbumGridProps = {
-  albums: SimpleAlbum[] | undefined;
+  albums: Album[] | undefined;
 };
 
 /**

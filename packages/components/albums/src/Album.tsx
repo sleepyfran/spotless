@@ -1,9 +1,9 @@
 import { Flex, Image, Text } from "@mantine/core";
 import { useCardStyles } from "@spotless/components-shared";
-import { SimpleAlbum } from "@spotless/types";
+import { Album } from "@spotless/types";
 
 type AlbumProps = {
-  album: SimpleAlbum;
+  album: Album;
 };
 
 /**

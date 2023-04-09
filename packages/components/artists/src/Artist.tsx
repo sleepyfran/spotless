@@ -1,16 +1,16 @@
 import { Flex, Text, Image } from "@mantine/core";
 import { useCardStyles } from "@spotless/components-shared";
-import { SimpleArtist } from "@spotless/types";
+import { Artist } from "@spotless/types";
 
 type ArtistProps = {
-  artist: SimpleArtist;
+  artist: Artist;
 };
 
 /**
  * Component that displays information about an artist, including their name and
  * main image.
  */
-export const Artist = ({ artist }: ArtistProps) => {
+export const ArtistCard = ({ artist }: ArtistProps) => {
   const styles = useCardStyles();
 
   return (
