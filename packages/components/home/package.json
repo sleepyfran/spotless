@@ -4,7 +4,6 @@
   "dependencies": {
     "@spotless/components-albums": "^1.0.0",
     "@spotless/components-shared": "^1.0.0",
-    "@spotless/services-rxjs": "^1.0.0",
     "@emotion/react": "^11.10.6",
     "@mantine/core": "^6.0.5",
     "@mantine/hooks": "^6.0.5",

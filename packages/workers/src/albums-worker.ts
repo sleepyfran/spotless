@@ -5,7 +5,6 @@ import {
   Observable,
   expand,
   ignoreElements,
-  map,
   mergeMap,
   tap,
   toArray,
@@ -38,20 +37,13 @@ self.onmessage = async (event: MessageEvent<WorkerMessage>) => {
 const hydrateDatabase = (services: Services): Observable<void> => {
   services.logger.log("Starting album database hydration...");
 
-  return services.api.getUserAlbums({}).pipe(
+  return services.api.userLibrary.getAlbums({}).pipe(
     expand((response) =>
       response.next
-        ? services.api.getUserAlbums({ next: response.next })
+        ? services.api.userLibrary.getAlbums({ next: response.next })
         : EMPTY
     ),
     mergeMap((response) => response.items),
-    map((savedAlbum) => ({
-      id: savedAlbum.album.id,
-      name: savedAlbum.album.name,
-      artistName: savedAlbum.album.artists[0].name,
-      coverUrl: savedAlbum.album.images[0].url,
-      addedAt: new Date(savedAlbum.added_at),
-    })),
     toArray(),
     tap((albums) => {
       services.logger.log(

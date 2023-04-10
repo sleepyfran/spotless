@@ -4,10 +4,8 @@
   "dependencies": {
     "@spotless/data-db": "^1.0.0",
     "@spotless/data-albums": "^1.0.0",
-    "@spotless/services-albums": "^1.0.0",
-    "@spotless/services-artists": "^1.0.0",
     "@spotless/services-auth": "^1.0.0",
-    "@spotless/services-api": "^1.0.0",
+    "@spotless/data-api": "^1.0.0",
     "@emotion/react": "^11.10.6",
     "@mantine/core": "^6.0.5",
     "@mantine/hooks": "^6.0.5",
