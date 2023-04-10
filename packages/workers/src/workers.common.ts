@@ -1,6 +1,6 @@
 import { Services, Data, initialize } from "@spotless/services-bootstrap";
 import { AppConfig } from "@spotless/types";
-import { Observable, finalize, throwError, timeout } from "rxjs";
+import { Observable, throwError, timeout } from "rxjs";
 
 type HydrationFn<T> = (services: Services) => Observable<T>;
 
@@ -52,22 +52,18 @@ const startHydrationInterval = <T>(hydrate: HydrationFn<T>) => {
   );
 };
 
-let hydrationId = 0;
-
 /**
  * Runs the hydration process in the background. If the hydration process
  * takes longer than one minute, it will be cancelled.
  */
 const tryHydrate = <T>(hydrate: HydrationFn<T>) => {
   if (serviceContext) {
-    hydrationId += 1;
     hydrate(serviceContext)
       .pipe(
         timeout({
           each: TIMEOUT_MS,
           with: () => throwError(() => new Error("Hydration was too slow")),
-        }),
-        finalize(() => console.log(`Hydration with ID ${hydrationId} finished`))
+        })
       )
       .subscribe();
   } else {

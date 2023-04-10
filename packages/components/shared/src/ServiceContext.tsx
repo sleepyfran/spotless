@@ -5,14 +5,8 @@ import {
   Data,
   initialize as bootstrap,
 } from "@spotless/services-bootstrap";
-import { artistCacheKeys } from "@spotless/services-artists";
 
-type IServiceContext = Pick<
-  Services,
-  "albumsService" | "artistsService" | "authService"
-> & {
-  cacheKeys: typeof artistCacheKeys;
-};
+type IServiceContext = Pick<Services, "authService">;
 
 type IDataContext = Data;
 
@@ -34,10 +28,7 @@ export const initialize = (
   const { services, data } = bootstrap("main", appConfig);
 
   return {
-    services: {
-      cacheKeys: { ...artistCacheKeys },
-      ...services,
-    },
+    services,
     data,
   };
 };

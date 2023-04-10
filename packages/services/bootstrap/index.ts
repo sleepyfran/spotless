@@ -1,8 +1,6 @@
 import { Database } from "@spotless/data-db";
 import { Api, SpotifyApi } from "@spotless/services-api";
 import { ILogger, ConsoleLogger } from "@spotless/services-logger";
-import { AlbumsService } from "@spotless/services-albums";
-import { ArtistsService } from "@spotless/services-artists";
 import { AuthService } from "@spotless/services-auth";
 import { AppConfig } from "@spotless/types";
 import { AlbumsData } from "@spotless/data-albums";
@@ -17,8 +15,6 @@ export type Data = {
 
 export type Services = {
   api: Api;
-  artistsService: ArtistsService;
-  albumsService: AlbumsService;
   authService: AuthService;
   db: Database;
   logger: ILogger;
@@ -44,14 +40,10 @@ export const initialize = (
 
   const api = new SpotifyApi(authData);
   const authService = new AuthService(appConfig, logger, db);
-  const albumsService = new AlbumsService(api, db, logger);
-  const artistsService = new ArtistsService(api, db, logger);
 
   return {
     services: {
       api,
-      artistsService,
-      albumsService,
       authService,
       db,
       logger,
