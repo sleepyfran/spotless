@@ -17,6 +17,7 @@ import {
   saveAuthResponse,
 } from "@spotless/services-auth-spotify";
 import ky from "ky";
+import { Logger } from "@spotless/services-logger";
 
 export type InitWorkerMessage = {
   __type: "init";
@@ -46,12 +47,13 @@ const hydrateToken = (
   appConfig: AppConfig,
   services: Services
 ): Observable<void> => {
-  services.logger.log("Checking auth token...");
+  const logger = services.createLogger("SpotifyAuthWorker");
+  logger.log("Checking auth token...");
 
   return from(services.db.auth.toArray()).pipe(
     map((cachedAuthResults) => cachedAuthResults.at(0)),
     concatMap((cachedAuth) =>
-      refreshTokenIfNeeded(appConfig, services, cachedAuth)
+      refreshTokenIfNeeded(appConfig, services, logger, cachedAuth)
     ),
     ignoreElements()
   );
@@ -62,23 +64,22 @@ const SPOTIFY_TOKEN_URL = "https://accounts.spotify.com/api/token";
 const refreshTokenIfNeeded = (
   appConfig: AppConfig,
   services: Services,
+  logger: Logger,
   cachedAuth: AuthenticatedUser | undefined
 ): Single<never> => {
   if (!cachedAuth) {
-    services.logger.log("No tokens found in cache, ignoring...");
+    logger.log("No tokens found in cache, ignoring...");
     return EMPTY;
   }
 
   if (isValidToken(cachedAuth)) {
-    services.logger.log("Token is already valid");
+    logger.log("Token is already valid");
     return EMPTY;
   }
 
-  services.logger.log(
-    "Tokens are either expired or about to expire. Refreshing..."
-  );
+  logger.log("Tokens are either expired or about to expire. Refreshing...");
 
-  return refreshToken(appConfig, services, cachedAuth);
+  return refreshToken(appConfig, services, logger, cachedAuth);
 };
 
 /**
@@ -87,6 +88,7 @@ const refreshTokenIfNeeded = (
 const refreshToken = (
   appConfig: AppConfig,
   services: Services,
+  logger: Logger,
   auth: AuthenticatedUser
 ): Single<never> =>
   from(
@@ -103,7 +105,7 @@ const refreshToken = (
       .json() as Promise<SpotifyAuthResponse>
   ).pipe(
     tap((response) => {
-      services.logger.log("Token refreshed successfully, saving to database");
+      logger.log("Token refreshed successfully, saving to database");
 
       saveAuthResponse(
         {

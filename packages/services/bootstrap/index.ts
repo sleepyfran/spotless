@@ -1,7 +1,7 @@
 import { Database } from "@spotless/data-db";
 import { Api } from "@spotless/data-api";
 import { createSpotifyApi } from "@spotless/data-api-spotify";
-import { Logger, ConsoleLogger } from "@spotless/services-logger";
+import { LoggerFactory, createConsoleLogger } from "@spotless/services-logger";
 import { AuthService } from "@spotless/services-auth";
 import { SpotifyAuth } from "@spotless/services-auth-spotify";
 import { AppConfig } from "@spotless/types";
@@ -19,7 +19,7 @@ export type Services = {
   api: Api;
   authService: AuthService;
   db: Database;
-  logger: Logger;
+  createLogger: LoggerFactory;
 };
 
 /**
@@ -30,7 +30,7 @@ export const initialize = (
   context: "worker" | "main",
   appConfig: AppConfig
 ): { services: Services; data: Data } => {
-  const logger = new ConsoleLogger();
+  const logger = createConsoleLogger("bootstrap");
 
   logger.log(`Initializing services for ${context} thread...`);
 
@@ -41,14 +41,18 @@ export const initialize = (
   const authData = new AuthData(db);
 
   const api = createSpotifyApi(authData);
-  const authService: AuthService = new SpotifyAuth(appConfig, logger, db);
+  const authService: AuthService = new SpotifyAuth(
+    appConfig,
+    createConsoleLogger,
+    db
+  );
 
   return {
     services: {
       api,
       authService,
       db,
-      logger,
+      createLogger: createConsoleLogger,
     },
     data: {
       albums: albumsData,

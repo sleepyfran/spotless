@@ -1,5 +1,5 @@
 import { AuthService } from "@spotless/services-auth";
-import { Logger } from "@spotless/services-logger";
+import { Logger, LoggerFactory } from "@spotless/services-logger";
 import { Database } from "@spotless/data-db";
 import { AppConfig } from "@spotless/types";
 
@@ -53,11 +53,15 @@ export const saveAuthResponse = (
  * Specific implementation of the auth for Spotify.
  */
 export class SpotifyAuth implements AuthService {
+  private readonly logger: Logger;
+
   constructor(
     private readonly appConfig: AppConfig,
-    private readonly logger: Logger,
+    readonly createLogger: LoggerFactory,
     private readonly db: Database
-  ) {}
+  ) {
+    this.logger = createLogger("SpotifyAuth");
+  }
 
   /**
    * Implementation of the Spotify auth flow. This creates a popup window that

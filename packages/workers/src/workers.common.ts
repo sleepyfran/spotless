@@ -16,13 +16,14 @@ export const initHydration = async <T>(
   interval: number,
   hydrate: HydrationFn<T>
 ) => {
+  const logger = serviceContext?.createLogger("CommonWorker");
+
   try {
     const { services, data } = await initialize("worker", appConfig);
     serviceContext = services;
     dataContext = data;
-    serviceContext.logger.log("Albums worker initialized successfully");
 
-    serviceContext.logger.log("Waiting for auth before first hydration...");
+    logger?.log("Waiting for auth before first hydration...");
 
     // When the user gets authenticated, start a initial hydration and the
     // refresh interval. When we log them out, clear it.

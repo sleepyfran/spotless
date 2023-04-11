@@ -37,7 +37,8 @@ self.onmessage = async (event: MessageEvent<WorkerMessage>) => {
 };
 
 const hydrateDatabase = (services: Services): Observable<void> => {
-  services.logger.log("Starting artist database hydration...");
+  const logger = services.createLogger("ArtistsWorker");
+  logger.log("Starting artist database hydration...");
 
   return services.api.userLibrary.getArtists({ limit: 50 }).pipe(
     expand((response) =>
@@ -48,17 +49,17 @@ const hydrateDatabase = (services: Services): Observable<void> => {
     mergeMap((response) => response.items),
     toArray(),
     tap((artists) => {
-      services.logger.log(
+      logger.log(
         `Fetched ${artists.length} artists from API. Bulk adding to database...`
       );
 
       services.db.artists
         .bulkAdd(artists)
         .then(() => {
-          services.logger.log("Artist database hydration complete");
+          logger.log("Artist database hydration complete");
         })
         .catch((e: BulkError) => {
-          services.logger.log(
+          logger.log(
             `Hydration finished. ${e.failures.length} artists were not added because they were already registered.`
           );
         });

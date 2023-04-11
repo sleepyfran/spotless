@@ -19,6 +19,8 @@ export interface Logger {
  * Implementation of the logger interface that logs to the browser's console.
  */
 export class ConsoleLogger implements Logger {
+  constructor(private readonly name: string) {}
+
   public log(message: string): void {
     console.log(this.decorateWithDate(message));
   }
@@ -30,6 +32,6 @@ export class ConsoleLogger implements Logger {
   }
 
   private decorateWithDate(message: string): string {
-    return `${new Date().toISOString()} - ${message}`;
+    return `${new Date().toISOString()} (${this.name}) - ${message}`;
   }
 }
