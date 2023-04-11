@@ -1,14 +1,6 @@
 import { AppConfig } from "@spotless/types";
 import { initHydration } from "./workers.common";
-import {
-  EMPTY,
-  Observable,
-  expand,
-  ignoreElements,
-  mergeMap,
-  tap,
-  toArray,
-} from "rxjs";
+import { EMPTY, Observable, expand, ignoreElements, tap } from "rxjs";
 import { Services } from "@spotless/services-bootstrap";
 import { BulkError } from "@spotless/data-db";
 
@@ -46,20 +38,18 @@ const hydrateDatabase = (services: Services): Observable<void> => {
         ? services.api.userLibrary.getAlbums({ next: response.next })
         : EMPTY
     ),
-    mergeMap((response) => response.items),
-    toArray(),
     tap((albums) => {
       logger.log(
-        `Fetched ${albums.length} albums from API. Bulk adding to database...`
+        `Fetched ${albums.items.length} albums from API. Bulk adding to database...`
       );
       services.db.albums
-        .bulkAdd(albums)
+        .bulkAdd(albums.items)
         .then(() => {
-          logger.log("Albums database hydration complete");
+          logger.log("Bulk add finished.");
         })
         .catch((e: BulkError) => {
           logger.log(
-            `Hydration finished. ${e.failures.length} albums were not added because they were already registered.`
+            `${e.failures.length} albums were not added because they were already registered.`
           );
         });
     }),
