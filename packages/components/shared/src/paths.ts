@@ -7,8 +7,5 @@ export const Paths = {
   albums: "/albums",
   genres: "/genres",
   explore: "/explore",
-  auth: {
-    root: "/auth",
-    callback: "/auth/callback",
-  },
+  auth: "/auth",
 };

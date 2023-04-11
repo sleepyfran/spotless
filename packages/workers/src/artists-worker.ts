@@ -19,12 +19,14 @@ export type InitWorkerMessage = {
 
 export type WorkerMessage = InitWorkerMessage;
 
+const HYDRATION_INTERVAL_MS = 1000 * 60 * 5; // 5 minutes.
+
 self.onmessage = async (event: MessageEvent<WorkerMessage>) => {
   const { data } = event;
 
   switch (data.__type) {
     case "init":
-      await initHydration(data.appConfig, (services) => {
+      await initHydration(data.appConfig, HYDRATION_INTERVAL_MS, (services) => {
         return hydrateDatabase(services);
       });
       break;

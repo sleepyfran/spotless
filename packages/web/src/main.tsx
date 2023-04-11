@@ -7,7 +7,11 @@ import {
   ServiceContext,
   initialize as initializeContexts,
 } from "@spotless/components-shared";
-import { startAlbumsWorker, startArtistsWorker } from "@spotless/workers";
+import {
+  startAlbumsWorker,
+  startArtistsWorker,
+  startSpotifyAuthWorker,
+} from "@spotless/workers";
 
 const baseUrl = import.meta.env.VITE_BASE_APP;
 const clientId = import.meta.env.VITE_CLIENT_ID;
@@ -29,6 +33,7 @@ const { services, data } = initializeContexts(appConfig);
 
 startAlbumsWorker(appConfig);
 startArtistsWorker(appConfig);
+startSpotifyAuthWorker(appConfig);
 
 const root = createRoot(document.getElementById("root") as HTMLElement);
 root.render(

@@ -13,6 +13,7 @@ let hydrationInterval: NodeJS.Timeout | undefined = undefined;
  */
 export const initHydration = async <T>(
   appConfig: AppConfig,
+  interval: number,
   hydrate: HydrationFn<T>
 ) => {
   try {
@@ -31,7 +32,7 @@ export const initHydration = async <T>(
         next: (user) => {
           if (user) {
             tryHydrate(hydrate);
-            startHydrationInterval(hydrate);
+            startHydrationInterval(interval, hydrate);
           } else {
             clearInterval(hydrationInterval);
           }
@@ -43,13 +44,12 @@ export const initHydration = async <T>(
 };
 
 const TIMEOUT_MS = 1000 * 60 * 1; // 1 minute.
-const HYDRATION_INTERVAL_MS = 1000 * 60 * 5; // 5 minutes.
 
-const startHydrationInterval = <T>(hydrate: HydrationFn<T>) => {
-  hydrationInterval = setInterval(
-    () => tryHydrate(hydrate),
-    HYDRATION_INTERVAL_MS
-  );
+const startHydrationInterval = <T>(
+  interval: number,
+  hydrate: HydrationFn<T>
+) => {
+  hydrationInterval = setInterval(() => tryHydrate(hydrate), interval);
 };
 
 /**

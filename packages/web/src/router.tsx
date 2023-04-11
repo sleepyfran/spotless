@@ -1,7 +1,6 @@
 import { createBrowserRouter, Outlet } from "react-router-dom";
 import {
   AuthLanding,
-  ProcessAuthCallback,
   RequireLogin,
   RedirectIfLoggedIn,
 } from "@spotless/components-auth";
@@ -46,21 +45,11 @@ export const router = createBrowserRouter([
     ],
   },
   {
-    path: Paths.auth.root,
+    path: Paths.auth,
     element: (
       <RedirectIfLoggedIn>
-        <Outlet />
+        <AuthLanding />
       </RedirectIfLoggedIn>
     ),
-    children: [
-      {
-        path: "",
-        element: <AuthLanding />,
-      },
-      {
-        path: "callback",
-        element: <ProcessAuthCallback />,
-      },
-    ],
   },
 ]);

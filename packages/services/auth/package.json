@@ -1,12 +1,9 @@
 {
   "name": "@spotless/services-auth",
   "version": "1.0.0",
-  "description": "Contains the Auth related services",
+  "description": "Contains the interfaces to the auth service",
   "main": "index.js",
   "dependencies": {
-    "@spotless/services-logger": "^1.0.0",
-    "@spotless/types": "^1.0.0",
-    "ky": "^0.33.3",
-    "rxjs": "^7.8.0"
+    "@spotless/types": "^1.0.0"
   }
 }

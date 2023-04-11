@@ -1,4 +1,4 @@
-export interface ILogger {
+export interface Logger {
   /**
    * Logs a verbose message.
    */
@@ -18,7 +18,7 @@ export interface ILogger {
 /**
  * Implementation of the logger interface that logs to the browser's console.
  */
-export class ConsoleLogger implements ILogger {
+export class ConsoleLogger implements Logger {
   public log(message: string): void {
     console.log(this.decorateWithDate(message));
   }
