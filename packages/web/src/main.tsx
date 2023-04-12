@@ -12,6 +12,7 @@ import {
   startArtistsWorker,
   startSpotifyAuthWorker,
 } from "@spotless/workers";
+import { Subscribe } from "@react-rxjs/core";
 
 const baseUrl = import.meta.env.VITE_BASE_APP;
 const clientId = import.meta.env.VITE_CLIENT_ID;
@@ -44,7 +45,9 @@ root.render(
   >
     <ServiceContext.Provider value={services}>
       <DataContext.Provider value={data}>
-        <RouterProvider router={router} />
+        <Subscribe>
+          <RouterProvider router={router} />
+        </Subscribe>
       </DataContext.Provider>
     </ServiceContext.Provider>
   </MantineProvider>

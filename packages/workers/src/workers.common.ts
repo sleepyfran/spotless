@@ -27,18 +27,16 @@ export const initHydration = async <T>(
 
     // When the user gets authenticated, start a initial hydration and the
     // refresh interval. When we log them out, clear it.
-    serviceContext.db
-      .observe(() => dataContext?.auth.authenticatedUser())
-      .subscribe({
-        next: (user) => {
-          if (user) {
-            tryHydrate(hydrate);
-            startHydrationInterval(interval, hydrate);
-          } else {
-            clearInterval(hydrationInterval);
-          }
-        },
-      });
+    dataContext?.auth.authenticatedUser().subscribe({
+      next: (user) => {
+        if (user) {
+          tryHydrate(hydrate);
+          startHydrationInterval(interval, hydrate);
+        } else {
+          clearInterval(hydrationInterval);
+        }
+      },
+    });
   } catch {
     console.error("Failed to initialize services");
   }

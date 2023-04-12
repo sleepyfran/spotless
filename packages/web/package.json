@@ -12,6 +12,7 @@
     "@spotless/components-home": "^1.0.0",
     "@spotless/components-root": "^1.0.0",
     "@spotless/components-shared": "^1.0.0",
+    "@react-rxjs/core": "^0.10.4",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.9.0"

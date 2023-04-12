@@ -1,5 +1,5 @@
 import { Database, fieldNameOf } from "@spotless/data-db";
-import { Artist } from "@spotless/types";
+import { Artist, Single } from "@spotless/types";
 
 /**
  * Exposes the queries that the app can fetch from the artists table.
@@ -10,14 +10,16 @@ export class ArtistsData {
   /**
    * Returns all the artists in the user's library.
    */
-  public allArtistsByName(): Promise<Artist[]> {
-    return this.db.artists.orderBy(fieldNameOf<Artist>("name")).toArray();
+  public allArtistsByName(): Single<Artist[]> {
+    return this.db.observe(() =>
+      this.db.artists.orderBy(fieldNameOf<Artist>("name")).toArray()
+    );
   }
 
   /**
    * Returns the first n records in the artists table.
    */
-  public fetchN(n: number): Promise<Artist[]> {
-    return this.db.artists.limit(n).toArray();
+  public fetchN(n: number): Single<Artist[]> {
+    return this.db.observe(() => this.db.artists.limit(n).toArray());
   }
 }

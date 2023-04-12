@@ -1,7 +1,7 @@
 import { Flex, useMantineTheme, Grid } from "@mantine/core";
 import { PageLayout, useData } from "@spotless/components-shared";
 import { ArtistCard } from "./Artist";
-import { useLiveQuery } from "dexie-react-hooks";
+import { useAllArtists } from "./hooks";
 
 /**
  * Component that displays a grid of all artists that the user follows.
@@ -10,8 +10,7 @@ export const ArtistsPage = () => {
   const { spacing } = useMantineTheme();
   const { artists } = useData();
 
-  const data = useLiveQuery(() => artists.allArtistsByName());
-  const isLoading = !data;
+  const [data, isLoading] = useAllArtists(artists);
 
   return (
     <PageLayout isLoading={isLoading} title="Artists">

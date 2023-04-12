@@ -1,17 +1,19 @@
 import { Database, fieldNameOf } from "@spotless/data-db";
-import { Album } from "@spotless/types";
+import { Album, Single } from "@spotless/types";
 
 /**
  * Exposes the queries that the app can fetch from the albums table.
  */
 export class AlbumsData {
-  constructor(readonly db: Database) {}
+  constructor(private readonly db: Database) {}
 
   /**
    * Returns all the albums in the user's library.
    */
-  public allAlbumsByName(): Promise<Album[]> {
-    return this.db.albums.orderBy(fieldNameOf<Album>("artistName")).toArray();
+  public allAlbumsByName(): Single<Album[]> {
+    return this.db.observe(() =>
+      this.db.albums.orderBy(fieldNameOf<Album>("artistName")).toArray()
+    );
   }
 
   /**
@@ -21,11 +23,13 @@ export class AlbumsData {
   public fetchN<K extends keyof Album>(
     n: number,
     orderBy?: K
-  ): Promise<Album[]> {
-    return this.db.albums
-      .orderBy(fieldNameOf<Album>(orderBy || "name"))
-      .reverse()
-      .limit(n)
-      .toArray();
+  ): Single<Album[]> {
+    return this.db.observe(() =>
+      this.db.albums
+        .orderBy(fieldNameOf<Album>(orderBy || "name"))
+        .reverse()
+        .limit(n)
+        .toArray()
+    );
   }
 }

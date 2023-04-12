@@ -1,7 +1,6 @@
 import { Flex, Title, useMantineTheme } from "@mantine/core";
-import { AlbumGrid } from "@spotless/components-albums";
+import { AlbumGrid, useAlbums } from "@spotless/components-albums";
 import { PageLayout, useData } from "@spotless/components-shared";
-import { useLiveQuery } from "dexie-react-hooks";
 
 /**
  * Component for the home page, which shows the last 50 albums added to the
@@ -11,8 +10,7 @@ export const HomePage = () => {
   const { spacing } = useMantineTheme();
   const { albums } = useData();
 
-  const data = useLiveQuery(() => albums.fetchN(10, "addedAt"));
-  const isLoading = !data;
+  const [data, isLoading] = useAlbums(albums, 10, "addedAt");
 
   return (
     <PageLayout isLoading={isLoading} title="Home">
