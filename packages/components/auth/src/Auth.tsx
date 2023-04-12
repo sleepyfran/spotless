@@ -65,3 +65,14 @@ export const AuthLanding = () => {
     </AuthLayout>
   );
 };
+
+/**
+ * Dummy landing for the callback page after the user has authenticated. This
+ * page is only used to show a loading indicator while the auth service
+ * finishes the authentication flow.
+ */
+export const AuthCallback = () => (
+  <AuthLayout>
+    <Loader size="xl" />
+  </AuthLayout>
+);
