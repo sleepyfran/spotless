@@ -161,7 +161,7 @@ export class SpotifyPlayer implements Player {
     this.player.addListener(
       "player_state_changed",
       (state: Spotify.PlaybackState) => {
-        this.logger.log("Playback state has changed, notifying player data");
+        this.logger.log("Playback state has changed to", state);
         this.playerState.setState(toPlayerState(state));
       }
     );

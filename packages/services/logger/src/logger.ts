@@ -1,18 +1,19 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 export interface Logger {
   /**
    * Logs a verbose message.
    */
-  log(message: string): void;
+  log(...message: any[]): void;
 
   /**
    * Logs a warning message.
    */
-  warn(message: string): void;
+  warn(...message: any[]): void;
 
   /**
    * Logs an error message.
    */
-  error(message: string): void;
+  error(...message: any[]): void;
 }
 
 /**
@@ -21,17 +22,17 @@ export interface Logger {
 export class ConsoleLogger implements Logger {
   constructor(private readonly name: string) {}
 
-  public log(message: string): void {
-    console.log(this.decorateWithDate(message));
+  public log(...message: any[]): void {
+    console.log(...this.decorateWithDate(...message));
   }
-  public warn(message: string): void {
-    console.warn(this.decorateWithDate(message));
+  public warn(...message: any[]): void {
+    console.warn(...this.decorateWithDate(...message));
   }
-  public error(message: string): void {
-    console.error(this.decorateWithDate(message));
+  public error(...message: any[]): void {
+    console.error(...this.decorateWithDate(...message));
   }
 
-  private decorateWithDate(message: string): string {
-    return `${new Date().toISOString()} (${this.name}) - ${message}`;
+  private decorateWithDate(...message: any[]): any[] {
+    return [new Date().toISOString(), this.name, "-", ...message];
   }
 }
