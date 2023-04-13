@@ -1,7 +1,7 @@
 import { AppConfig } from "@spotless/types";
 import { initHydration } from "./workers.common";
 import { BulkError } from "@spotless/data-db";
-import { Services } from "@spotless/services-bootstrap";
+import { WorkerServices } from "@spotless/services-bootstrap";
 import { Observable, expand, EMPTY, tap, ignoreElements } from "rxjs";
 
 export type InitWorkerMessage = {
@@ -28,7 +28,7 @@ self.onmessage = async (event: MessageEvent<WorkerMessage>) => {
   }
 };
 
-const hydrateDatabase = (services: Services): Observable<void> => {
+const hydrateDatabase = (services: WorkerServices): Observable<void> => {
   const logger = services.createLogger("ArtistsWorker");
   logger.log("Starting artist database hydration...");
 

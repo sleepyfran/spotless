@@ -1,6 +1,7 @@
 import { AuthData } from "@spotless/data-auth";
 import { Api, ApiClient } from "@spotless/data-api";
 import { createUserLibraryApi } from "./src/user-library";
+import { createPlayerApi } from "./src/player";
 
 const BASE_URL = "https://api.spotify.com/v1";
 
@@ -12,5 +13,6 @@ export const createSpotifyApi = (authData: AuthData): Api => {
 
   return {
     userLibrary: createUserLibraryApi(client),
+    player: createPlayerApi(client),
   };
 };

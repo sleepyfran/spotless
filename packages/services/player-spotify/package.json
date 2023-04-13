@@ -1,0 +1,13 @@
+{
+    "name": "@spotless/services-player-spotify",
+    "version": "1.0.0",
+    "description": "Contains the implementation of the player interface for Spotify",
+    "main": "index.js",
+    "dependencies": {
+        "@spotless/services-player": "^1.0.0",
+        "@spotless/types": "^1.0.0"
+    },
+    "devDependencies": {
+        "@types/spotify-web-playback-sdk": "^0.1.15"
+    }
+}

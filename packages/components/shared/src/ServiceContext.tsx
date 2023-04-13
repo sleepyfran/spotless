@@ -1,12 +1,12 @@
 import { createContext, useContext } from "react";
 import { AppConfig } from "@spotless/types";
 import {
-  Services,
+  MainServices,
   Data,
-  initialize as bootstrap,
+  initializeMainServices,
 } from "@spotless/services-bootstrap";
 
-type IServiceContext = Pick<Services, "authService">;
+type IServiceContext = Omit<MainServices, "api" | "db">;
 
 type IDataContext = Data;
 
@@ -25,7 +25,7 @@ export const DataContext = createContext<IDataContext>(undefined as never);
 export const initialize = (
   appConfig: AppConfig
 ): { services: IServiceContext; data: IDataContext } => {
-  const { services, data } = bootstrap("main", appConfig);
+  const { services, data } = initializeMainServices(appConfig);
 
   return {
     services,

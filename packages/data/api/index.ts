@@ -1,7 +1,8 @@
 import { AuthData } from "@spotless/data-auth";
 import { Album, Artist, Single } from "@spotless/types";
-import { Observable, from, switchMap } from "rxjs";
+import { from, switchMap } from "rxjs";
 import ky from "ky";
+import type { Options } from "ky";
 
 /**
  * Options for paginated APIs.
@@ -33,6 +34,13 @@ export type PaginatedResponse<T> = {
   items: T[];
 };
 
+export interface PlayerApi {
+  /**
+   * Plays the given album.
+   */
+  play(item: Album): Single<void>;
+}
+
 /**
  * Defines the abstract API to retrieve the library of a user.
  */
@@ -60,6 +68,7 @@ export interface UserLibraryApi {
  */
 export interface Api {
   userLibrary: UserLibraryApi;
+  player: PlayerApi;
 }
 
 /**
@@ -86,18 +95,45 @@ export class ApiClient {
    * Wrapper around a get request that automatically adds the authentication
    * headers and returns the JSON response.
    */
-  public get<T>(url: string): Observable<T> {
+  public get<T>(url: string): Single<T> {
+    return this.request("get", url);
+  }
+
+  /**
+   * Wrapper around a post request that automatically adds the authentication
+   * headers and returns the JSON response.
+   */
+  public post<T, R>(url: string, body: T): Single<R> {
+    return this.request("post", url, { body: JSON.stringify(body) });
+  }
+
+  /**
+   * Wrapper around a put request that automatically adds the authentication
+   * headers and returns the JSON response.
+   */
+  public put<T, R>(url: string, body: T): Single<R> {
+    return this.request("put", url, { body: JSON.stringify(body) });
+  }
+
+  private request<T>(
+    method: "get" | "post" | "put",
+    url: string,
+    options?: Options
+  ): Single<T> {
     return from(this.authData.authenticationHeaders()).pipe(
       switchMap((authHeaders) => {
         return from(
-          ky
-            .get(url, {
-              headers: authHeaders,
-            })
-            .json() as Promise<T>
+          ky[method](this.decorateUrlWithBase(url), {
+            ...options,
+            headers: authHeaders,
+          }).json() as Promise<T>
         );
       })
     );
+  }
+
+  private decorateUrlWithBase(url: string): string {
+    return url.startsWith("http") ? url : this.buildUrl(url);
   }
 
   private buildUrl(endpoint: string): string {

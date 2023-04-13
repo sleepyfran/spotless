@@ -643,6 +643,11 @@
   resolved "https://registry.yarnpkg.com/@types/spotify-api/-/spotify-api-0.0.21.tgz#ebc98ee2887f50986406e883a0d4c46af60ef578"
   integrity sha512-26dd63oO7sxKt48dnivb8c1hvHEtNmGWi/vesAFm55Z1NiI09ytYUyKPVY8tBMn1nNbglfGA3cGxXhlOYN6SAw==
 
+"@types/spotify-web-playback-sdk@^0.1.15":
+  version "0.1.15"
+  resolved "https://registry.yarnpkg.com/@types/spotify-web-playback-sdk/-/spotify-web-playback-sdk-0.1.15.tgz#32b5cb317b8df1c17ab8d4012eb02da500dc6616"
+  integrity sha512-DBXmPajTtrm4Ykf2waHZAW6UR6Jqv8fKRTTDfXcSkse2VzF9uDdj7gb4mcwKMxdDrjJ4npy4EbnxH/xxuiKtoQ==
+
 "@types/through@*":
   version "0.0.30"
   resolved "https://registry.yarnpkg.com/@types/through/-/through-0.0.30.tgz#e0e42ce77e897bd6aead6f6ea62aeb135b8a3895"

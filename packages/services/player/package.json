@@ -1,0 +1,9 @@
+{
+    "name": "@spotless/services-player",
+    "version": "1.0.0",
+    "description": "Contains the Player related services",
+    "main": "index.js",
+    "dependencies": {
+        "@spotless/types": "^1.0.0"
+    }
+}

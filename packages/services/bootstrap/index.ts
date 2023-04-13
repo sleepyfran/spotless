@@ -4,6 +4,8 @@ import { createSpotifyApi } from "@spotless/data-api-spotify";
 import { LoggerFactory, createConsoleLogger } from "@spotless/services-logger";
 import { AuthService } from "@spotless/services-auth";
 import { SpotifyAuth } from "@spotless/services-auth-spotify";
+import { Player } from "@spotless/services-player";
+import { SpotifyPlayer } from "@spotless/services-player-spotify";
 import { AppConfig } from "@spotless/types";
 import { AlbumsData } from "@spotless/data-albums";
 import { ArtistsData } from "@spotless/data-artists";
@@ -15,25 +17,19 @@ export type Data = {
   auth: AuthData;
 };
 
-export type Services = {
+type BaseServices = {
   api: Api;
   authService: AuthService;
-  db: Database;
   createLogger: LoggerFactory;
+  db: Database;
 };
 
-/**
- * Initializes all services and returns them as a single object.
- * @param appConfig configuration loaded from the environment.
- */
-export const initialize = (
-  context: "worker" | "main",
+export type WorkerServices = BaseServices;
+export type MainServices = BaseServices & { player: Player };
+
+const initializeBase = (
   appConfig: AppConfig
-): { services: Services; data: Data } => {
-  const logger = createConsoleLogger("bootstrap");
-
-  logger.log(`Initializing services for ${context} thread...`);
-
+): { services: BaseServices; data: Data } => {
   const db = new Database();
 
   const albumsData = new AlbumsData(db);
@@ -59,5 +55,46 @@ export const initialize = (
       auth: authData,
       artists: artistsData,
     },
+  };
+};
+
+/**
+ * Initializes the services for the worker thread.
+ * @param appConfig config for the app loaded from the environment.
+ */
+export const initializeWorkerServices = (
+  appConfig: AppConfig
+): {
+  services: WorkerServices;
+  data: Data;
+} => {
+  const logger = createConsoleLogger("worker");
+  logger.log("Initializing worker services");
+
+  return initializeBase(appConfig);
+};
+
+/**
+ * Initializes the services for the main thread.
+ * @param appConfig config for the app loaded from the environment.
+ */
+export const initializeMainServices = (
+  appConfig: AppConfig
+): {
+  services: MainServices;
+  data: Data;
+} => {
+  const logger = createConsoleLogger("main");
+  logger.log("Initializing main services");
+
+  const { services, data } = initializeBase(appConfig);
+  const player = new SpotifyPlayer(data.auth, services.api);
+
+  return {
+    services: {
+      ...services,
+      player,
+    },
+    data,
   };
 };

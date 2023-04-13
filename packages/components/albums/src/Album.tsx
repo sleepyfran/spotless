@@ -37,7 +37,7 @@ export const AlbumCard = ({ album }: AlbumProps) => {
         <Image src={album.coverUrl} width={180} height={180} radius="sm" />
         {hovered && (
           <PlayButton
-            onClick={() => console.log("clicked")}
+            item={album}
             className={playableImageStyles.classes.playButton}
           />
         )}

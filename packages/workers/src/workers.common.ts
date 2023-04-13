@@ -1,10 +1,14 @@
-import { Services, Data, initialize } from "@spotless/services-bootstrap";
+import {
+  WorkerServices,
+  Data,
+  initializeWorkerServices,
+} from "@spotless/services-bootstrap";
 import { AppConfig } from "@spotless/types";
 import { Observable, throwError, timeout } from "rxjs";
 
-type HydrationFn<T> = (services: Services) => Observable<T>;
+type HydrationFn<T> = (services: WorkerServices) => Observable<T>;
 
-let serviceContext: Services | null = null;
+let serviceContext: WorkerServices | null = null;
 let dataContext: Data | null = null;
 let hydrationInterval: NodeJS.Timeout | undefined = undefined;
 
@@ -19,7 +23,7 @@ export const initHydration = async <T>(
   const logger = serviceContext?.createLogger("CommonWorker");
 
   try {
-    const { services, data } = await initialize("worker", appConfig);
+    const { services, data } = await initializeWorkerServices(appConfig);
     serviceContext = services;
     dataContext = data;
 

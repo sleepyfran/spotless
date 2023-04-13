@@ -9,7 +9,7 @@ import {
   map,
   tap,
 } from "rxjs";
-import { Services } from "@spotless/services-bootstrap";
+import { WorkerServices } from "@spotless/services-bootstrap";
 import { isValidToken } from "@spotless/services-auth";
 import {
   SpotifyAuthResponse,
@@ -45,7 +45,7 @@ self.onmessage = async (event: MessageEvent<WorkerMessage>) => {
 
 const hydrateToken = (
   appConfig: AppConfig,
-  services: Services
+  services: WorkerServices
 ): Observable<void> => {
   const logger = services.createLogger("SpotifyAuthWorker");
   logger.log("Checking auth token...");
@@ -63,7 +63,7 @@ const SPOTIFY_TOKEN_URL = "https://accounts.spotify.com/api/token";
 
 const refreshTokenIfNeeded = (
   appConfig: AppConfig,
-  services: Services,
+  services: WorkerServices,
   logger: Logger,
   cachedAuth: AuthenticatedUser | undefined
 ): Single<never> => {
@@ -87,7 +87,7 @@ const refreshTokenIfNeeded = (
  */
 const refreshToken = (
   appConfig: AppConfig,
-  services: Services,
+  services: WorkerServices,
   logger: Logger,
   auth: AuthenticatedUser
 ): Single<never> =>
