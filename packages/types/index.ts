@@ -56,3 +56,21 @@ export type Artist = {
   name: string;
   imageUrl: string;
 };
+
+export type CurrentlyPlaying = {
+  artistName: string;
+  albumName: string;
+  trackName: string;
+  trackLength: number;
+  coverUrl: string;
+};
+
+/**
+ * Represents the current state of the player.
+ */
+export type PlayerState = {
+  currentlyPlaying: CurrentlyPlaying | undefined;
+  paused: boolean;
+  shuffle: boolean;
+  positionInMs: number;
+};

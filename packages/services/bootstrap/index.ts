@@ -10,11 +10,13 @@ import { AppConfig } from "@spotless/types";
 import { AlbumsData } from "@spotless/data-albums";
 import { ArtistsData } from "@spotless/data-artists";
 import { AuthData } from "@spotless/data-auth";
+import { PlayerData } from "@spotless/data-player";
 
 export type Data = {
   albums: AlbumsData;
   artists: ArtistsData;
   auth: AuthData;
+  player: PlayerData;
 };
 
 type BaseServices = {
@@ -35,6 +37,7 @@ const initializeBase = (
   const albumsData = new AlbumsData(db);
   const artistsData = new ArtistsData(db);
   const authData = new AuthData(db);
+  const playerData = new PlayerData();
 
   const api = createSpotifyApi(authData);
   const authService: AuthService = new SpotifyAuth(
@@ -54,6 +57,7 @@ const initializeBase = (
       albums: albumsData,
       auth: authData,
       artists: artistsData,
+      player: playerData,
     },
   };
 };
@@ -88,7 +92,12 @@ export const initializeMainServices = (
   logger.log("Initializing main services");
 
   const { services, data } = initializeBase(appConfig);
-  const player = new SpotifyPlayer(data.auth, services.api);
+  const player = new SpotifyPlayer(
+    data.auth,
+    data.player,
+    services.api,
+    services.createLogger
+  );
 
   return {
     services: {

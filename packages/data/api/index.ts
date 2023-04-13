@@ -39,6 +39,12 @@ export interface PlayerApi {
    * Plays the given album.
    */
   play(item: Album): Single<void>;
+
+  /**
+   * Transfers the playback to the specified device ID.
+   * TODO: This is Spotify specific and shouldn't be in the general api.
+   */
+  transferPlayback(deviceId: string): Single<void>;
 }
 
 /**
