@@ -17,4 +17,10 @@ export interface Player {
    * currently connected, does nothing.
    */
   pause(): Single<void>;
+
+  /**
+   * Transfers the playback to the current device.
+   * TODO: This is specific to Spotify and shouldn't be here.
+   */
+  transferPlayback(): Single<void>;
 }

@@ -108,6 +108,14 @@ export class SpotifyPlayer implements Player {
     return this.executePlayerAction((player) => player.pause());
   }
 
+  public transferPlayback(): Single<void> {
+    if (this.status.__status === "connected") {
+      return this.api.player.transferPlayback(this.status.deviceId);
+    }
+
+    return EMPTY;
+  }
+
   private executePlayerAction(
     action: (player: Spotify.Player) => Promise<void>
   ): Single<void> {
