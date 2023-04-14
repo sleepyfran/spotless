@@ -24,7 +24,10 @@ const useCoverArtStyles = createStyles((theme) => ({
 
     ":hover:after": {
       content: '""',
-      backgroundColor: theme.colors.gray[9],
+      backgroundColor:
+        theme.colorScheme === "dark"
+          ? theme.colors.gray[9]
+          : theme.colors.gray[4],
       position: "absolute",
       top: 0,
       left: 0,

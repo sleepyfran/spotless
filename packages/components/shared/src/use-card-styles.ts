@@ -8,7 +8,10 @@ export const useCardStyles = createStyles((theme) => ({
   card: {
     padding: theme.spacing.sm,
     ":hover": {
-      backgroundColor: theme.colors.gray[9],
+      backgroundColor:
+        theme.colorScheme === "dark"
+          ? theme.colors.gray[8]
+          : theme.colors.gray[3],
       borderRadius: theme.radius.md,
     },
   },

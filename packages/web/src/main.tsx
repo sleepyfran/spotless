@@ -13,6 +13,7 @@ import {
   startSpotifyAuthWorker,
 } from "@spotless/workers";
 import { Subscribe } from "@react-rxjs/core";
+import { useColorScheme } from "@mantine/hooks";
 
 const baseUrl = import.meta.env.VITE_BASE_APP;
 const clientId = import.meta.env.VITE_CLIENT_ID;
@@ -36,19 +37,25 @@ startAlbumsWorker(appConfig);
 startArtistsWorker(appConfig);
 startSpotifyAuthWorker(appConfig);
 
+const Main = () => {
+  const colorScheme = useColorScheme();
+
+  return (
+    <MantineProvider
+      withNormalizeCSS
+      withGlobalStyles
+      theme={{ colorScheme: colorScheme }}
+    >
+      <ServiceContext.Provider value={services}>
+        <DataContext.Provider value={data}>
+          <Subscribe>
+            <RouterProvider router={router} />
+          </Subscribe>
+        </DataContext.Provider>
+      </ServiceContext.Provider>
+    </MantineProvider>
+  );
+};
+
 const root = createRoot(document.getElementById("root") as HTMLElement);
-root.render(
-  <MantineProvider
-    withNormalizeCSS
-    withGlobalStyles
-    theme={{ colorScheme: "dark" }}
-  >
-    <ServiceContext.Provider value={services}>
-      <DataContext.Provider value={data}>
-        <Subscribe>
-          <RouterProvider router={router} />
-        </Subscribe>
-      </DataContext.Provider>
-    </ServiceContext.Provider>
-  </MantineProvider>
-);
+root.render(<Main />);
