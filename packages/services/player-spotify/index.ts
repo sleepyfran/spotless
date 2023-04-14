@@ -141,12 +141,8 @@ export class SpotifyPlayer implements Player {
         this.logger.log(
           `Ready with Device ID ${device_id}, transferring playback...`
         );
-
-        this.api.player.transferPlayback(device_id).subscribe({
-          next: () => {
-            this.status = connected(device_id);
-          },
-        });
+        this.status = connected(device_id);
+        this.transferPlayback().subscribe();
       }
     );
 
