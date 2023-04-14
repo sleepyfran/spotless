@@ -4,9 +4,10 @@ import {
   initializeWorkerServices,
 } from "@spotless/services-bootstrap";
 import { AppConfig } from "@spotless/types";
-import { Observable, throwError, timeout } from "rxjs";
+import { Single } from "@spotless/services-rx";
+import { throwError, timeout } from "rxjs";
 
-type HydrationFn<T> = (services: WorkerServices) => Observable<T>;
+type HydrationFn<T> = (services: WorkerServices) => Single<T>;
 
 let serviceContext: WorkerServices | null = null;
 let dataContext: Data | null = null;

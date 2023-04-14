@@ -1,4 +1,5 @@
-import { Album, Single } from "@spotless/types";
+import { Album } from "@spotless/types";
+import { Single } from "@spotless/services-rx";
 
 export interface Player {
   /**

@@ -1,8 +1,9 @@
 import { AppConfig } from "@spotless/types";
-import { initHydration } from "./workers.common";
-import { EMPTY, Observable, expand, ignoreElements, tap } from "rxjs";
 import { WorkerServices } from "@spotless/services-bootstrap";
 import { BulkError } from "@spotless/data-db";
+import { Single } from "@spotless/services-rx";
+import { initHydration } from "./workers.common";
+import { EMPTY, expand, ignoreElements, tap } from "rxjs";
 
 export type InitWorkerMessage = {
   __type: "init";
@@ -28,7 +29,7 @@ self.onmessage = async (event: MessageEvent<WorkerMessage>) => {
   }
 };
 
-const hydrateDatabase = (services: WorkerServices): Observable<void> => {
+const hydrateDatabase = (services: WorkerServices): Single<void> => {
   const logger = services.createLogger("AlbumsWorker");
   logger.log("Starting album database hydration...");
 

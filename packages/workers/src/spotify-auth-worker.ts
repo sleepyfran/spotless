@@ -1,4 +1,5 @@
-import { AppConfig, AuthenticatedUser, Single } from "@spotless/types";
+import { AppConfig, AuthenticatedUser } from "@spotless/types";
+import { Single, singleFrom } from "@spotless/services-rx";
 import { initHydration } from "./workers.common";
 import {
   EMPTY,
@@ -91,7 +92,7 @@ const refreshToken = (
   logger: Logger,
   auth: AuthenticatedUser
 ): Single<never> =>
-  from(
+  singleFrom(
     ky
       .post(
         `${SPOTIFY_TOKEN_URL}?grant_type=refresh_token&refresh_token=${auth.refreshToken}`,

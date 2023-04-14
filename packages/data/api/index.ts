@@ -1,5 +1,6 @@
 import { AuthData } from "@spotless/data-auth";
-import { Album, Artist, Single } from "@spotless/types";
+import { Album, Artist } from "@spotless/types";
+import { Single, singleFrom } from "@spotless/services-rx";
 import { from, switchMap } from "rxjs";
 import ky from "ky";
 import type { Options } from "ky";
@@ -126,7 +127,7 @@ export class ApiClient {
     url: string,
     options?: Options
   ): Single<T> {
-    return from(this.authData.authenticationHeaders()).pipe(
+    return singleFrom(this.authData.authenticationHeaders()).pipe(
       switchMap((authHeaders) => {
         return from(
           ky[method](this.decorateUrlWithBase(url), {

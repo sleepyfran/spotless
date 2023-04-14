@@ -3,8 +3,9 @@ import { Player } from "@spotless/services-player";
 import { INITIAL_PLAYER_STATE, PlayerData } from "@spotless/data-player";
 import { Logger, LoggerFactory } from "@spotless/services-logger";
 import { Api } from "@spotless/data-api";
-import { Album, AuthenticatedUser, PlayerState, Single } from "@spotless/types";
-import { from, Observable, of, EMPTY, switchMap } from "rxjs";
+import { Album, AuthenticatedUser, PlayerState } from "@spotless/types";
+import { Single, singleFrom, singleOf } from "@spotless/services-rx";
+import { EMPTY, switchMap } from "rxjs";
 
 type ConnectedPlayer = {
   __status: "connected";
@@ -120,13 +121,13 @@ export class SpotifyPlayer implements Player {
     action: (player: Spotify.Player) => Promise<void>
   ): Single<void> {
     if (this.isConnected && this.player) {
-      return from(action(this.player));
+      return singleFrom(action(this.player));
     }
 
     return EMPTY;
   }
 
-  private initializePlayer(auth: AuthenticatedUser): Observable<boolean> {
+  private initializePlayer(auth: AuthenticatedUser): Single<boolean> {
     this.logger.log("Initializing player");
     this.player = new window.Spotify.Player({
       name: "Spotless",
@@ -170,11 +171,11 @@ export class SpotifyPlayer implements Player {
       }
     );
 
-    return from(this.player.connect());
+    return singleFrom(this.player.connect());
   }
 
-  private disconnectPlayer(): Observable<boolean> {
+  private disconnectPlayer(): Single<boolean> {
     this.player?.disconnect();
-    return of(true);
+    return singleOf(true);
   }
 }

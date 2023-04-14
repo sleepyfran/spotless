@@ -1,10 +1,3 @@
-import { Observable } from "rxjs";
-
-/**
- * Represents an observable that emits a single value and then completes.
- */
-export type Single<T> = Observable<T>;
-
 /**
  * Holds the secrets and settings that are passed from environment variables.
  */
