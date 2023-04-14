@@ -5,7 +5,7 @@ import {
   createStyles,
   useMantineTheme,
 } from "@mantine/core";
-import { AlbumDetail } from "@spotless/components-albums";
+import { AlbumDetails } from "@spotless/components-albums";
 import { Header } from "@spotless/components-header";
 import { Player } from "@spotless/components-player";
 import { modals } from "@spotless/components-shared";
@@ -35,7 +35,7 @@ export const Root = ({ children }: PropsWithChildren) => {
       {modal && (
         <Modal opened={!!modal} onClose={onCloseModal} size="50%">
           {modal.__type === "Album" ? (
-            <AlbumDetail albumId={modal.albumId} />
+            <AlbumDetails albumId={modal.albumId} />
           ) : null}
         </Modal>
       )}

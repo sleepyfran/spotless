@@ -6,9 +6,10 @@ import {
   Skeleton,
   Table,
 } from "@mantine/core";
-import { Title, useColors } from "@spotless/components-shared";
+import { Title } from "@spotless/components-shared";
 import { useAlbum } from "./hooks";
 import { format } from "date-fns";
+import { AlbumDetail } from "@spotless/types";
 
 type AlbumDetailProps = {
   albumId: string;
@@ -26,88 +27,102 @@ const useStyles = createStyles({
 /**
  * Shows the details of an album and its track list.
  */
-export const AlbumDetail = ({ albumId }: AlbumDetailProps) => {
-  const styles = useStyles();
+export const AlbumDetails = ({ albumId }: AlbumDetailProps) => {
   const [album, loading] = useAlbum(albumId);
 
-  const trackListSummary =
-    album?.totalTracks === 1 ? `1 track` : `${album?.totalTracks} tracks`;
-
-  const formatTrackLength = (lengthInMs: number) =>
-    format(new Date(lengthInMs), "mm:ss");
+  const status: AlbumFetchStatus =
+    loading || !album ? { __type: "loading" } : { __type: "loaded", album };
 
   return (
-    <Flex direction="column">
-      {loading ? (
-        <>
-          <Flex gap={10} direction="column">
-            <Flex gap={10} align="center">
-              <Skeleton width={150} height={150} radius="sm" />
-              <Flex direction="column" gap={2}>
-                <Skeleton width={300} height={50} />
-                <Skeleton width={150} height={20} />
-              </Flex>
-            </Flex>
-            <Skeleton width="100%" height={300} />
-          </Flex>
-        </>
-      ) : album ? (
-        <>
-          <Flex gap={10} direction="column">
-            <Flex gap={10} align="center">
-              <Image
-                src={album.coverUrl}
-                width={150}
-                height={150}
-                radius="sm"
-              />
-              <Flex direction="column">
-                <Title title={album.name} size="3rem" />
-                <Flex>
-                  <Text fz="sm">{album.artistName}</Text>
-                  <Text fz="sm" className={styles.classes.albumInfoItem}>
-                    {album.releaseDate.getFullYear()}
-                  </Text>
-                  <Text fz="sm" className={styles.classes.albumInfoItem}>
-                    {trackListSummary}
-                  </Text>
-                </Flex>
-              </Flex>
-            </Flex>
-
-            <Table>
-              <thead>
-                <tr>
-                  <th>#</th>
-                  <th>Title</th>
-                  <th>Length</th>
-                </tr>
-              </thead>
-              <tbody>
-                {album.trackList.map((track) => (
-                  <tr key={track.id}>
-                    <td>{track.trackNumber}</td>
-                    <td>{track.name}</td>
-                    <td>{formatTrackLength(track.lengthInMs)}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </Table>
-          </Flex>
-        </>
-      ) : (
-        <AlbumDetailError />
-      )}
+    <Flex gap={10} direction="column">
+      <AlbumInfo status={status} />
+      <AlbumTrackList status={status} />
     </Flex>
   );
 };
 
-const AlbumDetailError = () => {
-  const colors = useColors();
+type AlbumFetchStatus =
+  | {
+      __type: "loading";
+    }
+  | {
+      __type: "loaded";
+      album: AlbumDetail;
+    };
+
+type AlbumDetailsChildProps = {
+  status: AlbumFetchStatus;
+};
+
+const AlbumInfo = ({ status }: AlbumDetailsChildProps) => {
+  const styles = useStyles();
+
+  const loaded = status.__type === "loaded";
+  const createTrackListSummary = (album: AlbumDetail) =>
+    album.totalTracks === 1 ? `1 track` : `${album.totalTracks} tracks`;
 
   return (
-    <Text color={colors.error}>
-      There was an error while retrieving the album, try again
-    </Text>
+    <Flex gap={10} align="center">
+      {loaded ? (
+        <Image
+          src={status.album.coverUrl}
+          width={150}
+          height={150}
+          radius="sm"
+        />
+      ) : (
+        <Skeleton width={150} height={150} radius="sm" />
+      )}
+      <Flex direction="column">
+        {loaded ? (
+          <Title title={status.album.name} size="3rem" />
+        ) : (
+          <Skeleton width={300} height="3rem" />
+        )}
+        {loaded ? (
+          <Flex>
+            <Text fz="sm">{status.album.artistName}</Text>
+            <Text fz="sm" className={styles.classes.albumInfoItem}>
+              {status.album.releaseDate.getFullYear()}
+            </Text>
+            <Text fz="sm" className={styles.classes.albumInfoItem}>
+              {createTrackListSummary(status.album)}
+            </Text>
+          </Flex>
+        ) : (
+          <Skeleton width={150} height="1rem" />
+        )}
+      </Flex>
+    </Flex>
+  );
+};
+
+const AlbumTrackList = ({ status }: AlbumDetailsChildProps) => {
+  const formatTrackLength = (lengthInMs: number) =>
+    format(new Date(lengthInMs), "mm:ss");
+
+  const loaded = status.__type === "loaded";
+
+  return loaded ? (
+    <Table>
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Title</th>
+          <th>Length</th>
+        </tr>
+      </thead>
+      <tbody>
+        {status.album.trackList.map((track) => (
+          <tr key={track.id}>
+            <td>{track.trackNumber}</td>
+            <td>{track.name}</td>
+            <td>{formatTrackLength(track.lengthInMs)}</td>
+          </tr>
+        ))}
+      </tbody>
+    </Table>
+  ) : (
+    <Skeleton width="100%" height={300} />
   );
 };
