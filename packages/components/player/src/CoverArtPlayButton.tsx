@@ -1,5 +1,8 @@
 import { ActionIcon, Image, createStyles } from "@mantine/core";
-import { IconPlayerPlay, IconPlayerPause } from "@tabler/icons-react";
+import {
+  IconPlayerPlayFilled,
+  IconPlayerPauseFilled,
+} from "@tabler/icons-react";
 
 export type CoverArtPlayButtonProps = {
   /**
@@ -60,10 +63,11 @@ export const CoverArtPlayButton = ({
       <ActionIcon
         variant="transparent"
         size="xl"
+        color="gray.0"
         className={styles.classes.button}
         onClick={onClick}
       >
-        {playing ? <IconPlayerPause /> : <IconPlayerPlay />}
+        {playing ? <IconPlayerPauseFilled /> : <IconPlayerPlayFilled />}
       </ActionIcon>
     </div>
   );
