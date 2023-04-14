@@ -2,6 +2,7 @@ import { ActionIcon } from "@mantine/core";
 import { Album } from "@spotless/types";
 import { IconPlayerPlay } from "@tabler/icons-react";
 import { useServices } from "./ServiceContext";
+import { MouseEventHandler } from "react";
 
 type PlayButtonProps = {
   /**
@@ -22,7 +23,8 @@ type PlayButtonProps = {
 export const PlayButton = ({ item, className }: PlayButtonProps) => {
   const { player } = useServices();
 
-  const onClick = () => {
+  const onClick: MouseEventHandler<HTMLElement> = (event) => {
+    event.stopPropagation();
     player.play(item).subscribe();
   };
 
