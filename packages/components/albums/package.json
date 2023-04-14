@@ -2,11 +2,12 @@
   "name": "@spotless/components-albums",
   "version": "1.0.0",
   "dependencies": {
-    "@spotless/components-shared": "^1.0.0",
     "@emotion/react": "^11.10.6",
     "@mantine/core": "^6.0.5",
     "@mantine/hooks": "^6.0.5",
     "@react-rxjs/core": "^0.10.4",
+    "@spotless/components-shared": "^1.0.0",
+    "date-fns": "^2.29.3",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.9.0"

@@ -1,6 +1,11 @@
 import { Flex, Image, Text, createStyles } from "@mantine/core";
 import { useHover } from "@mantine/hooks";
-import { Title, useCardStyles, PlayButton } from "@spotless/components-shared";
+import {
+  Title,
+  useCardStyles,
+  PlayButton,
+  modals,
+} from "@spotless/components-shared";
 import { Album } from "@spotless/types";
 
 type AlbumProps = {
@@ -18,6 +23,8 @@ const usePlayableImageStyles = createStyles({
   },
 });
 
+const [, setModal] = modals;
+
 /**
  * Component that displays an album, including its name, artist name and cover image.
  */
@@ -26,12 +33,15 @@ export const AlbumCard = ({ album }: AlbumProps) => {
   const cardStyles = useCardStyles();
   const playableImageStyles = usePlayableImageStyles();
 
+  const onCardClick = () => setModal({ __type: "Album", albumId: album.id });
+
   return (
     <Flex
       ref={ref}
       direction="column"
       align="center"
       className={cardStyles.classes.card}
+      onClick={onCardClick}
     >
       <div className={playableImageStyles.classes.playableImageRoot}>
         <Image src={album.coverUrl} width={180} height={180} radius="sm" />

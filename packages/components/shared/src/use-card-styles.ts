@@ -6,6 +6,7 @@ import { createStyles } from "@mantine/core";
  */
 export const useCardStyles = createStyles((theme) => ({
   card: {
+    cursor: "pointer",
     padding: theme.spacing.sm,
     ":hover": {
       backgroundColor:

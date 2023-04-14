@@ -1,5 +1,5 @@
 import { AuthData } from "@spotless/data-auth";
-import { Album, Artist } from "@spotless/types";
+import { Album, AlbumDetail, Artist } from "@spotless/types";
 import { Single, singleFrom } from "@spotless/services-rx";
 import { from, switchMap } from "rxjs";
 import ky from "ky";
@@ -34,6 +34,14 @@ export type PaginatedResponse<T> = {
    */
   items: T[];
 };
+
+export interface AlbumApi {
+  /**
+   * Retrieves an album with the given ID.
+   * @param id ID of the album to retrieve.
+   */
+  get(id: string): Single<AlbumDetail>;
+}
 
 export interface PlayerApi {
   /**
@@ -74,6 +82,7 @@ export interface UserLibraryApi {
  * music provider we're using (Spotify, Apple Music, etc).
  */
 export interface Api {
+  album: AlbumApi;
   userLibrary: UserLibraryApi;
   player: PlayerApi;
 }

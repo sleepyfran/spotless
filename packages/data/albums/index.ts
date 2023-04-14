@@ -1,12 +1,20 @@
 import { Database, fieldNameOf } from "@spotless/data-db";
-import { Album } from "@spotless/types";
+import { Api } from "@spotless/data-api";
+import { Album, AlbumDetail } from "@spotless/types";
 import { Single, singleFrom } from "@spotless/services-rx";
 
 /**
  * Exposes the queries that the app can fetch from the albums table.
  */
 export class AlbumsData {
-  constructor(private readonly db: Database) {}
+  constructor(private readonly db: Database, private readonly api: Api) {}
+
+  /**
+   * Returns the detail of a specific album.
+   */
+  public albumDetail(id: string): Single<AlbumDetail> {
+    return this.api.album.get(id);
+  }
 
   /**
    * Returns all the albums in the user's library.

@@ -34,12 +34,12 @@ const initializeBase = (
 ): { services: BaseServices; data: Data } => {
   const db = new Database();
 
-  const albumsData = new AlbumsData(db);
-  const artistsData = new ArtistsData(db);
   const authData = new AuthData(db);
-  const playerData = new PlayerData();
-
   const api = createSpotifyApi(authData);
+
+  const albumsData = new AlbumsData(db, api);
+  const artistsData = new ArtistsData(db);
+  const playerData = new PlayerData();
   const authService: AuthService = new SpotifyAuth(
     appConfig,
     createConsoleLogger,

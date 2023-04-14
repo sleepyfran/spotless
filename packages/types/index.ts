@@ -41,6 +41,28 @@ export type Album = {
 };
 
 /**
+ * Represents a track, which contains the basic metadata to display
+ * it inside of a list.
+ */
+export type Track = {
+  id: string;
+  name: string;
+  artistName: string;
+  trackNumber: number;
+  lengthInMs: number;
+};
+
+/**
+ * Represents the details of an album, which contains the basic information
+ * as well as the track list of the album.
+ */
+export type AlbumDetail = Omit<Album, "addedAt"> & {
+  releaseDate: Date;
+  totalTracks: number;
+  trackList: Track[];
+};
+
+/**
  * Represents a artist, which contains the basic metadata to display it
  * inside of a list.
  */

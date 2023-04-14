@@ -1,39 +1,62 @@
 import { AlbumsData } from "@spotless/data-albums";
-import { Album } from "@spotless/types";
+import { Album, AlbumDetail } from "@spotless/types";
 import { bind } from "@react-rxjs/core";
 import { map } from "rxjs";
+import { useData } from "@spotless/components-shared";
 
+type AlbumResponse = [AlbumDetail | undefined, boolean];
 type AlbumsResponse = [Album[], boolean];
 
-const loading = [[], true] as AlbumsResponse;
-const mapToResponse = map(
+const loadingAlbum = [undefined, true] as AlbumResponse;
+const loadingAlbums = [[], true] as AlbumsResponse;
+const mapToAlbumResponse = map(
+  (album: Album) => [album, false] as AlbumResponse
+);
+const mapToAlbumsResponse = map(
   (albums: Album[]) => [albums, false] as AlbumsResponse
 );
 
+const [albumDetail$] = bind(
+  (albums: AlbumsData, id: string) =>
+    albums.albumDetail(id).pipe(mapToAlbumResponse),
+  loadingAlbum
+);
 const [allAlbums$] = bind(
-  (albums: AlbumsData) => albums.allAlbumsByName().pipe(mapToResponse),
-  loading
+  (albums: AlbumsData) => albums.allAlbumsByName().pipe(mapToAlbumsResponse),
+  loadingAlbums
 );
 const [nAlbums$] = bind(
   <K extends keyof Album>(albums: AlbumsData, n: number, orderBy?: K) =>
-    albums.fetchN(n, orderBy).pipe(mapToResponse),
-  loading
+    albums.fetchN(n, orderBy).pipe(mapToAlbumsResponse),
+  loadingAlbums
 );
+
+/**
+ * Hook that fetches the details of a specific album by its ID. Decorates each
+ * observable response with a type to indicate if we're loading or if we've
+ * finished loading.
+ */
+export const useAlbum = (id: string) => {
+  const { albums } = useData();
+  return albumDetail$(albums, id);
+};
 
 /**
  * Hook that fetches all the albums in the user's library. Decorates each
  * observable response with a type to indicate if we're loading or if we've
  * finished loading.
  */
-export const useAllAlbums = (albums: AlbumsData) => allAlbums$(albums);
+export const useAllAlbums = () => {
+  const { albums } = useData();
+  return allAlbums$(albums);
+};
 
 /**
  * Hook that fetches the first `n` albums in the user's library, ordered by
  * a specific field. Decorates each observable response with a type to indicate
  * if we're loading or if we've finished loading.
  */
-export const useAlbums = <K extends keyof Album>(
-  albums: AlbumsData,
-  n: number,
-  orderBy?: K
-) => nAlbums$(albums, n, orderBy);
+export const useAlbums = <K extends keyof Album>(n: number, orderBy?: K) => {
+  const { albums } = useData();
+  return nAlbums$(albums, n, orderBy);
+};
