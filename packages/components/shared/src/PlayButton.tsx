@@ -2,7 +2,6 @@ import { ActionIcon } from "@mantine/core";
 import { Album } from "@spotless/types";
 import { IconPlayerPlay } from "@tabler/icons-react";
 import { useServices } from "./ServiceContext";
-import { useCallback } from "react";
 
 type PlayButtonProps = {
   /**
@@ -23,9 +22,9 @@ type PlayButtonProps = {
 export const PlayButton = ({ item, className }: PlayButtonProps) => {
   const { player } = useServices();
 
-  const onClick = useCallback(() => {
+  const onClick = () => {
     player.play(item).subscribe();
-  }, [player]);
+  };
 
   return (
     <ActionIcon

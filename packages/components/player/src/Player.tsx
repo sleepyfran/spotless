@@ -3,7 +3,6 @@ import { bind } from "@react-rxjs/core";
 import { useData, useServices } from "@spotless/components-shared";
 import { INITIAL_PLAYER_STATE, PlayerData } from "@spotless/data-player";
 import { CoverArtPlayButton } from "./CoverArtPlayButton";
-import { useCallback } from "react";
 import { CurrentlyPlaying } from "@spotless/types";
 
 const [usePlayer$] = bind(
@@ -24,13 +23,13 @@ export const Player = ({ className }: PlayerProps) => {
   const { player } = useData();
   const playerState = usePlayer$(player);
 
-  const onCoverArtClick = useCallback(() => {
+  const onCoverArtClick = () => {
     if (playerState.paused) {
       playerService.resume().subscribe();
     } else {
       playerService.pause().subscribe();
     }
-  }, [playerService, playerState]);
+  };
 
   return (
     <Card shadow="xl" withBorder className={className}>
@@ -78,9 +77,9 @@ const ConnectedPlayer = ({
 const DisconnectedPlayer = () => {
   const { player } = useServices();
 
-  const onTransferPlaybackHereClick = useCallback(() => {
+  const onTransferPlaybackHereClick = () => {
     player.transferPlayback().subscribe();
-  }, [player]);
+  };
 
   return (
     <Flex direction="column" align="center">

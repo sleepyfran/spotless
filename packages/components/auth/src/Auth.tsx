@@ -1,4 +1,4 @@
-import { PropsWithChildren, useCallback, useEffect, useState } from "react";
+import { PropsWithChildren, useEffect, useState } from "react";
 import { Center, Stack, Button, Title, Loader } from "@mantine/core";
 import { useNavigate } from "react-router-dom";
 import { useColors, useServices, Paths } from "@spotless/components-shared";
@@ -29,13 +29,13 @@ export const AuthLanding = () => {
   const colors = useColors();
   const navigate = useNavigate();
 
-  const authorizeAccount = useCallback(() => {
+  const authorizeAccount = () => {
     setAuthStatus("loading");
     authService
       .authorize()
       .then(() => setAuthStatus("finished"))
       .catch(() => setAuthStatus("errored"));
-  }, []);
+  };
 
   useEffect(() => {
     if (authStatus === "finished") {
