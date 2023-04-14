@@ -1,7 +1,8 @@
 import { Database, fieldNameOf } from "@spotless/data-db";
 import { Api } from "@spotless/data-api";
 import { Album, AlbumDetail } from "@spotless/types";
-import { Single, singleFrom } from "@spotless/services-rx";
+import { Single } from "@spotless/services-rx";
+import { Observable } from "rxjs";
 
 /**
  * Exposes the queries that the app can fetch from the albums table.
@@ -19,11 +20,9 @@ export class AlbumsData {
   /**
    * Returns all the albums in the user's library.
    */
-  public allAlbumsByName(): Single<Album[]> {
-    return singleFrom(
-      this.db.observe(() =>
-        this.db.albums.orderBy(fieldNameOf<Album>("artistName")).toArray()
-      )
+  public allAlbumsByName(): Observable<Album[]> {
+    return this.db.observe(() =>
+      this.db.albums.orderBy(fieldNameOf<Album>("artistName")).toArray()
     );
   }
 
@@ -34,15 +33,13 @@ export class AlbumsData {
   public fetchN<K extends keyof Album>(
     n: number,
     orderBy?: K
-  ): Single<Album[]> {
-    return singleFrom(
-      this.db.observe(() =>
-        this.db.albums
-          .orderBy(fieldNameOf<Album>(orderBy || "name"))
-          .reverse()
-          .limit(n)
-          .toArray()
-      )
+  ): Observable<Album[]> {
+    return this.db.observe(() =>
+      this.db.albums
+        .orderBy(fieldNameOf<Album>(orderBy || "name"))
+        .reverse()
+        .limit(n)
+        .toArray()
     );
   }
 }
