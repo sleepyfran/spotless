@@ -1,6 +1,8 @@
 {
   "include": [
     "src"
-  ],
+,
+"../shared/src/Titles.tsx"
+],
   "extends": "../../../tsconfig.json"
 }

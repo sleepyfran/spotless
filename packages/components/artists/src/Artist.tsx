@@ -1,5 +1,5 @@
-import { Flex, Text, Image } from "@mantine/core";
-import { useCardStyles } from "@spotless/components-shared";
+import { Flex, Image } from "@mantine/core";
+import { Title, useCardStyles } from "@spotless/components-shared";
 import { Artist } from "@spotless/types";
 
 type ArtistProps = {
@@ -16,9 +16,7 @@ export const ArtistCard = ({ artist }: ArtistProps) => {
   return (
     <Flex direction="column" align="center" className={styles.classes.card}>
       <Image src={artist.imageUrl} width={180} height={180} radius={100} />
-      <Text fz="lg" variant="gradient" lineClamp={1}>
-        {artist.name}
-      </Text>
+      <Title title={artist.name}></Title>
     </Flex>
   );
 };

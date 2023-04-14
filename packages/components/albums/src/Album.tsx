@@ -1,6 +1,6 @@
 import { Flex, Image, Text, createStyles } from "@mantine/core";
 import { useHover } from "@mantine/hooks";
-import { useCardStyles, PlayButton } from "@spotless/components-shared";
+import { Title, useCardStyles, PlayButton } from "@spotless/components-shared";
 import { Album } from "@spotless/types";
 
 type AlbumProps = {
@@ -42,9 +42,7 @@ export const AlbumCard = ({ album }: AlbumProps) => {
           />
         )}
       </div>
-      <Text fz="lg" variant="gradient" lineClamp={1}>
-        {album.name}
-      </Text>
+      <Title title={album.name} />
       <Text fz="sm" c="dimmed" lineClamp={1}>
         {album.artistName}
       </Text>

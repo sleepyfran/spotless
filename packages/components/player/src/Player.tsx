@@ -1,6 +1,6 @@
 import { Card, Text, Flex, Button } from "@mantine/core";
 import { bind } from "@react-rxjs/core";
-import { useData, useServices } from "@spotless/components-shared";
+import { Title, useData, useServices } from "@spotless/components-shared";
 import { INITIAL_PLAYER_STATE, PlayerData } from "@spotless/data-player";
 import { CoverArtPlayButton } from "./CoverArtPlayButton";
 import { CurrentlyPlaying } from "@spotless/types";
@@ -58,16 +58,14 @@ const ConnectedPlayer = ({
   onCoverArtClick,
 }: ConnectedPlayerProps) => {
   return (
-    <Flex gap={10}>
+    <Flex gap={10} align="center">
       <CoverArtPlayButton
         coverArtUrl={currentlyPlaying.coverUrl}
         playing={playing}
         onClick={onCoverArtClick}
       />
       <Flex direction="column">
-        <Text fz="lg" variant="gradient" fw="bold">
-          {currentlyPlaying.trackName}
-        </Text>
+        <Title title={currentlyPlaying.trackName}></Title>
         <Text fz="sm">{currentlyPlaying.artistName}</Text>
       </Flex>
     </Flex>
