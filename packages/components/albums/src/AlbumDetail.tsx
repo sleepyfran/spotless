@@ -9,7 +9,7 @@ import {
 import { Title } from "@spotless/components-shared";
 import { useAlbum } from "./hooks";
 import { format } from "date-fns";
-import { AlbumDetail } from "@spotless/types";
+import { Album } from "@spotless/types";
 
 type AlbumDetailProps = {
   albumId: string;
@@ -47,7 +47,7 @@ type AlbumFetchStatus =
     }
   | {
       __type: "loaded";
-      album: AlbumDetail;
+      album: Album;
     };
 
 type AlbumDetailsChildProps = {
@@ -58,7 +58,7 @@ const AlbumInfo = ({ status }: AlbumDetailsChildProps) => {
   const styles = useStyles();
 
   const loaded = status.__type === "loaded";
-  const createTrackListSummary = (album: AlbumDetail) =>
+  const createTrackListSummary = (album: Album) =>
     album.totalTracks === 1 ? `1 track` : `${album.totalTracks} tracks`;
 
   return (

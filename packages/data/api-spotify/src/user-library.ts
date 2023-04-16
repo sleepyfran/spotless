@@ -16,6 +16,14 @@ export const createUserLibraryApi = (client: ApiClient): UserLibraryApi => ({
             artistName: album.album.artists[0].name,
             coverUrl: album.album.images[0].url,
             addedAt: new Date(album.added_at),
+            releaseDate: new Date(album.album.release_date),
+            totalTracks: album.album.total_tracks,
+            trackList: album.album.tracks.items.map((track) => ({
+              id: track.id,
+              name: track.name,
+              trackNumber: track.track_number,
+              lengthInMs: track.duration_ms,
+            })),
           })),
         }))
       ),

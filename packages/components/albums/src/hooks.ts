@@ -1,16 +1,16 @@
 import { AlbumsData } from "@spotless/data-albums";
-import { Album, AlbumDetail } from "@spotless/types";
+import { Album } from "@spotless/types";
 import { bind } from "@react-rxjs/core";
 import { map } from "rxjs";
 import { useData } from "@spotless/components-shared";
 
-type AlbumResponse = [AlbumDetail | undefined, boolean];
+type AlbumResponse = [Album | undefined, boolean];
 type AlbumsResponse = [Album[], boolean];
 
 const loadingAlbum = [undefined, true] as AlbumResponse;
 const loadingAlbums = [[], true] as AlbumsResponse;
 const mapToAlbumResponse = map(
-  (album: Album) => [album, false] as AlbumResponse
+  (album: Album | undefined) => [album, false] as AlbumResponse
 );
 const mapToAlbumsResponse = map(
   (albums: Album[]) => [albums, false] as AlbumsResponse

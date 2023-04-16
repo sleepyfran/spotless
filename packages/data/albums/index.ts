@@ -1,7 +1,7 @@
 import { Database, fieldNameOf } from "@spotless/data-db";
 import { Api } from "@spotless/data-api";
-import { Album, AlbumDetail } from "@spotless/types";
-import { Single } from "@spotless/services-rx";
+import { Album } from "@spotless/types";
+import { Single, singleFrom } from "@spotless/services-rx";
 import { Observable } from "rxjs";
 
 /**
@@ -13,8 +13,10 @@ export class AlbumsData {
   /**
    * Returns the detail of a specific album.
    */
-  public albumDetail(id: string): Single<AlbumDetail> {
-    return this.api.album.get(id);
+  public albumDetail(id: string): Single<Album | undefined> {
+    return singleFrom(
+      this.db.albums.where(fieldNameOf<Album>("id")).equals(id).first()
+    );
   }
 
   /**
