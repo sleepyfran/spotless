@@ -27,6 +27,7 @@ export const createUserLibraryApi = (client: ApiClient): UserLibraryApi => ({
           })),
         }))
       ),
+  removeAlbum: (id) => client.delete(`/me/albums?ids=${id}`),
   getArtists: ({ next, limit }) =>
     client
       .get<SpotifyApi.UsersFollowedArtistsResponse>(

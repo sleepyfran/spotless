@@ -5,12 +5,15 @@ import {
   createStyles,
   Skeleton,
   Table,
+  Button,
 } from "@mantine/core";
-import { Title } from "@spotless/components-shared";
+import { IconTrash } from "@tabler/icons-react";
+import { Title, modals, useServices } from "@spotless/components-shared";
 import { useAlbum } from "./hooks";
 import { format } from "date-fns";
 import { Album } from "@spotless/types";
 import { PlayButton } from "@spotless/components-player";
+import { useState } from "react";
 
 type AlbumDetailProps = {
   albumId: string;
@@ -37,7 +40,12 @@ export const AlbumDetails = ({ albumId }: AlbumDetailProps) => {
   return (
     <Flex gap={10} direction="column">
       <AlbumInfo status={status} />
-      {status.__type === "loaded" && <PlayButton item={status.album} />}
+      {status.__type === "loaded" && (
+        <Flex gap="sm">
+          <PlayButton item={status.album} />
+          <RemoveAlbumButton albumId={status.album.id} />
+        </Flex>
+      )}
       <AlbumTrackList status={status} />
     </Flex>
   );
@@ -126,5 +134,55 @@ const AlbumTrackList = ({ status }: AlbumDetailsChildProps) => {
     </Table>
   ) : (
     <Skeleton width="100%" height={300} />
+  );
+};
+
+type RemoveAlbumStatus = "idle" | "clicked" | "loading" | "error";
+
+const [, setModal] = modals;
+
+const RemoveAlbumButton = ({ albumId }: { albumId: string }) => {
+  const { library } = useServices();
+  const [status, setStatus] = useState<RemoveAlbumStatus>("idle");
+
+  const onClick = () => {
+    switch (status) {
+      case "idle":
+        setStatus("clicked");
+        break;
+      case "clicked":
+        setStatus("loading");
+        library.removeAlbum(albumId).subscribe({
+          complete: () => {
+            setStatus("idle");
+            setModal(undefined);
+          },
+          error: () => {
+            setStatus("error");
+          },
+        });
+        break;
+    }
+  };
+
+  const label =
+    status === "idle"
+      ? "Remove"
+      : status === "error"
+      ? "Error. Click to try again"
+      : status === "loading"
+      ? "Removing..."
+      : "Click to confirm";
+
+  return (
+    <Button
+      variant="light"
+      onClick={onClick}
+      color="red"
+      leftIcon={<IconTrash />}
+      loading={status === "loading"}
+    >
+      {label}
+    </Button>
   );
 };

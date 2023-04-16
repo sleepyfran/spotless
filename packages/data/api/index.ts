@@ -61,6 +61,12 @@ export interface UserLibraryApi {
   getAlbums(props: PaginatedProps): Single<PaginatedResponse<Album>>;
 
   /**
+   * Removes the specified album from the user's library.
+   * @param id the ID of the album to remove.
+   */
+  removeAlbum(id: string): Single<void>;
+
+  /**
    * Retrieves a specified limit or 50 of the user's followed artists.
    * @param props object containing one or more of the following properties:
    * - next: the next page of results to retrieve
@@ -122,8 +128,16 @@ export class ApiClient {
     return this.request("put", url, { body: JSON.stringify(body) });
   }
 
+  /**
+   * Wrapper around a remove request that automatically adds the authentication
+   * headers and returns the JSON response.
+   */
+  public delete<T>(url: string): Single<T> {
+    return this.request("delete", url);
+  }
+
   private request<T>(
-    method: "get" | "post" | "put",
+    method: "get" | "post" | "put" | "delete",
     url: string,
     options?: Options
   ): Single<T> {
