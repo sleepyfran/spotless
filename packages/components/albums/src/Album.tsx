@@ -1,11 +1,7 @@
 import { Flex, Image, Text, createStyles } from "@mantine/core";
 import { useHover } from "@mantine/hooks";
-import {
-  Title,
-  useCardStyles,
-  PlayButton,
-  modals,
-} from "@spotless/components-shared";
+import { Title, useCardStyles, modals } from "@spotless/components-shared";
+import { PlayButton } from "@spotless/components-player";
 import { Album } from "@spotless/types";
 
 type AlbumProps = {
@@ -47,6 +43,7 @@ export const AlbumCard = ({ album }: AlbumProps) => {
         <Image src={album.coverUrl} width={180} height={180} radius="sm" />
         {hovered && (
           <PlayButton
+            style="rounded"
             item={album}
             className={playableImageStyles.classes.playButton}
           />

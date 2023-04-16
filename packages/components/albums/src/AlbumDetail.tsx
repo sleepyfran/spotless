@@ -10,6 +10,7 @@ import { Title } from "@spotless/components-shared";
 import { useAlbum } from "./hooks";
 import { format } from "date-fns";
 import { Album } from "@spotless/types";
+import { PlayButton } from "@spotless/components-player";
 
 type AlbumDetailProps = {
   albumId: string;
@@ -36,6 +37,7 @@ export const AlbumDetails = ({ albumId }: AlbumDetailProps) => {
   return (
     <Flex gap={10} direction="column">
       <AlbumInfo status={status} />
+      {status.__type === "loaded" && <PlayButton item={status.album} />}
       <AlbumTrackList status={status} />
     </Flex>
   );
@@ -75,9 +77,9 @@ const AlbumInfo = ({ status }: AlbumDetailsChildProps) => {
       )}
       <Flex direction="column">
         {loaded ? (
-          <Title title={status.album.name} size="3rem" />
+          <Title title={status.album.name} size="2rem" clamp={2} />
         ) : (
-          <Skeleton width={300} height="3rem" />
+          <Skeleton width={300} height="2rem" />
         )}
         {loaded ? (
           <Flex>

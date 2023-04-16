@@ -64,6 +64,11 @@ export type Artist = {
   imageUrl: string;
 };
 
+/**
+ * Represents all playable items.
+ */
+export type Playable = Album;
+
 export type CurrentlyPlaying = {
   artistName: string;
   albumName: string;
