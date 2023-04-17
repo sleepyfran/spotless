@@ -22,10 +22,23 @@ export class AlbumsData {
   /**
    * Returns all the albums in the user's library.
    */
-  public allAlbumsByName(): Observable<Album[]> {
-    return this.db.observe(() =>
-      this.db.albums.orderBy(fieldNameOf<Album>("artistName")).toArray()
-    );
+  public allAlbumsByName(filter?: string): Observable<Album[]> {
+    const lowercaseFilter = filter?.toLowerCase();
+
+    return this.db.observe(() => {
+      const query = this.db.albums.orderBy(fieldNameOf<Album>("artistName"));
+      return lowercaseFilter
+        ? query
+            .filter(
+              (album) =>
+                album.artistName
+                  .toLowerCase()
+                  .includes(lowercaseFilter || "") ||
+                album.name.toLowerCase().includes(lowercaseFilter || "")
+            )
+            .toArray()
+        : query.toArray();
+    });
   }
 
   /**

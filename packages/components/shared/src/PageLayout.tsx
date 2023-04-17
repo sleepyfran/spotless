@@ -17,7 +17,7 @@ export const PageLayout = ({
   const { spacing } = useMantineTheme();
 
   return (
-    <Flex direction="column" gap={spacing.md}>
+    <Flex direction="column" gap={spacing.md} w="100%" h="100%">
       <Flex align="center" gap={spacing.md}>
         <Title>{title}</Title>
         {isLoading && <Loader size="sm" />}

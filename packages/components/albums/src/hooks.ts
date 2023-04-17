@@ -22,7 +22,8 @@ const [albumDetail$] = bind(
   loadingAlbum
 );
 const [allAlbums$] = bind(
-  (albums: AlbumsData) => albums.allAlbumsByName().pipe(mapToAlbumsResponse),
+  (albums: AlbumsData, filter?: string) =>
+    albums.allAlbumsByName(filter).pipe(mapToAlbumsResponse),
   loadingAlbums
 );
 const [nAlbums$] = bind(
@@ -46,9 +47,9 @@ export const useAlbum = (id: string) => {
  * observable response with a type to indicate if we're loading or if we've
  * finished loading.
  */
-export const useAllAlbums = () => {
+export const useAllAlbums = (filter?: string) => {
   const { albums } = useData();
-  return allAlbums$(albums);
+  return allAlbums$(albums, filter);
 };
 
 /**
