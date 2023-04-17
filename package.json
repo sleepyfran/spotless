@@ -15,8 +15,8 @@
     "lint": "eslint --max-warnings 0 --ext .ts,.tsx .",
     "lint:fix": "eslint --max-warnings 0 --ext .ts,.tsx . --fix",
     "gen": "plop",
-    "format": "prettier --check './packages/**/*.{ts,tsx}'",
-    "format:fix": "prettier --write './packages/**/*.{ts,tsx}'",
+    "format": "prettier --check \"packages/**/*.{ts, tsx}\"",
+    "format:fix": "prettier --write \"packages/**/*.{ts, tsx}\"",
     "prepare": "husky install"
   },
   "devDependencies": {
