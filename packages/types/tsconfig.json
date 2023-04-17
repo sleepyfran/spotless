@@ -2,5 +2,5 @@
     "include": [
         "index.ts"
     ],
-    "extends": "../../../tsconfig.json"
+    "extends": "../../tsconfig.json"
 }
