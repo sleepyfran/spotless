@@ -7,6 +7,10 @@ type ShuffleButtonProps = {
    */
   shuffling: boolean;
 };
+
+/**
+ * Component that renders a button to toggle the shuffle.
+ */
 export const ShuffleButton = ({ shuffling }: ShuffleButtonProps) => {
   const onClick = () => console.log("Shuffle clicked");
 

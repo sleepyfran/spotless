@@ -8,6 +8,7 @@ import { QueueButton } from "./QueueButton";
 import { ShuffleButton } from "./ShuffleButton";
 import { QueuedTrackItem } from "./QueueItem";
 import { useState } from "react";
+import { VolumePopoverButton } from "./VolumeControls";
 
 const [usePlayer$] = bind(
   (playerData: PlayerData) => playerData.state(),
@@ -41,6 +42,7 @@ export const Player = ({ className }: PlayerProps) => {
         <ConnectedPlayer
           currentlyPlaying={playerState.currentlyPlaying}
           queue={playerState.queue}
+          currentVolume={playerState.volume}
           shuffling={playerState.shuffle}
           playing={!playerState.paused}
           onCoverArtClick={onCoverArtClick}
@@ -55,6 +57,7 @@ export const Player = ({ className }: PlayerProps) => {
 type ConnectedPlayerProps = {
   currentlyPlaying: QueueItem;
   queue: QueueItem[];
+  currentVolume: number;
   shuffling: boolean;
   playing: boolean;
   onCoverArtClick: () => void;
@@ -63,6 +66,7 @@ type ConnectedPlayerProps = {
 const ConnectedPlayer = ({
   currentlyPlaying,
   queue,
+  currentVolume,
   shuffling,
   playing,
   onCoverArtClick,
@@ -89,6 +93,7 @@ const ConnectedPlayer = ({
           <Flex gap={5} align="center">
             <ShuffleButton shuffling={shuffling} />
             <QueueButton onClick={onQueueClick} enabled={queue.length > 0} />
+            <VolumePopoverButton currentVolume={currentVolume} />
           </Flex>
         </Flex>
       </Flex>

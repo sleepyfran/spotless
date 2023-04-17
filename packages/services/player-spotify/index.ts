@@ -29,7 +29,9 @@ const errored: ErroredPlayer = { __status: "errored" };
 
 type ConnectionStatus = ConnectedPlayer | DisconnectedPlayer | ErroredPlayer;
 
-const toPlayerState = (state: Spotify.PlaybackState | undefined): PlayerState =>
+const toPlayerState = (
+  state: (Spotify.PlaybackState & { volume?: number }) | undefined
+): PlayerState =>
   state
     ? {
         currentlyPlaying: state?.track_window?.current_track
@@ -49,6 +51,7 @@ const toPlayerState = (state: Spotify.PlaybackState | undefined): PlayerState =>
             trackLength: track.duration_ms,
             trackName: track.name,
           })) ?? [],
+        volume: state.volume ?? 50,
         paused: state.paused,
         shuffle: state.shuffle,
         positionInMs: state.position,
@@ -117,6 +120,13 @@ export class SpotifyPlayer implements Player {
     return this.executePlayerAction((player) => player.pause());
   }
 
+  public setVolume(volume: number): Single<void> {
+    const normalizedVolume = volume / 100;
+    return this.executePlayerAction((player) =>
+      player.setVolume(normalizedVolume)
+    );
+  }
+
   public transferPlayback(): Single<void> {
     if (this.status.__status === "connected") {
       return this.api.player.transferPlayback(this.status.deviceId);
@@ -174,8 +184,32 @@ export class SpotifyPlayer implements Player {
     this.player.addListener(
       "player_state_changed",
       (state: Spotify.PlaybackState) => {
-        this.logger.log("Playback state has changed to", state);
-        this.playerState.setState(toPlayerState(state));
+        this.logger.log(
+          "Playback state has changed. Attempting to retrieve volume before setting. State is:",
+          state
+        );
+
+        if (!this.player) {
+          this.logger.warn("Player has no value, defaulting to 50");
+          this.playerState.setState(toPlayerState(state));
+          return;
+        }
+
+        this.player
+          .getVolume()
+          .then((volume) => {
+            const normalizedVolume = volume * 100;
+            this.logger.log("Volume retrieved, setting to", normalizedVolume);
+            this.playerState.setState(
+              toPlayerState({ ...state, volume: normalizedVolume })
+            );
+          })
+          .catch(() => {
+            this.logger.error(
+              "Failed to retrieve volume from player, defaulting to 50"
+            );
+            this.playerState.setState(toPlayerState(state));
+          });
       }
     );
 

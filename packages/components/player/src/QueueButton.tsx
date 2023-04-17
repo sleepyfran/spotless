@@ -13,6 +13,9 @@ type QueueButtonProps = {
   enabled?: boolean;
 };
 
+/**
+ * Component that renders a button to toggle the queue.
+ */
 export const QueueButton = ({ onClick, enabled }: QueueButtonProps) => (
   <ActionIcon
     variant="light"

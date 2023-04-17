@@ -83,6 +83,7 @@ export type QueueItem = {
 export type PlayerState = {
   currentlyPlaying: QueueItem | undefined;
   queue: QueueItem[];
+  volume: number;
   paused: boolean;
   shuffle: boolean;
   positionInMs: number;
