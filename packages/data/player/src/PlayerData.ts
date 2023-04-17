@@ -3,6 +3,7 @@ import { BehaviorSubject } from "rxjs";
 
 export const INITIAL_PLAYER_STATE: PlayerState = {
   currentlyPlaying: undefined,
+  queue: [],
   paused: true,
   shuffle: false,
   positionInMs: 0,
