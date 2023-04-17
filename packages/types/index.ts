@@ -69,7 +69,7 @@ export type Artist = {
  */
 export type Playable = Album;
 
-export type CurrentlyPlaying = {
+export type QueueItem = {
   artistName: string;
   albumName: string;
   trackName: string;
@@ -81,7 +81,8 @@ export type CurrentlyPlaying = {
  * Represents the current state of the player.
  */
 export type PlayerState = {
-  currentlyPlaying: CurrentlyPlaying | undefined;
+  currentlyPlaying: QueueItem | undefined;
+  queue: QueueItem[];
   paused: boolean;
   shuffle: boolean;
   positionInMs: number;

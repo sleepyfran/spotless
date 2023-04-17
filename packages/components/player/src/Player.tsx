@@ -1,9 +1,13 @@
-import { Card, Text, Flex, Button } from "@mantine/core";
+import { Card, Text, Flex, Button, ScrollArea } from "@mantine/core";
 import { bind } from "@react-rxjs/core";
 import { Title, useData, useServices } from "@spotless/components-shared";
 import { INITIAL_PLAYER_STATE, PlayerData } from "@spotless/data-player";
 import { CoverArtPlayButton } from "./CoverArtPlayButton";
-import { CurrentlyPlaying } from "@spotless/types";
+import { QueueItem } from "@spotless/types";
+import { QueueButton } from "./QueueButton";
+import { ShuffleButton } from "./ShuffleButton";
+import { QueuedTrackItem } from "./QueueItem";
+import { useState } from "react";
 
 const [usePlayer$] = bind(
   (playerData: PlayerData) => playerData.state(),
@@ -36,6 +40,8 @@ export const Player = ({ className }: PlayerProps) => {
       {playerState.currentlyPlaying ? (
         <ConnectedPlayer
           currentlyPlaying={playerState.currentlyPlaying}
+          queue={playerState.queue}
+          shuffling={playerState.shuffle}
           playing={!playerState.paused}
           onCoverArtClick={onCoverArtClick}
         />
@@ -47,27 +53,58 @@ export const Player = ({ className }: PlayerProps) => {
 };
 
 type ConnectedPlayerProps = {
-  currentlyPlaying: CurrentlyPlaying;
+  currentlyPlaying: QueueItem;
+  queue: QueueItem[];
+  shuffling: boolean;
   playing: boolean;
   onCoverArtClick: () => void;
 };
 
 const ConnectedPlayer = ({
   currentlyPlaying,
+  queue,
+  shuffling,
   playing,
   onCoverArtClick,
 }: ConnectedPlayerProps) => {
+  const [queueVisible, setQueueVisible] = useState(false);
+
+  const onQueueClick = () => setQueueVisible((visible) => !visible);
+
   return (
-    <Flex gap={10} align="center">
-      <CoverArtPlayButton
-        coverArtUrl={currentlyPlaying.coverUrl}
-        playing={playing}
-        onClick={onCoverArtClick}
-      />
-      <Flex direction="column">
-        <Title title={currentlyPlaying.trackName}></Title>
-        <Text fz="sm">{currentlyPlaying.artistName}</Text>
+    <Flex direction="column">
+      <Flex gap={10} align="center">
+        <CoverArtPlayButton
+          coverArtUrl={currentlyPlaying.coverUrl}
+          playing={playing}
+          onClick={onCoverArtClick}
+        />
+        <Flex direction="column">
+          <Flex gap={5} align="center">
+            <Title title={currentlyPlaying.trackName}></Title>
+            <Text fz="sm" fw="lighter">
+              {currentlyPlaying.artistName}
+            </Text>
+          </Flex>
+          <Flex gap={5} align="center">
+            <ShuffleButton shuffling={shuffling} />
+            <QueueButton onClick={onQueueClick} enabled={queue.length > 0} />
+          </Flex>
+        </Flex>
       </Flex>
+
+      {queueVisible && (
+        <>
+          <Text fz="lg" my="sm">
+            Queue
+          </Text>
+          <ScrollArea h={300}>
+            {queue.map((item, index) => (
+              <QueuedTrackItem key={index} item={item} />
+            ))}
+          </ScrollArea>
+        </>
+      )}
     </Flex>
   );
 };

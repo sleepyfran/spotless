@@ -41,6 +41,14 @@ const toPlayerState = (state: Spotify.PlaybackState | undefined): PlayerState =>
               trackLength: state.track_window.current_track.duration_ms,
             }
           : undefined,
+        queue:
+          state?.track_window?.next_tracks?.map((track) => ({
+            albumName: track.album.name,
+            artistName: track.artists[0].name,
+            coverUrl: track.album.images[0].url,
+            trackLength: track.duration_ms,
+            trackName: track.name,
+          })) ?? [],
         paused: state.paused,
         shuffle: state.shuffle,
         positionInMs: state.position,
