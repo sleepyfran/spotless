@@ -1,4 +1,5 @@
 import { ActionIcon } from "@mantine/core";
+import { useServices } from "@spotless/components-shared";
 import { IconArrowsShuffle } from "@tabler/icons-react";
 
 type ShuffleButtonProps = {
@@ -12,7 +13,9 @@ type ShuffleButtonProps = {
  * Component that renders a button to toggle the shuffle.
  */
 export const ShuffleButton = ({ shuffling }: ShuffleButtonProps) => {
-  const onClick = () => console.log("Shuffle clicked");
+  const { player } = useServices();
+
+  const onClick = () => player.setShuffle(!shuffling).subscribe();
 
   return (
     <ActionIcon

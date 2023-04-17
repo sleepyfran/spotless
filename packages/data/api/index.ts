@@ -42,6 +42,11 @@ export interface PlayerApi {
   play(item: Album): Single<void>;
 
   /**
+   * Sets the shuffle to the given value.
+   */
+  setShuffle(enabled: boolean): Single<void>;
+
+  /**
    * Transfers the playback to the specified device ID.
    * TODO: This is Spotify specific and shouldn't be in the general api.
    */

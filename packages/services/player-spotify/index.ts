@@ -116,6 +116,10 @@ export class SpotifyPlayer implements Player {
     return this.executePlayerAction((player) => player.resume());
   }
 
+  public setShuffle(state: boolean): Single<void> {
+    return this.api.player.setShuffle(state);
+  }
+
   public pause(): Single<void> {
     return this.executePlayerAction((player) => player.pause());
   }
