@@ -1,8 +1,6 @@
 {
   "include": [
     "src",
-    "../components/layout/src/Root.tsx",
-    "../components/auth/src/RedirectIfLoggedIn.tsx"
   ],
   "extends": "../../tsconfig.json"
 }
