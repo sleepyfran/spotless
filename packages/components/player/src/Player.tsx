@@ -57,7 +57,7 @@ export const Player = ({ className }: PlayerProps) => {
         withBorder
         className={playerStyles.cx(playerStyles.classes.root, className)}
         component={motion.div}
-        layout="position"
+        layout
       >
         {playerState.currentlyPlaying ? (
           <ConnectedPlayer
@@ -99,6 +99,21 @@ const ConnectedPlayer = ({
 
   return (
     <motion.div layout>
+      <AnimatePresence mode="popLayout">
+        {queueVisible && (
+          <motion.div key="queue" exit={{ y: [null, 20] }}>
+            <Text fz="lg" my="sm">
+              Queue
+            </Text>
+            <ScrollArea h={300}>
+              {queue.map((item, index) => (
+                <QueuedTrackItem key={index} item={item} />
+              ))}
+            </ScrollArea>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       <Flex gap={10} align="center">
         <CoverArtPlayButton
           coverArtUrl={currentlyPlaying.coverUrl}
@@ -119,21 +134,6 @@ const ConnectedPlayer = ({
           </Flex>
         </Flex>
       </Flex>
-
-      <AnimatePresence>
-        {queueVisible && (
-          <motion.div key="queue">
-            <Text fz="lg" my="sm">
-              Queue
-            </Text>
-            <ScrollArea h={300}>
-              {queue.map((item, index) => (
-                <QueuedTrackItem key={index} item={item} />
-              ))}
-            </ScrollArea>
-          </motion.div>
-        )}
-      </AnimatePresence>
     </motion.div>
   );
 };
