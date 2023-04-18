@@ -12,6 +12,7 @@ export const createSpotifyApi = (authData: AuthData): Api => {
   const client = new ApiClient(BASE_URL, authData);
 
   return {
+    client,
     userLibrary: createUserLibraryApi(client),
     player: createPlayerApi(client),
   };

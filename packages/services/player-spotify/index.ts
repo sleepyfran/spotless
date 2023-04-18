@@ -5,7 +5,7 @@ import { Logger, LoggerFactory } from "@spotless/services-logger";
 import { Api } from "@spotless/data-api";
 import { Album, AuthenticatedUser, PlayerState } from "@spotless/types";
 import { Single, singleFrom, singleOf } from "@spotless/services-rx";
-import { EMPTY, switchMap } from "rxjs";
+import { EMPTY, switchMap, concatMap, ignoreElements } from "rxjs";
 
 type ConnectedPlayer = {
   __status: "connected";
@@ -131,12 +131,42 @@ export class SpotifyPlayer implements Player {
     );
   }
 
-  public transferPlayback(): Single<void> {
-    if (this.status.__status === "connected") {
-      return this.api.player.transferPlayback(this.status.deviceId);
+  public transferPlayback(force?: boolean): Single<void> {
+    if (this.status.__status !== "connected") {
+      return EMPTY;
     }
 
-    return EMPTY;
+    const currentDeviceId = this.status.deviceId;
+    const transferPlayback = this.api.client
+      .put("/me/player", {
+        device_ids: [currentDeviceId],
+      })
+      .pipe(ignoreElements());
+
+    if (force) {
+      return transferPlayback;
+    }
+
+    return this.api.client
+      .get<SpotifyApi.CurrentPlaybackResponse>("/me/player")
+      .pipe(
+        concatMap((playbackState) => {
+          const playingInAnotherDevice =
+            playbackState.is_playing &&
+            playbackState.device.id !== currentDeviceId;
+          if (playingInAnotherDevice) {
+            // We don't want to interrupt the playback in another device.
+            this.logger.log(
+              "User is playing in another device, skipping playback transfer"
+            );
+            return EMPTY;
+          }
+
+          this.logger.log("Transferring playback to current device");
+          return transferPlayback;
+        }),
+        ignoreElements()
+      );
   }
 
   private executePlayerAction(

@@ -45,12 +45,6 @@ export interface PlayerApi {
    * Sets the shuffle to the given value.
    */
   setShuffle(enabled: boolean): Single<void>;
-
-  /**
-   * Transfers the playback to the specified device ID.
-   * TODO: This is Spotify specific and shouldn't be in the general api.
-   */
-  transferPlayback(deviceId: string): Single<void>;
 }
 
 /**
@@ -85,7 +79,21 @@ export interface UserLibraryApi {
  * music provider we're using (Spotify, Apple Music, etc).
  */
 export interface Api {
+  /**
+   * Underlying client connection to the API. Use this to make requests that
+   * shouldn't belong to the broader API (example: Spotify-specific requests)
+   * but that need to be requested the same way as the rest of the API.
+   */
+  client: ApiClient;
+
+  /**
+   * Contains methods for retrieving the user's library.
+   */
   userLibrary: UserLibraryApi;
+
+  /**
+   * Contains methods for interacting with the player.
+   */
   player: PlayerApi;
 }
 

@@ -142,7 +142,7 @@ const DisconnectedPlayer = () => {
   const { player } = useServices();
 
   const onTransferPlaybackHereClick = () => {
-    player.transferPlayback().subscribe();
+    player.transferPlayback(true).subscribe();
   };
 
   return (
