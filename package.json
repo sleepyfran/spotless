@@ -8,7 +8,7 @@
   },
   "homepage": "https://github.com/sleepyfran/spotless#readme",
   "scripts": {
-    "ci": "yarn lint && yarn format",
+    "ci": "yarn typecheck && yarn lint && yarn format",
     "web:dev": "concurrently \"yarn typecheck:watch\" \"vite serve packages/web\"",
     "web:build": "tsc && vite build packages/web",
     "web:preview": "vite preview",
