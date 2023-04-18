@@ -5,12 +5,15 @@ import { createSignal } from "@react-rxjs/utils";
  */
 export type Modal =
   | {
-      __type: "Album";
+      __type: "hidden";
+    }
+  | {
+      __type: "album";
       albumId: string;
     }
   | {
-      __type: "Artist";
+      __type: "artist";
       artistId: string;
     };
 
-export const modals = createSignal<Modal | undefined>();
+export const modals = createSignal<Modal>();

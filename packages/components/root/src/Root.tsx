@@ -21,24 +21,30 @@ const usePlayerStyles = createStyles({
 });
 
 const [modals$, setModal] = modals;
-const [useCurrentModal] = bind(modals$, undefined);
+const [useCurrentModal] = bind(modals$, { __type: "hidden" });
 
 export const Root = ({ children }: PropsWithChildren) => {
   const theme = useMantineTheme();
   const styles = usePlayerStyles();
 
   const modal = useCurrentModal();
-  const onCloseModal = () => setModal(undefined);
+  const onCloseModal = () => setModal({ __type: "hidden" });
 
   return (
     <AppShell header={<Header />} px={theme.spacing.xl}>
-      {modal && (
-        <Modal opened={!!modal} onClose={onCloseModal} size="50%">
-          {modal.__type === "Album" ? (
-            <AlbumDetails albumId={modal.albumId} />
-          ) : null}
-        </Modal>
-      )}
+      <Modal
+        opened={modal.__type !== "hidden"}
+        onClose={onCloseModal}
+        size="50%"
+        transitionProps={{
+          transition: "pop",
+          duration: 150,
+        }}
+      >
+        {modal.__type === "album" ? (
+          <AlbumDetails albumId={modal.albumId} />
+        ) : null}
+      </Modal>
 
       <Player className={styles.classes.player} />
       {/* Leave enough space for the player to scroll off. */}

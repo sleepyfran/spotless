@@ -155,7 +155,7 @@ const RemoveAlbumButton = ({ albumId }: { albumId: string }) => {
         library.removeAlbum(albumId).subscribe({
           complete: () => {
             setStatus("idle");
-            setModal(undefined);
+            setModal({ __type: "hidden" });
           },
           error: () => {
             setStatus("error");

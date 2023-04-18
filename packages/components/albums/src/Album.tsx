@@ -36,7 +36,7 @@ export const AlbumCard = ({ album }: AlbumProps) => {
   const cardStyles = useCardStyles();
   const playableImageStyles = usePlayableImageStyles();
 
-  const onCardClick = () => setModal({ __type: "Album", albumId: album.id });
+  const onCardClick = () => setModal({ __type: "album", albumId: album.id });
 
   return (
     <Flex
