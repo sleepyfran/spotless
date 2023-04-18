@@ -58,7 +58,12 @@ export const CoverArtPlayButton = ({
   const styles = useCoverArtStyles();
 
   return (
-    <motion.div layout="position" className={styles.classes.container}>
+    <motion.div
+      layout="position"
+      className={styles.classes.container}
+      transition={{ duration: 0.2 }}
+      whileHover={{ scale: [null, 1.1] }}
+    >
       <Image src={coverArtUrl} width={80} height={80} radius="sm" />
 
       <ActionIcon
