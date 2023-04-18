@@ -1,8 +1,15 @@
-import { Flex, Image, Text, createStyles } from "@mantine/core";
+import { Image, createStyles } from "@mantine/core";
 import { useHover } from "@mantine/hooks";
-import { Title, useCardStyles, modals } from "@spotless/components-shared";
+import {
+  Flex,
+  Title,
+  Text,
+  useCardStyles,
+  modals,
+} from "@spotless/components-shared";
 import { PlayButton } from "@spotless/components-player";
 import { Album } from "@spotless/types";
+import { motion } from "framer-motion";
 
 type AlbumProps = {
   album: Album;
@@ -38,6 +45,10 @@ export const AlbumCard = ({ album }: AlbumProps) => {
       align="center"
       className={cardStyles.classes.card}
       onClick={onCardClick}
+      component={motion.div}
+      animate={{ opacity: [0, 1] }}
+      transition={{ ease: "easeOut", duration: 0.2 }}
+      whileHover={{ scale: [null, 1.05] }}
     >
       <div className={playableImageStyles.classes.playableImageRoot}>
         <Image src={album.coverUrl} width={180} height={180} radius="sm" />
