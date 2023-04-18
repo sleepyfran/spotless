@@ -1,5 +1,5 @@
-import { Flex, Image, Text } from "@mantine/core";
-import { Title, useCardStyles } from "@spotless/components-shared";
+import { Flex, Image } from "@mantine/core";
+import { Title, Text, useCardStyles } from "@spotless/components-shared";
 import { QueueItem } from "@spotless/types";
 
 type QueueItemProps = {

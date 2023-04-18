@@ -1,6 +1,13 @@
-import { Card, Text, Flex, Button, ScrollArea } from "@mantine/core";
+import { Card, Button, ScrollArea } from "@mantine/core";
 import { bind } from "@react-rxjs/core";
-import { Title, useData, useServices } from "@spotless/components-shared";
+import { AnimatePresence, LayoutGroup, motion } from "framer-motion";
+import {
+  Flex,
+  Text,
+  Title,
+  useData,
+  useServices,
+} from "@spotless/components-shared";
 import { INITIAL_PLAYER_STATE, PlayerData } from "@spotless/data-player";
 import { CoverArtPlayButton } from "./CoverArtPlayButton";
 import { QueueItem } from "@spotless/types";
@@ -37,20 +44,28 @@ export const Player = ({ className }: PlayerProps) => {
   };
 
   return (
-    <Card shadow="xl" withBorder className={className}>
-      {playerState.currentlyPlaying ? (
-        <ConnectedPlayer
-          currentlyPlaying={playerState.currentlyPlaying}
-          queue={playerState.queue}
-          currentVolume={playerState.volume}
-          shuffling={playerState.shuffle}
-          playing={!playerState.paused}
-          onCoverArtClick={onCoverArtClick}
-        />
-      ) : (
-        <DisconnectedPlayer />
-      )}
-    </Card>
+    <LayoutGroup>
+      <Card
+        shadow="xl"
+        withBorder
+        className={className}
+        component={motion.div}
+        layout="position"
+      >
+        {playerState.currentlyPlaying ? (
+          <ConnectedPlayer
+            currentlyPlaying={playerState.currentlyPlaying}
+            queue={playerState.queue}
+            currentVolume={playerState.volume}
+            shuffling={playerState.shuffle}
+            playing={!playerState.paused}
+            onCoverArtClick={onCoverArtClick}
+          />
+        ) : (
+          <DisconnectedPlayer />
+        )}
+      </Card>
+    </LayoutGroup>
   );
 };
 
@@ -76,7 +91,7 @@ const ConnectedPlayer = ({
   const onQueueClick = () => setQueueVisible((visible) => !visible);
 
   return (
-    <Flex direction="column">
+    <motion.div layout>
       <Flex gap={10} align="center">
         <CoverArtPlayButton
           coverArtUrl={currentlyPlaying.coverUrl}
@@ -90,7 +105,7 @@ const ConnectedPlayer = ({
               {currentlyPlaying.artistName}
             </Text>
           </Flex>
-          <Flex gap={5} align="center">
+          <Flex component={motion.div} layout="position">
             <ShuffleButton shuffling={shuffling} />
             <QueueButton onClick={onQueueClick} enabled={queue.length > 0} />
             <VolumePopoverButton currentVolume={currentVolume} />
@@ -98,19 +113,21 @@ const ConnectedPlayer = ({
         </Flex>
       </Flex>
 
-      {queueVisible && (
-        <>
-          <Text fz="lg" my="sm">
-            Queue
-          </Text>
-          <ScrollArea h={300}>
-            {queue.map((item, index) => (
-              <QueuedTrackItem key={index} item={item} />
-            ))}
-          </ScrollArea>
-        </>
-      )}
-    </Flex>
+      <AnimatePresence>
+        {queueVisible && (
+          <motion.div key="queue">
+            <Text fz="lg" my="sm">
+              Queue
+            </Text>
+            <ScrollArea h={300}>
+              {queue.map((item, index) => (
+                <QueuedTrackItem key={index} item={item} />
+              ))}
+            </ScrollArea>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </motion.div>
   );
 };
 

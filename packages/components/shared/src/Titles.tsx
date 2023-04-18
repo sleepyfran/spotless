@@ -1,4 +1,5 @@
-import { Text, useMantineTheme } from "@mantine/core";
+import { useMantineTheme } from "@mantine/core";
+import { Text } from "./Motion";
 
 type TitleProps = {
   /**

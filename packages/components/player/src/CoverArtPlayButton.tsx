@@ -3,6 +3,7 @@ import {
   IconPlayerPlayFilled,
   IconPlayerPauseFilled,
 } from "@tabler/icons-react";
+import { motion } from "framer-motion";
 
 export type CoverArtPlayButtonProps = {
   /**
@@ -57,7 +58,7 @@ export const CoverArtPlayButton = ({
   const styles = useCoverArtStyles();
 
   return (
-    <div className={styles.classes.container}>
+    <motion.div layout="position" className={styles.classes.container}>
       <Image src={coverArtUrl} width={80} height={80} radius="sm" />
 
       <ActionIcon
@@ -69,6 +70,6 @@ export const CoverArtPlayButton = ({
       >
         {playing ? <IconPlayerPauseFilled /> : <IconPlayerPlayFilled />}
       </ActionIcon>
-    </div>
+    </motion.div>
   );
 };
