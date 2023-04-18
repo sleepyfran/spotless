@@ -1,4 +1,4 @@
-import { Card, Button, ScrollArea } from "@mantine/core";
+import { Card, Button, ScrollArea, createStyles } from "@mantine/core";
 import { bind } from "@react-rxjs/core";
 import { AnimatePresence, LayoutGroup, motion } from "framer-motion";
 import {
@@ -17,6 +17,12 @@ import { QueuedTrackItem } from "./QueueItem";
 import { useState } from "react";
 import { VolumePopoverButton } from "./VolumeControls";
 
+const usePlayerStyles = createStyles({
+  root: {
+    minWidth: 250,
+  },
+});
+
 const [usePlayer$] = bind(
   (playerData: PlayerData) => playerData.state(),
   INITIAL_PLAYER_STATE
@@ -34,6 +40,7 @@ export const Player = ({ className }: PlayerProps) => {
   const { player: playerService } = useServices();
   const { player } = useData();
   const playerState = usePlayer$(player);
+  const playerStyles = usePlayerStyles();
 
   const onCoverArtClick = () => {
     if (playerState.paused) {
@@ -48,7 +55,7 @@ export const Player = ({ className }: PlayerProps) => {
       <Card
         shadow="xl"
         withBorder
-        className={className}
+        className={playerStyles.cx(playerStyles.classes.root, className)}
         component={motion.div}
         layout="position"
       >
