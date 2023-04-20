@@ -10,7 +10,6 @@ import {
 } from "@spotless/components-shared";
 import { INITIAL_PLAYER_STATE, PlayerData } from "@spotless/data-player";
 import { CoverArtPlayButton } from "./CoverArtPlayButton";
-import { QueueItem } from "@spotless/types";
 import { QueueButton } from "./QueueButton";
 import { ShuffleButton } from "./ShuffleButton";
 import { QueuedTrackItem } from "./QueueItem";
@@ -70,35 +69,6 @@ export const Player = () => {
     }
   };
 
-  return (
-    <ConnectedPlayer
-      currentlyPlaying={playerState.currentlyPlaying}
-      queue={playerState.queue}
-      currentVolume={playerState.volume}
-      shuffling={playerState.shuffle}
-      playing={!playerState.paused}
-      onCoverArtClick={onCoverArtClick}
-    />
-  );
-};
-
-type ConnectedPlayerProps = {
-  currentlyPlaying: QueueItem | undefined;
-  queue: QueueItem[];
-  currentVolume: number;
-  shuffling: boolean;
-  playing: boolean;
-  onCoverArtClick: () => void;
-};
-
-const ConnectedPlayer = ({
-  currentlyPlaying,
-  queue,
-  currentVolume,
-  shuffling,
-  playing,
-  onCoverArtClick,
-}: ConnectedPlayerProps) => {
   const [queueVisible, setQueueVisible] = useState(false);
 
   const onQueueClick = () => setQueueVisible((visible) => !visible);
@@ -112,7 +82,7 @@ const ConnectedPlayer = ({
               Queue
             </Text>
             <ScrollArea h={300}>
-              {queue.map((item, index) => (
+              {playerState.queue.map((item, index) => (
                 <QueuedTrackItem key={index} item={item} />
               ))}
             </ScrollArea>
@@ -122,21 +92,26 @@ const ConnectedPlayer = ({
 
       <Flex gap={10} align="center">
         <CoverArtPlayButton
-          coverArtUrl={currentlyPlaying?.coverUrl}
-          playing={playing}
+          coverArtUrl={playerState.currentlyPlaying?.coverUrl}
+          playing={!playerState.paused}
           onClick={onCoverArtClick}
         />
         <Flex direction="column">
           <Flex gap={5} align="center">
-            <Title title={currentlyPlaying?.trackName || ""}></Title>
+            <Title
+              title={playerState.currentlyPlaying?.trackName || ""}
+            ></Title>
             <Text fz="sm" fw="lighter">
-              {currentlyPlaying?.artistName || ""}
+              {playerState.currentlyPlaying?.artistName || ""}
             </Text>
           </Flex>
           <Flex component={motion.div} layout="position">
-            <ShuffleButton shuffling={shuffling} />
-            <QueueButton onClick={onQueueClick} enabled={queue.length > 0} />
-            <VolumePopoverButton currentVolume={currentVolume} />
+            <ShuffleButton shuffling={playerState.shuffle} />
+            <QueueButton
+              onClick={onQueueClick}
+              enabled={playerState.queue.length > 0}
+            />
+            <VolumePopoverButton currentVolume={playerState.volume} />
           </Flex>
         </Flex>
       </Flex>
