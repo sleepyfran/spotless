@@ -1,4 +1,4 @@
-import { Card, Button, ScrollArea, createStyles } from "@mantine/core";
+import { Card, ScrollArea, createStyles } from "@mantine/core";
 import { bind } from "@react-rxjs/core";
 import { AnimatePresence, LayoutGroup, motion } from "framer-motion";
 import {
@@ -14,7 +14,7 @@ import { QueueItem } from "@spotless/types";
 import { QueueButton } from "./QueueButton";
 import { ShuffleButton } from "./ShuffleButton";
 import { QueuedTrackItem } from "./QueueItem";
-import { useState } from "react";
+import { PropsWithChildren, useState } from "react";
 import { VolumePopoverButton } from "./VolumeControls";
 
 const usePlayerStyles = createStyles({
@@ -28,27 +28,15 @@ const [usePlayer$] = bind(
   INITIAL_PLAYER_STATE
 );
 
-type PlayerProps = {
+export type PlayerCardProps = {
   className?: string;
 };
 
-/**
- * Component that contains the main player UI, which shows the currently playing
- * track and allows the user to control playback.
- */
-export const Player = ({ className }: PlayerProps) => {
-  const { player: playerService } = useServices();
-  const { player } = useData();
-  const playerState = usePlayer$(player);
+export const PlayerCard = ({
+  className,
+  children,
+}: PropsWithChildren<PlayerCardProps>) => {
   const playerStyles = usePlayerStyles();
-
-  const onCoverArtClick = () => {
-    if (playerState.paused) {
-      playerService.resume().subscribe();
-    } else {
-      playerService.pause().subscribe();
-    }
-  };
 
   return (
     <LayoutGroup>
@@ -59,25 +47,43 @@ export const Player = ({ className }: PlayerProps) => {
         component={motion.div}
         layout
       >
-        {playerState.currentlyPlaying ? (
-          <ConnectedPlayer
-            currentlyPlaying={playerState.currentlyPlaying}
-            queue={playerState.queue}
-            currentVolume={playerState.volume}
-            shuffling={playerState.shuffle}
-            playing={!playerState.paused}
-            onCoverArtClick={onCoverArtClick}
-          />
-        ) : (
-          <DisconnectedPlayer />
-        )}
+        {children}
       </Card>
     </LayoutGroup>
   );
 };
 
+/**
+ * Component that contains the main player UI, which shows the currently playing
+ * track and allows the user to control playback.
+ */
+export const Player = () => {
+  const { player: playerService } = useServices();
+  const { player } = useData();
+  const playerState = usePlayer$(player);
+
+  const onCoverArtClick = () => {
+    if (playerState.paused) {
+      playerService.resume().subscribe();
+    } else {
+      playerService.pause().subscribe();
+    }
+  };
+
+  return (
+    <ConnectedPlayer
+      currentlyPlaying={playerState.currentlyPlaying}
+      queue={playerState.queue}
+      currentVolume={playerState.volume}
+      shuffling={playerState.shuffle}
+      playing={!playerState.paused}
+      onCoverArtClick={onCoverArtClick}
+    />
+  );
+};
+
 type ConnectedPlayerProps = {
-  currentlyPlaying: QueueItem;
+  currentlyPlaying: QueueItem | undefined;
   queue: QueueItem[];
   currentVolume: number;
   shuffling: boolean;
@@ -116,15 +122,15 @@ const ConnectedPlayer = ({
 
       <Flex gap={10} align="center">
         <CoverArtPlayButton
-          coverArtUrl={currentlyPlaying.coverUrl}
+          coverArtUrl={currentlyPlaying?.coverUrl}
           playing={playing}
           onClick={onCoverArtClick}
         />
         <Flex direction="column">
           <Flex gap={5} align="center">
-            <Title title={currentlyPlaying.trackName}></Title>
+            <Title title={currentlyPlaying?.trackName || ""}></Title>
             <Text fz="sm" fw="lighter">
-              {currentlyPlaying.artistName}
+              {currentlyPlaying?.artistName || ""}
             </Text>
           </Flex>
           <Flex component={motion.div} layout="position">
@@ -135,22 +141,5 @@ const ConnectedPlayer = ({
         </Flex>
       </Flex>
     </motion.div>
-  );
-};
-
-const DisconnectedPlayer = () => {
-  const { player } = useServices();
-
-  const onTransferPlaybackHereClick = () => {
-    player.transferPlayback(true).subscribe();
-  };
-
-  return (
-    <Flex direction="column" align="center">
-      <Text>Disconnected</Text>
-      <Button variant="subtle" onClick={onTransferPlaybackHereClick}>
-        Transfer playback here
-      </Button>
-    </Flex>
   );
 };

@@ -19,3 +19,5 @@ export const singleOf = <T>(value: T): Single<T> => of(value).pipe(first());
 export const singleFrom = <O extends ObservableInput<any>>(
   input: O
 ): Single<ObservedValueOf<O>> => from(input).pipe(first());
+
+export const test = (): Single<void> => of(undefined);

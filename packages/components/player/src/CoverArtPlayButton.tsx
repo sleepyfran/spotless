@@ -9,7 +9,7 @@ export type CoverArtPlayButtonProps = {
   /**
    * URL of the cover art to display.
    */
-  coverArtUrl: string;
+  coverArtUrl: string | undefined;
 
   /**
    * Defines what happens when the button is pressed.
@@ -64,7 +64,13 @@ export const CoverArtPlayButton = ({
       transition={{ duration: 0.2 }}
       whileHover={{ scale: [null, 1.1] }}
     >
-      <Image src={coverArtUrl} width={80} height={80} radius="sm" />
+      <Image
+        src={coverArtUrl}
+        withPlaceholder
+        width={80}
+        height={80}
+        radius="sm"
+      />
 
       <ActionIcon
         variant="transparent"

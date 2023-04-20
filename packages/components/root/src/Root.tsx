@@ -7,7 +7,7 @@ import {
 } from "@mantine/core";
 import { AlbumDetails } from "@spotless/components-albums";
 import { Header } from "@spotless/components-header";
-import { Player } from "@spotless/components-player";
+import { SpotifyPlayer } from "@spotless/components-player";
 import { modals } from "@spotless/components-shared";
 import { bind } from "@react-rxjs/core";
 import { PropsWithChildren } from "react";
@@ -46,7 +46,7 @@ export const Root = ({ children }: PropsWithChildren) => {
         ) : null}
       </Modal>
 
-      <Player className={styles.classes.player} />
+      <SpotifyPlayer className={styles.classes.player} />
       {/* Leave enough space for the player to scroll off. */}
       <Flex pb="15rem">{children}</Flex>
     </AppShell>
