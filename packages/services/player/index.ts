@@ -31,10 +31,4 @@ export interface Player {
    * @param volume The volume to set, between 0 and 100.
    */
   setVolume(volume: number): Single<void>;
-
-  /**
-   * Transfers the playback to the current device.
-   * TODO: This is specific to Spotify and shouldn't be here.
-   */
-  transferPlayback(force?: boolean): Single<void>;
 }

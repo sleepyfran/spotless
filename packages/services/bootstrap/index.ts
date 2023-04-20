@@ -30,6 +30,7 @@ type BaseServices = {
 
 export type WorkerServices = BaseServices;
 export type MainServices = BaseServices & { player: Player };
+export type SpotifyServices = { player: SpotifyPlayer };
 
 const initializeBase = (
   appConfig: AppConfig

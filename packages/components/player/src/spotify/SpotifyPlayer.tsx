@@ -1,4 +1,9 @@
-import { Flex, Text, useData, useServices } from "@spotless/components-shared";
+import {
+  Flex,
+  Text,
+  useBackendSpecificServices,
+  useData,
+} from "@spotless/components-shared";
 import { PlayerCardProps, Player, PlayerCard } from "../Player";
 import { INITIAL_PLAYER_STATE, PlayerData } from "@spotless/data-player";
 import { bind } from "@react-rxjs/core";
@@ -21,7 +26,7 @@ export const SpotifyPlayer = ({ className }: PlayerCardProps) => {
 };
 
 const DisconnectedPlayer = () => {
-  const { player } = useServices();
+  const { player } = useBackendSpecificServices("spotify");
 
   const onTransferPlaybackHereClick = () => {
     player.transferPlayback(true).subscribe();
