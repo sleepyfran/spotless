@@ -1,4 +1,4 @@
-import { Card, ScrollArea, createStyles } from "@mantine/core";
+import { Card, ScrollArea } from "@mantine/core";
 import { bind } from "@react-rxjs/core";
 import { AnimatePresence, LayoutGroup, motion } from "framer-motion";
 import {
@@ -15,12 +15,7 @@ import { ShuffleButton } from "./ShuffleButton";
 import { QueuedTrackItem } from "./QueueItem";
 import { PropsWithChildren, useState } from "react";
 import { VolumePopoverButton } from "./VolumeControls";
-
-const usePlayerStyles = createStyles({
-  root: {
-    minWidth: 250,
-  },
-});
+import { useExpansiblePlayer } from "./use-expansible-player";
 
 const [usePlayer$] = bind(
   (playerData: PlayerData) => playerData.state(),
@@ -34,29 +29,28 @@ export type PlayerCardProps = {
 export const PlayerCard = ({
   className,
   children,
-}: PropsWithChildren<PlayerCardProps>) => {
-  const playerStyles = usePlayerStyles();
-
-  return (
-    <LayoutGroup>
-      <Card
-        shadow="xl"
-        withBorder
-        className={playerStyles.cx(playerStyles.classes.root, className)}
-        component={motion.div}
-        layout
-      >
-        {children}
-      </Card>
-    </LayoutGroup>
-  );
-};
+}: PropsWithChildren<PlayerCardProps>) => (
+  <LayoutGroup>
+    <Card
+      shadow="xl"
+      withBorder
+      className={className}
+      component={motion.div}
+      layout
+    >
+      {children}
+    </Card>
+  </LayoutGroup>
+);
 
 /**
  * Component that contains the main player UI, which shows the currently playing
  * track and allows the user to control playback.
  */
 export const Player = () => {
+  const [expanded, ref] = useExpansiblePlayer();
+  const [queueVisible, setQueueVisible] = useState(false);
+
   const { player: playerService } = useServices();
   const { player } = useData();
   const playerState = usePlayer$(player);
@@ -69,14 +63,12 @@ export const Player = () => {
     }
   };
 
-  const [queueVisible, setQueueVisible] = useState(false);
-
   const onQueueClick = () => setQueueVisible((visible) => !visible);
 
   return (
-    <motion.div layout>
+    <motion.div layout ref={ref}>
       <AnimatePresence mode="popLayout">
-        {queueVisible && (
+        {queueVisible && expanded && (
           <motion.div key="queue" exit={{ y: [null, 20] }}>
             <Text fz="lg" my="sm">
               Queue
@@ -96,24 +88,30 @@ export const Player = () => {
           playing={!playerState.paused}
           onClick={onCoverArtClick}
         />
-        <Flex direction="column">
-          <Flex gap={5} align="center">
-            <Title
-              title={playerState.currentlyPlaying?.trackName || ""}
-            ></Title>
-            <Text fz="sm" fw="lighter">
-              {playerState.currentlyPlaying?.artistName || ""}
-            </Text>
-          </Flex>
-          <Flex component={motion.div} layout="position">
-            <ShuffleButton shuffling={playerState.shuffle} />
-            <QueueButton
-              onClick={onQueueClick}
-              enabled={playerState.queue.length > 0}
-            />
-            <VolumePopoverButton currentVolume={playerState.volume} />
-          </Flex>
-        </Flex>
+
+        <AnimatePresence>
+          {expanded && (
+            <Flex direction="column">
+              <Flex gap={5} align="center">
+                <Title
+                  title={playerState.currentlyPlaying?.trackName || ""}
+                ></Title>
+                <Text fz="sm" fw="lighter">
+                  {playerState.currentlyPlaying?.artistName || ""}
+                </Text>
+              </Flex>
+              <Flex component={motion.div} layout="position">
+                <ShuffleButton shuffling={playerState.shuffle} />
+                <QueueButton
+                  onClick={onQueueClick}
+                  enabled={playerState.queue.length > 0}
+                  queueVisible={queueVisible}
+                />
+                <VolumePopoverButton currentVolume={playerState.volume} />
+              </Flex>
+            </Flex>
+          )}
+        </AnimatePresence>
       </Flex>
     </motion.div>
   );
