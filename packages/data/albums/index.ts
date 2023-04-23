@@ -2,6 +2,7 @@ import { Database, fieldNameOf } from "@spotless/data-db";
 import { Api } from "@spotless/data-api";
 import { Album } from "@spotless/types";
 import { Single, singleFrom } from "@spotless/services-rx";
+import { String } from "@spotless/services-utils";
 import { Observable } from "rxjs";
 
 /**
@@ -23,18 +24,20 @@ export class AlbumsData {
    * Returns all the albums in the user's library.
    */
   public allAlbumsByName(filter?: string): Observable<Album[]> {
-    const lowercaseFilter = filter?.toLowerCase();
+    const normalizedFilter = String.normalizeForComparison(filter || "");
 
     return this.db.observe(() => {
       const query = this.db.albums.orderBy(fieldNameOf<Album>("artistName"));
-      return lowercaseFilter
+      return normalizedFilter
         ? query
             .filter(
               (album) =>
-                album.artistName
-                  .toLowerCase()
-                  .includes(lowercaseFilter || "") ||
-                album.name.toLowerCase().includes(lowercaseFilter || "")
+                String.normalizeForComparison(album.artistName).includes(
+                  normalizedFilter
+                ) ||
+                String.normalizeForComparison(album.name).includes(
+                  normalizedFilter
+                )
             )
             .toArray()
         : query.toArray();
