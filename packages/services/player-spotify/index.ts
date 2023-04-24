@@ -3,9 +3,9 @@ import { Player } from "@spotless/services-player";
 import { PlayerData } from "@spotless/data-player";
 import { Logger, LoggerFactory } from "@spotless/services-logger";
 import { Api } from "@spotless/data-api";
-import { AuthenticatedUser, Playable } from "@spotless/types";
+import { Album, AuthenticatedUser, Playable } from "@spotless/types";
 import { Single, singleFrom, singleOf } from "@spotless/services-rx";
-import { EMPTY, switchMap, finalize } from "rxjs";
+import { EMPTY, switchMap, tap } from "rxjs";
 import {
   ConnectionStatus,
   connected,
@@ -17,6 +17,7 @@ import { loadSpotifyPlaybackLib } from "./src/lib";
 import { updateState } from "./src/state-change";
 import { queueFromAlbumPlay } from "./src/queue";
 import { AlbumsData } from "@spotless/data-albums";
+import { shuffleAlbums } from "./src/shuffle";
 
 /**
  * Service dealing with the playback part of Spotify. Connects with the Playback
@@ -60,12 +61,19 @@ export class SpotifyPlayer implements Player {
   public play(item: Playable): Single<void> {
     return this.api.player.play(item).pipe(
       switchMap(() => this.resume()),
-      finalize(() => queueFromAlbumPlay(this.playerState, item))
+      tap(() => queueFromAlbumPlay(this.playerState, item))
     );
   }
 
   public resume(): Single<void> {
     return this.executePlayerAction((player) => player.resume());
+  }
+
+  public shuffleAlbums(items: Album[]): Single<void> {
+    return shuffleAlbums(
+      { playerState: this.playerState, play: (item) => this.play(item) },
+      items
+    );
   }
 
   public setShuffle(state: boolean): Single<void> {

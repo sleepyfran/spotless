@@ -1,4 +1,4 @@
-import { Playable } from "@spotless/types";
+import { Album, Playable } from "@spotless/types";
 import { Single } from "@spotless/services-rx";
 
 export interface Player {
@@ -18,6 +18,11 @@ export interface Player {
    * currently connected, does nothing.
    */
   pause(): Single<void>;
+
+  /**
+   * Shuffles the given albums playing each song in order inside of the album.
+   */
+  shuffleAlbums(items: Album[]): Single<void>;
 
   /**
    * Sets the shuffle to the given value.

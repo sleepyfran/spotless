@@ -4,6 +4,7 @@ import { PageLayout } from "@spotless/components-shared";
 import { IconSearch } from "@tabler/icons-react";
 import { useAllAlbums } from "./hooks";
 import { useState } from "react";
+import { Shuffle } from "./Shuffle";
 
 /**
  * Component for the albums page, which shows all the albums in the user's library.
@@ -20,7 +21,7 @@ export const AlbumsPage = () => {
 
   return (
     <PageLayout isLoading={isLoading} title="Albums">
-      <Flex align="center" direction="column">
+      <Flex justify="center" gap="sm">
         <Input
           icon={<IconSearch />}
           placeholder="Filter albums"
@@ -28,6 +29,7 @@ export const AlbumsPage = () => {
           onChange={onFilterChange}
           width={200}
         />
+        <Shuffle items={data} />
       </Flex>
       <AlbumGrid albums={data} />
     </PageLayout>

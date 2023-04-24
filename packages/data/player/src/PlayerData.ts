@@ -1,9 +1,4 @@
-import {
-  Playable,
-  PlayerState,
-  AlbumMappers,
-  QueueItem,
-} from "@spotless/types";
+import { PlayerState, QueueItem } from "@spotless/types";
 import { Single } from "@spotless/services-rx";
 import { BehaviorSubject, ignoreElements, tap } from "rxjs";
 
@@ -69,12 +64,9 @@ export class PlayerData {
   /**
    * Adds the given playable item to the end of the queue.
    */
-  public addToQueue(item: Playable) {
+  public addToQueue(items: QueueItem[]) {
     this.patchState({
-      queue: [
-        ...this.playerState.getValue().queue,
-        ...AlbumMappers.trackListToQueue(item),
-      ],
+      queue: [...this.playerState.getValue().queue, ...items],
     });
   }
 }
