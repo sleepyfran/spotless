@@ -1,11 +1,11 @@
-import { Album } from "@spotless/types";
+import { Playable } from "@spotless/types";
 import { Single } from "@spotless/services-rx";
 
 export interface Player {
   /**
    * Plays the given album and resumes the playback.
    */
-  play(item: Album): Single<void>;
+  play(item: Playable): Single<void>;
 
   /**
    * Resumes the playback of the current track, if any. If the player is not

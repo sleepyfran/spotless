@@ -1,62 +1,22 @@
 import { AuthData } from "@spotless/data-auth";
 import { Player } from "@spotless/services-player";
-import { INITIAL_PLAYER_STATE, PlayerData } from "@spotless/data-player";
+import { PlayerData } from "@spotless/data-player";
 import { Logger, LoggerFactory } from "@spotless/services-logger";
 import { Api } from "@spotless/data-api";
-import { Album, AuthenticatedUser, PlayerState } from "@spotless/types";
+import { AuthenticatedUser, Playable } from "@spotless/types";
 import { Single, singleFrom, singleOf } from "@spotless/services-rx";
-import { EMPTY, switchMap, concatMap, ignoreElements } from "rxjs";
-
-type ConnectedPlayer = {
-  __status: "connected";
-  deviceId: string;
-};
-
-type DisconnectedPlayer = {
-  __status: "disconnected";
-};
-
-type ErroredPlayer = {
-  __status: "errored";
-};
-
-const connected = (deviceId: string): ConnectedPlayer => ({
-  __status: "connected",
-  deviceId,
-});
-const disconnected: DisconnectedPlayer = { __status: "disconnected" };
-const errored: ErroredPlayer = { __status: "errored" };
-
-type ConnectionStatus = ConnectedPlayer | DisconnectedPlayer | ErroredPlayer;
-
-const toPlayerState = (
-  state: (Spotify.PlaybackState & { volume?: number }) | undefined
-): PlayerState =>
-  state
-    ? {
-        currentlyPlaying: state?.track_window?.current_track
-          ? {
-              albumName: state.track_window.current_track.album.name,
-              artistName: state.track_window.current_track.artists[0].name,
-              coverUrl: state.track_window.current_track.album.images[0].url,
-              trackName: state.track_window.current_track.name,
-              trackLength: state.track_window.current_track.duration_ms,
-            }
-          : undefined,
-        queue:
-          state?.track_window?.next_tracks?.map((track) => ({
-            albumName: track.album.name,
-            artistName: track.artists[0].name,
-            coverUrl: track.album.images[0].url,
-            trackLength: track.duration_ms,
-            trackName: track.name,
-          })) ?? [],
-        volume: state.volume ?? 50,
-        paused: state.paused,
-        shuffle: state.shuffle,
-        positionInMs: state.position,
-      }
-    : INITIAL_PLAYER_STATE;
+import { EMPTY, switchMap, finalize } from "rxjs";
+import {
+  ConnectionStatus,
+  connected,
+  disconnected,
+  errored,
+} from "./src/types";
+import { transfer } from "./src/playback";
+import { loadSpotifyPlaybackLib } from "./src/lib";
+import { updateState } from "./src/state-change";
+import { queueFromAlbumPlay } from "./src/queue";
+import { AlbumsData } from "@spotless/data-albums";
 
 /**
  * Service dealing with the playback part of Spotify. Connects with the Playback
@@ -69,13 +29,14 @@ export class SpotifyPlayer implements Player {
 
   constructor(
     auth: AuthData,
+    private readonly albumsData: AlbumsData,
     private readonly playerState: PlayerData,
     private readonly api: Api,
     createLogger: LoggerFactory
   ) {
     this.logger = createLogger("SpotifyPlayer");
 
-    this.loadLib();
+    loadSpotifyPlaybackLib({ logger: this.logger });
     window.onSpotifyWebPlaybackSDKReady = () => {
       this.logger.log("Spotify SDK ready");
 
@@ -92,24 +53,15 @@ export class SpotifyPlayer implements Player {
     };
   }
 
-  private loadLib() {
-    const script = document.createElement("script");
-    script.src = "https://sdk.scdn.co/spotify-player.js";
-    script.async = true;
-    script.onload = () => this.logger.log("Spotify SDK loaded");
-    script.onerror = () => {
-      this.logger.error("Spotify SDK failed to load");
-      this.status = errored;
-    };
-    document.body.appendChild(script);
-  }
-
   private get isConnected() {
     return this.status.__status === "connected";
   }
 
-  public play(item: Album): Single<void> {
-    return this.api.player.play(item).pipe(switchMap(() => this.resume()));
+  public play(item: Playable): Single<void> {
+    return this.api.player.play(item).pipe(
+      switchMap(() => this.resume()),
+      finalize(() => queueFromAlbumPlay(this.playerState, item))
+    );
   }
 
   public resume(): Single<void> {
@@ -132,41 +84,14 @@ export class SpotifyPlayer implements Player {
   }
 
   public transferPlayback(force?: boolean): Single<void> {
-    if (this.status.__status !== "connected") {
-      return EMPTY;
-    }
-
-    const currentDeviceId = this.status.deviceId;
-    const transferPlayback = this.api.client
-      .put("/me/player", {
-        device_ids: [currentDeviceId],
-      })
-      .pipe(ignoreElements());
-
-    if (force) {
-      return transferPlayback;
-    }
-
-    return this.api.client
-      .get<SpotifyApi.CurrentPlaybackResponse>("/me/player")
-      .pipe(
-        concatMap((playbackState) => {
-          const playingInAnotherDevice =
-            playbackState.is_playing &&
-            playbackState.device.id !== currentDeviceId;
-          if (playingInAnotherDevice) {
-            // We don't want to interrupt the playback in another device.
-            this.logger.log(
-              "User is playing in another device, skipping playback transfer"
-            );
-            return EMPTY;
-          }
-
-          this.logger.log("Transferring playback to current device");
-          return transferPlayback;
-        }),
-        ignoreElements()
-      );
+    return transfer(
+      {
+        api: this.api,
+        connectionStatus: this.status,
+        logger: this.logger,
+      },
+      force
+    );
   }
 
   private executePlayerAction(
@@ -217,33 +142,17 @@ export class SpotifyPlayer implements Player {
 
     this.player.addListener(
       "player_state_changed",
-      (state: Spotify.PlaybackState) => {
-        this.logger.log(
-          "Playback state has changed. Attempting to retrieve volume before setting. State is:",
-          state
-        );
-
-        if (!this.player) {
-          this.logger.warn("Player has no value, defaulting to 50");
-          this.playerState.setState(toPlayerState(state));
-          return;
-        }
-
-        this.player
-          .getVolume()
-          .then((volume) => {
-            const normalizedVolume = volume * 100;
-            this.logger.log("Volume retrieved, setting to", normalizedVolume);
-            this.playerState.setState(
-              toPlayerState({ ...state, volume: normalizedVolume })
-            );
-          })
-          .catch(() => {
-            this.logger.error(
-              "Failed to retrieve volume from player, defaulting to 50"
-            );
-            this.playerState.setState(toPlayerState(state));
-          });
+      (updatedSpotifyState: Spotify.PlaybackState) => {
+        this.logger.log("Playback state has changed to:", updatedSpotifyState);
+        updateState(
+          {
+            albumsData: this.albumsData,
+            logger: this.logger,
+            player: this.player,
+            playerState: this.playerState,
+          },
+          updatedSpotifyState
+        ).subscribe();
       }
     );
 

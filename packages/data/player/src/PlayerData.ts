@@ -1,5 +1,11 @@
-import { PlayerState } from "@spotless/types";
-import { BehaviorSubject } from "rxjs";
+import {
+  Playable,
+  PlayerState,
+  AlbumMappers,
+  QueueItem,
+} from "@spotless/types";
+import { Single } from "@spotless/services-rx";
+import { BehaviorSubject, ignoreElements, tap } from "rxjs";
 
 export const INITIAL_PLAYER_STATE: PlayerState = {
   currentlyPlaying: undefined,
@@ -25,6 +31,16 @@ export class PlayerData {
   }
 
   /**
+   * Applies an async mapping function to the current player state.
+   */
+  public mapStateAsync(map: (state: PlayerState) => Single<PlayerState>) {
+    return map(this.playerState.getValue()).pipe(
+      tap((state) => this.playerState.next(state)),
+      ignoreElements()
+    );
+  }
+
+  /**
    * Changes the current state to the given one.
    */
   public setState(state: PlayerState) {
@@ -38,6 +54,27 @@ export class PlayerData {
     this.playerState.next({
       ...this.playerState.getValue(),
       ...patch,
+    });
+  }
+
+  /**
+   * Sets the currently playing queue to the given value.
+   */
+  public setQueue(items: QueueItem[]) {
+    this.patchState({
+      queue: items,
+    });
+  }
+
+  /**
+   * Adds the given playable item to the end of the queue.
+   */
+  public addToQueue(item: Playable) {
+    this.patchState({
+      queue: [
+        ...this.playerState.getValue().queue,
+        ...AlbumMappers.trackListToQueue(item),
+      ],
     });
   }
 }

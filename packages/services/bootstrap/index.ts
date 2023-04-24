@@ -100,6 +100,7 @@ export const initializeMainServices = (
   const { services, data } = initializeBase(appConfig);
   const player = new SpotifyPlayer(
     data.auth,
+    data.albums,
     data.player,
     services.api,
     services.createLogger

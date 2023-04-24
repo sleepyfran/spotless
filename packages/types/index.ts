@@ -1,3 +1,5 @@
+export * as AlbumMappers from "./src/album-mappers";
+
 /**
  * Holds the secrets and settings that are passed from environment variables.
  */
@@ -72,6 +74,8 @@ export type Playable = Album;
 export type QueueItem = {
   artistName: string;
   albumName: string;
+  albumId: string;
+  trackId: string;
   trackName: string;
   trackLength: number;
   coverUrl: string;
