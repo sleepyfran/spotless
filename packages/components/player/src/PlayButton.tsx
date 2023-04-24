@@ -6,11 +6,6 @@ import { MouseEventHandler } from "react";
 
 type PlayButtonProps = {
   /**
-   * Extra class names to be passed onto the action icon.
-   */
-  className?: string;
-
-  /**
    * Defines the style of the button. If not specified, defaults to "regular".
    */
   style?: "rounded" | "regular";
@@ -35,21 +30,20 @@ const usePlayOnClick = (item: Playable): MouseEventHandler<HTMLElement> => {
  * Component that displays a play button that plays the given playable item
  * when clicked.
  */
-export const PlayButton = ({ item, style, className }: PlayButtonProps) => {
+export const PlayButton = ({ item, style }: PlayButtonProps) => {
   return style === "rounded" ? (
-    <RoundedPlayButton item={item} className={className} />
+    <RoundedPlayButton item={item} />
   ) : (
-    <RegularPlayButton item={item} className={className} />
+    <RegularPlayButton item={item} />
   );
 };
 
-const RegularPlayButton = ({ item, className }: PlayButtonProps) => {
+const RegularPlayButton = ({ item }: PlayButtonProps) => {
   const onClick = usePlayOnClick(item);
 
   return (
     <Button
       variant="light"
-      className={className}
       onClick={onClick}
       color="green"
       leftIcon={<IconPlayerPlay />}
@@ -59,13 +53,12 @@ const RegularPlayButton = ({ item, className }: PlayButtonProps) => {
   );
 };
 
-const RoundedPlayButton = ({ item, className }: PlayButtonProps) => {
+const RoundedPlayButton = ({ item }: PlayButtonProps) => {
   const onClick = usePlayOnClick(item);
 
   return (
     <ActionIcon
       variant="filled"
-      className={className}
       onClick={onClick}
       size="xl"
       radius="xl"

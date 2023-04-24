@@ -3,7 +3,12 @@ import { Player } from "@spotless/services-player";
 import { PlayerData } from "@spotless/data-player";
 import { Logger, LoggerFactory } from "@spotless/services-logger";
 import { Api } from "@spotless/data-api";
-import { Album, AuthenticatedUser, Playable } from "@spotless/types";
+import {
+  Album,
+  AlbumMappers,
+  AuthenticatedUser,
+  Playable,
+} from "@spotless/types";
 import { Single, singleFrom, singleOf } from "@spotless/services-rx";
 import { EMPTY, switchMap, tap } from "rxjs";
 import {
@@ -67,6 +72,11 @@ export class SpotifyPlayer implements Player {
 
   public resume(): Single<void> {
     return this.executePlayerAction((player) => player.resume());
+  }
+
+  public enqueue(item: Album): Single<void> {
+    this.playerState.addToQueue(AlbumMappers.trackListToQueue(item));
+    return EMPTY;
   }
 
   public shuffleAlbums(items: Album[]): Single<void> {

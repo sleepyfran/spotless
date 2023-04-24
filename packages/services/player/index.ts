@@ -20,6 +20,11 @@ export interface Player {
   pause(): Single<void>;
 
   /**
+   * Adds the given album to the end of the queue.
+   */
+  enqueue(item: Album): Single<void>;
+
+  /**
    * Shuffles the given albums playing each song in order inside of the album.
    */
   shuffleAlbums(items: Album[]): Single<void>;

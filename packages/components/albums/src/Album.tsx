@@ -7,7 +7,7 @@ import {
   useCardStyles,
   modals,
 } from "@spotless/components-shared";
-import { PlayButton } from "@spotless/components-player";
+import { AddToQueueButton, PlayButton } from "@spotless/components-player";
 import { Album } from "@spotless/types";
 import { motion } from "framer-motion";
 
@@ -19,10 +19,10 @@ const usePlayableImageStyles = createStyles({
   playableImageRoot: {
     position: "relative",
   },
-  playButton: {
+  actionButtons: {
     position: "absolute",
     top: "70%",
-    left: "70%",
+    left: "48%",
   },
 });
 
@@ -53,11 +53,10 @@ export const AlbumCard = ({ album }: AlbumProps) => {
       <div className={playableImageStyles.classes.playableImageRoot}>
         <Image src={album.coverUrl} width={180} height={180} radius="sm" />
         {hovered && (
-          <PlayButton
-            style="rounded"
-            item={album}
-            className={playableImageStyles.classes.playButton}
-          />
+          <Flex className={playableImageStyles.classes.actionButtons} gap={1}>
+            <AddToQueueButton item={album} />
+            <PlayButton style="rounded" item={album} />
+          </Flex>
         )}
       </div>
       <Title title={album.name} />
