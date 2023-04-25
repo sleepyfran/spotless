@@ -79,6 +79,11 @@ export class SpotifyPlayer implements Player {
     return EMPTY;
   }
 
+  public emptyQueue(): Single<void> {
+    this.playerState.setQueue([]);
+    return EMPTY;
+  }
+
   public shuffleAlbums(items: Album[]): Single<void> {
     return shuffleAlbums(
       { playerState: this.playerState, play: (item) => this.play(item) },

@@ -25,6 +25,11 @@ export interface Player {
   enqueue(item: Album): Single<void>;
 
   /**
+   * Removes all items from the queue.
+   */
+  emptyQueue(): Single<void>;
+
+  /**
    * Shuffles the given albums playing each song in order inside of the album.
    */
   shuffleAlbums(items: Album[]): Single<void>;

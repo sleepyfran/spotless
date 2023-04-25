@@ -1,4 +1,4 @@
-import { Card, ScrollArea } from "@mantine/core";
+import { Button, Card, ScrollArea } from "@mantine/core";
 import { bind } from "@react-rxjs/core";
 import { AnimatePresence, LayoutGroup, motion } from "framer-motion";
 import {
@@ -64,15 +64,21 @@ export const Player = () => {
   };
 
   const onQueueClick = () => setQueueVisible((visible) => !visible);
+  const onClearQueueClick = () => playerService.emptyQueue().subscribe();
 
   return (
     <motion.div layout ref={ref}>
       <AnimatePresence mode="popLayout">
         {queueVisible && expanded && (
           <motion.div key="queue" exit={{ y: [null, 20] }}>
-            <Text fz="lg" my="sm">
-              Queue
-            </Text>
+            <Flex align="center" gap="sm">
+              <Text fz="lg" my="sm">
+                Queue
+              </Text>
+              <Button variant="light" size="xs" onClick={onClearQueueClick}>
+                Clear
+              </Button>
+            </Flex>
             <ScrollArea h={300}>
               {playerState.queue.map((item, index) => (
                 <QueuedTrackItem key={index} item={item} />
