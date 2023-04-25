@@ -1,70 +1,35 @@
-import { Button, ActionIcon } from "@mantine/core";
 import { Playable } from "@spotless/types";
-import { IconPlayerPlay } from "@tabler/icons-react";
 import { useServices } from "@spotless/components-shared/src/ServiceContext";
 import { MouseEventHandler } from "react";
+import { IconPlayerPlayFilled } from "@tabler/icons-react";
+import { ShapedButtonProps, ShapedButton } from "./common/ShapedButton";
 
 type PlayButtonProps = {
-  /**
-   * Defines the style of the button. If not specified, defaults to "regular".
-   */
-  style?: "rounded" | "regular";
-
   /**
    * Item that this button is being shown on. When the button will be clicked,
    * this item will be passed onto the player.
    */
   item: Playable;
-};
-
-const usePlayOnClick = (item: Playable): MouseEventHandler<HTMLElement> => {
-  const { player } = useServices();
-
-  return (event) => {
-    event.stopPropagation();
-    player.play(item).subscribe();
-  };
-};
+} & Pick<ShapedButtonProps, "style">;
 
 /**
  * Component that displays a play button that plays the given playable item
  * when clicked.
  */
 export const PlayButton = ({ item, style }: PlayButtonProps) => {
-  return style === "rounded" ? (
-    <RoundedPlayButton item={item} />
-  ) : (
-    <RegularPlayButton item={item} />
-  );
-};
+  const { player } = useServices();
 
-const RegularPlayButton = ({ item }: PlayButtonProps) => {
-  const onClick = usePlayOnClick(item);
+  const onClick: MouseEventHandler<HTMLElement> = (event) => {
+    event.stopPropagation();
+    player.play(item).subscribe();
+  };
 
   return (
-    <Button
-      variant="light"
+    <ShapedButton
+      style={style}
       onClick={onClick}
-      color="green"
-      leftIcon={<IconPlayerPlay />}
-    >
-      Play
-    </Button>
-  );
-};
-
-const RoundedPlayButton = ({ item }: PlayButtonProps) => {
-  const onClick = usePlayOnClick(item);
-
-  return (
-    <ActionIcon
-      variant="filled"
-      onClick={onClick}
-      size="xl"
-      radius="xl"
-      color="green"
-    >
-      <IconPlayerPlay />
-    </ActionIcon>
+      text="Play"
+      icon={<IconPlayerPlayFilled />}
+    />
   );
 };

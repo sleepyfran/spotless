@@ -12,7 +12,7 @@ import { Title, modals, useServices } from "@spotless/components-shared";
 import { useAlbum } from "./hooks";
 import { format } from "date-fns";
 import { Album } from "@spotless/types";
-import { PlayButton } from "@spotless/components-player";
+import { AddToQueueButton, PlayButton } from "@spotless/components-player";
 import { useState } from "react";
 
 type AlbumDetailProps = {
@@ -43,6 +43,7 @@ export const AlbumDetails = ({ albumId }: AlbumDetailProps) => {
       {status.__type === "loaded" && (
         <Flex gap="sm">
           <PlayButton item={status.album} />
+          <AddToQueueButton item={status.album} />
           <RemoveAlbumButton albumId={status.album.id} />
         </Flex>
       )}

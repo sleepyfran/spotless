@@ -53,8 +53,8 @@ export const AlbumCard = ({ album }: AlbumProps) => {
       <div className={playableImageStyles.classes.playableImageRoot}>
         <Image src={album.coverUrl} width={180} height={180} radius="sm" />
         {hovered && (
-          <Flex className={playableImageStyles.classes.actionButtons} gap={1}>
-            <AddToQueueButton item={album} />
+          <Flex className={playableImageStyles.classes.actionButtons} gap={2}>
+            <AddToQueueButton style="rounded" item={album} />
             <PlayButton style="rounded" item={album} />
           </Flex>
         )}

@@ -1,8 +1,8 @@
-import { ActionIcon } from "@mantine/core";
 import { useServices } from "@spotless/components-shared";
 import { Playable } from "@spotless/types";
 import { MouseEventHandler, useState } from "react";
 import { IconTextPlus, IconCircleCheckFilled } from "@tabler/icons-react";
+import { ShapedButton, ShapedButtonProps } from "./common/ShapedButton";
 
 type AddToQueueButtonProps = {
   /**
@@ -10,11 +10,11 @@ type AddToQueueButtonProps = {
    * this item will be passed onto the player.
    */
   item: Playable;
-};
+} & Pick<ShapedButtonProps, "style">;
 
 type AddStatus = "idle" | "loading" | "success";
 
-export const AddToQueueButton = ({ item }: AddToQueueButtonProps) => {
+export const AddToQueueButton = ({ style, item }: AddToQueueButtonProps) => {
   const [status, setStatus] = useState<AddStatus>("idle");
   const { player } = useServices();
 
@@ -27,17 +27,13 @@ export const AddToQueueButton = ({ item }: AddToQueueButtonProps) => {
   };
 
   return (
-    <ActionIcon
-      variant="filled"
+    <ShapedButton
+      style={style}
       onClick={onClick}
-      size="xl"
-      radius="xl"
       color="blue"
       loading={status === "loading"}
-      title="Add to queue"
-    >
-      {(status === "idle" || status === "loading") && <IconTextPlus />}
-      {status === "success" && <IconCircleCheckFilled />}
-    </ActionIcon>
+      text="Add to queue"
+      icon={status === "success" ? <IconCircleCheckFilled /> : <IconTextPlus />}
+    />
   );
 };
