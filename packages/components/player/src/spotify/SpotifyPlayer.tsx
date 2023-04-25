@@ -8,6 +8,7 @@ import { PlayerCardProps, Player, PlayerCard } from "../Player";
 import { INITIAL_PLAYER_STATE, PlayerData } from "@spotless/data-player";
 import { bind } from "@react-rxjs/core";
 import { Button } from "@mantine/core";
+import { useState } from "react";
 
 const [usePlayer$] = bind(
   (playerData: PlayerData) => playerData.state(),
@@ -25,17 +26,29 @@ export const SpotifyPlayer = ({ className }: PlayerCardProps) => {
   );
 };
 
+type TransferPlaybackStatus = "disconnected" | "connecting" | "errored";
+
 const DisconnectedPlayer = () => {
   const { player } = useBackendSpecificServices("spotify");
+  const [status, setStatus] = useState<TransferPlaybackStatus>("disconnected");
 
   const onTransferPlaybackHereClick = () => {
-    player.transferPlayback(true).subscribe();
+    setStatus("connecting");
+    player.transferPlayback(true).subscribe({
+      complete: () => setStatus("disconnected"),
+      error: () => setStatus("errored"),
+    });
   };
 
   return (
     <Flex direction="column" align="center">
       <Text>Disconnected</Text>
-      <Button variant="subtle" onClick={onTransferPlaybackHereClick}>
+      {status === "errored" && <Text color="red">Something went wrong</Text>}
+      <Button
+        variant="subtle"
+        onClick={onTransferPlaybackHereClick}
+        loading={status === "connecting"}
+      >
         Transfer playback here
       </Button>
     </Flex>
