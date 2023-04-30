@@ -1,24 +1,58 @@
 import { AlbumsData } from "@spotless/data-albums";
 import { PlayerData } from "@spotless/data-player";
 import { Single, singleOf } from "@spotless/services-rx";
-import { Album, AlbumMappers, PlayerState, QueueItem } from "@spotless/types";
+import {
+  Album,
+  AlbumMappers,
+  CurrentlyPlaying,
+  PlayerState,
+  QueuedAlbum,
+  QueuedAlbumTrack,
+} from "@spotless/types";
 import { map } from "rxjs";
 
-const filterOutPreviouslyPlayed = (
-  queue: QueueItem[],
-  currentlyPlaying: QueueItem
+const markPreviouslyPlayedTracks = (
+  tracks: QueuedAlbumTrack[],
+  currentlyPlaying: CurrentlyPlaying
 ) => {
-  const currentlyPlayingIndex = queue.findIndex(
-    (item) => item.trackId === currentlyPlaying.trackId
+  const currentlyPlayingTrackIndex = tracks.findIndex(
+    (track) => track.id === currentlyPlaying.id
   );
 
-  // We couldn't find the current song. Strange, but let's keep the queue to
-  // have something to show.
-  if (currentlyPlayingIndex === -1) {
-    return queue;
-  }
+  return tracks.map((track, index) => ({
+    ...track,
+    played: index < currentlyPlayingTrackIndex,
+  }));
+};
 
-  return queue.slice(currentlyPlayingIndex + 1);
+const markPreviouslyPlayed = (
+  queue: QueuedAlbum[],
+  currentlyPlaying: CurrentlyPlaying
+) => {
+  const currentlyPlayingAlbumIndex = queue.findIndex(
+    (album) => album.id === currentlyPlaying.album.id
+  );
+
+  // Set all albums before the currently playing one to played.
+  const albumsPlayedSoFar = queue
+    .slice(0, currentlyPlayingAlbumIndex)
+    .map((album) => ({
+      ...album,
+      played: true,
+    }));
+
+  // Mark all tracks before the currently playing one as played.
+  const currentAlbum: QueuedAlbum = {
+    ...queue[currentlyPlayingAlbumIndex],
+    trackList: markPreviouslyPlayedTracks(
+      queue[currentlyPlayingAlbumIndex].trackList,
+      currentlyPlaying
+    ),
+  };
+
+  const restOfAlbums = queue.slice(currentlyPlayingAlbumIndex + 1);
+
+  return [...albumsPlayedSoFar, currentAlbum, ...restOfAlbums];
 };
 
 type CurrentlyPlayingQueueDeps = {
@@ -33,25 +67,36 @@ type CurrentlyPlayingQueueDeps = {
 export const queueFromCurrentlyPlaying = (
   { albumsData }: CurrentlyPlayingQueueDeps,
   currentState: PlayerState,
-  currentlyPlaying: QueueItem
-): Single<QueueItem[]> => {
-  if (currentState.queue.length === 0) {
-    // If the queue is empty, set it to the currently playing album.
-    return albumsData.albumDetail(currentlyPlaying.albumId).pipe(
-      map((album) => (album ? AlbumMappers.trackListToQueue(album) : [])),
-      map((queue) => filterOutPreviouslyPlayed(queue, currentlyPlaying))
-    );
-  }
+  currentlyPlaying: CurrentlyPlaying
+): Single<QueuedAlbum[]> => {
+  // If there's no queue, create one from the currently playing album.
+  const updatedQueue =
+    currentState.queue.length === 0
+      ? albumsData
+          .albumDetail(currentlyPlaying.album.id)
+          .pipe(
+            map((album) =>
+              album ? [AlbumMappers.albumToQueuedAlbum(album)] : []
+            )
+          )
+      : singleOf(currentState.queue);
 
-  return singleOf(
-    filterOutPreviouslyPlayed(currentState.queue, currentlyPlaying)
+  return updatedQueue.pipe(
+    map((queue) => markPreviouslyPlayed(queue, currentlyPlaying))
   );
 };
 
 /**
- * Creates a queue for an album that just started playing, which basically removes
- * the first track from the album, since it's already playing.
+ * Creates a queue from an album that just started playing. Marks the first
+ * track as played.
  */
 export const queueFromAlbumPlay = (player: PlayerData, album: Album) => {
-  player.setQueue(AlbumMappers.trackListToQueue(album).slice(1));
+  const queuedAlbum = AlbumMappers.albumToQueuedAlbum(album);
+
+  player.setQueue(
+    markPreviouslyPlayed([queuedAlbum], {
+      ...queuedAlbum.trackList[0],
+      album: queuedAlbum,
+    })
+  );
 };

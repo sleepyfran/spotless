@@ -1,6 +1,6 @@
 import { PlayerData } from "@spotless/data-player";
 import { getVolume } from "./volume";
-import { PlayerState, QueueItem } from "@spotless/types";
+import { PlayerState, QueuedAlbum, CurrentlyPlaying } from "@spotless/types";
 import { queueFromCurrentlyPlaying } from "./queue";
 import { AlbumsData } from "@spotless/data-albums";
 import { singleOf } from "@spotless/services-rx";
@@ -9,20 +9,24 @@ import { Logger } from "@spotless/services-logger";
 
 const idFromUri = (uri: string) => uri.split(":").pop();
 
-const toQueueItem = (track: Spotify.Track): QueueItem => ({
-  albumName: track.album.name,
-  albumId: idFromUri(track.album.uri) || "",
-  artistName: track.artists[0].name,
-  coverUrl: track.album.images[0].url,
-  trackId: track.id || idFromUri(track.uri) || "",
-  trackName: track.name,
-  trackLength: track.duration_ms,
+const toCurrentlyPlaying = (track: Spotify.Track): CurrentlyPlaying => ({
+  id: idFromUri(track.uri) || "",
+  name: track.name,
+  lengthInMs: track.duration_ms,
+  album: {
+    id: idFromUri(track.album.uri) || "",
+    name: track.album.name,
+    artistName: track.artists[0].name,
+    coverUrl: track.album.images[0].url,
+    played: false,
+  },
+  played: false,
 });
 
 const createPlayerStateFromSpotifyState = (
   currentState: PlayerState,
   updatedSpotifyState:
-    | (Spotify.PlaybackState & { volume?: number; queue: QueueItem[] })
+    | (Spotify.PlaybackState & { volume?: number; queue: QueuedAlbum[] })
     | undefined
 ): PlayerState => {
   if (!updatedSpotifyState) {
@@ -30,7 +34,7 @@ const createPlayerStateFromSpotifyState = (
   }
 
   const currentlyPlaying = updatedSpotifyState.track_window?.current_track
-    ? toQueueItem(updatedSpotifyState.track_window.current_track)
+    ? toCurrentlyPlaying(updatedSpotifyState.track_window.current_track)
     : undefined;
 
   return {
@@ -60,7 +64,7 @@ const queueFromSpotifyUpdate = (
     return queueFromCurrentlyPlaying(
       { albumsData },
       playerState,
-      toQueueItem(updatedSpotifyState.track_window.current_track)
+      toCurrentlyPlaying(updatedSpotifyState.track_window.current_track)
     );
   }
 

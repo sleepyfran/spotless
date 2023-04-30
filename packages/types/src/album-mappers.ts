@@ -1,15 +1,14 @@
-import { Album, QueueItem } from "../index";
+import { Album, QueuedAlbum } from "../index";
 
 /**
- * Returns the given album's track list as a queue.
+ * Returns the queued version of the given album.
  */
-export const trackListToQueue = (album: Album): QueueItem[] =>
-  album.trackList.map((track) => ({
+export const albumToQueuedAlbum = (album: Album): QueuedAlbum => ({
+  ...album,
+  played: false,
+  trackList: album.trackList.map((track) => ({
+    ...track,
     albumId: album.id,
-    albumName: album.name,
-    artistName: album.artistName,
-    coverUrl: album.coverUrl,
-    trackId: track.id,
-    trackName: track.name,
-    trackLength: track.lengthInMs,
-  }));
+    played: false,
+  })),
+});

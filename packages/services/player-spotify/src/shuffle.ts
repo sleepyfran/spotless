@@ -22,7 +22,7 @@ export const shuffleAlbums = (
     tap(() => {
       // Append the rest of the albums to the queue.
       playerState.addToQueue(
-        drop(shuffledAlbums, 1).flatMap(AlbumMappers.trackListToQueue)
+        drop(shuffledAlbums, 1).flatMap(AlbumMappers.albumToQueuedAlbum)
       );
     })
   );

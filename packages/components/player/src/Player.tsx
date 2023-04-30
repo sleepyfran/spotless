@@ -12,7 +12,7 @@ import { INITIAL_PLAYER_STATE, PlayerData } from "@spotless/data-player";
 import { CoverArtPlayButton } from "./CoverArtPlayButton";
 import { QueueButton } from "./QueueButton";
 import { ShuffleButton } from "./ShuffleButton";
-import { QueuedTrackItem } from "./QueueItem";
+import { QueuedAlbumItem } from "./Queue";
 import { PropsWithChildren, useState } from "react";
 import { VolumePopoverButton } from "./VolumeControls";
 import { useExpansiblePlayer } from "./use-expansible-player";
@@ -80,8 +80,14 @@ export const Player = () => {
               </Button>
             </Flex>
             <ScrollArea h={300}>
-              {playerState.queue.map((item, index) => (
-                <QueuedTrackItem key={index} item={item} />
+              {playerState.queue.map((album) => (
+                <QueuedAlbumItem
+                  key={album.id}
+                  album={album}
+                  trackListExpandedByDefault={
+                    album.id === playerState.currentlyPlaying?.album.id
+                  }
+                />
               ))}
             </ScrollArea>
           </motion.div>
@@ -90,7 +96,7 @@ export const Player = () => {
 
       <Flex gap={10} align="center">
         <CoverArtPlayButton
-          coverArtUrl={playerState.currentlyPlaying?.coverUrl}
+          coverArtUrl={playerState.currentlyPlaying?.album.coverUrl}
           playing={!playerState.paused}
           onClick={onCoverArtClick}
         />
@@ -99,11 +105,9 @@ export const Player = () => {
           {expanded && (
             <Flex direction="column">
               <Flex gap={5} align="center">
-                <Title
-                  title={playerState.currentlyPlaying?.trackName || ""}
-                ></Title>
+                <Title title={playerState.currentlyPlaying?.name || ""}></Title>
                 <Text fz="sm" fw="lighter">
-                  {playerState.currentlyPlaying?.artistName || ""}
+                  {playerState.currentlyPlaying?.album.artistName || ""}
                 </Text>
               </Flex>
               <Flex component={motion.div} layout="position">

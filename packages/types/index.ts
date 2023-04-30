@@ -71,22 +71,41 @@ export type Artist = {
  */
 export type Playable = Album;
 
-export type QueueItem = {
+/**
+ * Represents a track inside of a queued album.
+ */
+export type QueuedAlbumTrack = {
+  id: string;
+  name: string;
+  lengthInMs: number;
+  played: boolean;
+};
+
+/**
+ * Represents an album that has been queued.
+ */
+export type QueuedAlbum = {
+  id: string;
+  name: string;
   artistName: string;
-  albumName: string;
-  albumId: string;
-  trackId: string;
-  trackName: string;
-  trackLength: number;
   coverUrl: string;
+  trackList: QueuedAlbumTrack[];
+  played: boolean;
+};
+
+/**
+ * Represents a track that is currently being played.
+ */
+export type CurrentlyPlaying = QueuedAlbumTrack & {
+  album: Omit<QueuedAlbum, "trackList">;
 };
 
 /**
  * Represents the current state of the player.
  */
 export type PlayerState = {
-  currentlyPlaying: QueueItem | undefined;
-  queue: QueueItem[];
+  currentlyPlaying: CurrentlyPlaying | undefined;
+  queue: QueuedAlbum[];
   volume: number;
   paused: boolean;
   shuffle: boolean;

@@ -75,7 +75,7 @@ export class SpotifyPlayer implements Player {
   }
 
   public enqueue(item: Album): Single<void> {
-    this.playerState.addToQueue(AlbumMappers.trackListToQueue(item));
+    this.playerState.addToQueue(AlbumMappers.albumToQueuedAlbum(item));
     return EMPTY;
   }
 
