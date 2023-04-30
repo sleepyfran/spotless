@@ -8,11 +8,6 @@ type QueueButtonProps = {
   onClick: () => void;
 
   /**
-   * Indicates whether the button is currently enabled or not.
-   */
-  enabled?: boolean;
-
-  /**
    * Indicates whether the queue is currently visible or not.
    */
   queueVisible?: boolean;
@@ -21,18 +16,13 @@ type QueueButtonProps = {
 /**
  * Component that renders a button to toggle the queue.
  */
-export const QueueButton = ({
-  onClick,
-  enabled,
-  queueVisible,
-}: QueueButtonProps) => (
+export const QueueButton = ({ onClick, queueVisible }: QueueButtonProps) => (
   <ActionIcon
     variant="light"
     size="sm"
     onClick={onClick}
     color={queueVisible ? "blue" : undefined}
     title="Toggle queue"
-    disabled={!enabled}
   >
     <IconList />
   </ActionIcon>

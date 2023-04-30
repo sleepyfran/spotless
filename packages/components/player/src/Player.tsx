@@ -114,7 +114,6 @@ export const Player = () => {
                 <ShuffleButton shuffling={playerState.shuffle} />
                 <QueueButton
                   onClick={onQueueClick}
-                  enabled={playerState.queue.length > 0}
                   queueVisible={queueVisible}
                 />
                 <VolumePopoverButton currentVolume={playerState.volume} />
