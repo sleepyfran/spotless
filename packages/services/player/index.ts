@@ -8,16 +8,10 @@ export interface Player {
   play(item: Playable): Single<void>;
 
   /**
-   * Resumes the playback of the current track, if any. If the player is not
-   * currently connected, does nothing.
+   * Resumes or pauses the playback of the current track, if any. If there is no
+   * current track, does nothing.
    */
-  resume(): Single<void>;
-
-  /**
-   * Pauses the playback of the current track, if any. If the player is not
-   * currently connected, does nothing.
-   */
-  pause(): Single<void>;
+  togglePlayback(): Single<void>;
 
   /**
    * Adds the given album to the end of the queue.

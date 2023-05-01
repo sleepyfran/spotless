@@ -55,14 +55,6 @@ export const Player = () => {
   const { player } = useData();
   const playerState = usePlayer$(player);
 
-  const onCoverArtClick = () => {
-    if (playerState.paused) {
-      playerService.resume().subscribe();
-    } else {
-      playerService.pause().subscribe();
-    }
-  };
-
   const onQueueClick = () => setQueueVisible((visible) => !visible);
   const onClearQueueClick = () => playerService.emptyQueue().subscribe();
 
@@ -98,7 +90,6 @@ export const Player = () => {
         <CoverArtPlayButton
           coverArtUrl={playerState.currentlyPlaying?.album.coverUrl}
           playing={!playerState.paused}
-          onClick={onCoverArtClick}
         />
 
         <AnimatePresence>

@@ -4,17 +4,13 @@ import {
   IconPlayerPauseFilled,
 } from "@tabler/icons-react";
 import { motion } from "framer-motion";
+import { useServices } from "@spotless/components-shared";
 
 export type CoverArtPlayButtonProps = {
   /**
    * URL of the cover art to display.
    */
   coverArtUrl: string | undefined;
-
-  /**
-   * Defines what happens when the button is pressed.
-   */
-  onClick: () => void;
 
   /**
    * Whether the song is playing or not.
@@ -52,10 +48,14 @@ const useCoverArtStyles = createStyles((theme) => ({
 
 export const CoverArtPlayButton = ({
   coverArtUrl,
-  onClick,
   playing,
 }: CoverArtPlayButtonProps) => {
+  const { player } = useServices();
   const styles = useCoverArtStyles();
+
+  const onClick = () => {
+    player.togglePlayback().subscribe();
+  };
 
   return (
     <motion.div

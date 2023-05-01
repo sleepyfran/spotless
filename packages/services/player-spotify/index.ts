@@ -65,13 +65,13 @@ export class SpotifyPlayer implements Player {
 
   public play(item: Playable): Single<void> {
     return this.api.player.play(item).pipe(
-      switchMap(() => this.resume()),
+      switchMap(() => this.executePlayerAction((player) => player.resume())),
       tap(() => queueFromAlbumPlay(this.playerState, item))
     );
   }
 
-  public resume(): Single<void> {
-    return this.executePlayerAction((player) => player.resume());
+  public togglePlayback(): Single<void> {
+    return this.executePlayerAction((player) => player.togglePlay());
   }
 
   public enqueue(item: Album): Single<void> {
@@ -93,10 +93,6 @@ export class SpotifyPlayer implements Player {
 
   public setShuffle(state: boolean): Single<void> {
     return this.api.player.setShuffle(state);
-  }
-
-  public pause(): Single<void> {
-    return this.executePlayerAction((player) => player.pause());
   }
 
   public setVolume(volume: number): Single<void> {
