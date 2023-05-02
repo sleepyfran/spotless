@@ -60,9 +60,9 @@ export const Player = () => {
 
   return (
     <motion.div layout ref={ref}>
-      <AnimatePresence mode="popLayout">
+      <AnimatePresence>
         {queueVisible && expanded && (
-          <motion.div key="queue" exit={{ y: [null, 20] }}>
+          <motion.div key="queue">
             <Flex align="center" gap="sm">
               <Text fz="lg" my="sm">
                 Queue
