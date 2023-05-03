@@ -1,5 +1,5 @@
 import { AuthData } from "@spotless/data-auth";
-import { Album, Artist } from "@spotless/types";
+import { Album, Artist, Id } from "@spotless/types";
 import { Single, singleFrom } from "@spotless/services-rx";
 import { from, switchMap } from "rxjs";
 import ky from "ky";
@@ -39,7 +39,7 @@ export interface PlayerApi {
   /**
    * Plays the given album.
    */
-  play(item: Album): Single<void>;
+  play(id: Id): Single<void>;
 
   /**
    * Sets the shuffle to the given value.

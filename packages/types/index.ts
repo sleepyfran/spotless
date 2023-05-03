@@ -30,12 +30,14 @@ export type UnauthorizedUser = {
 
 export type AuthUser = AuthenticatedUser | UnauthorizedUser;
 
+export type Id = string;
+
 /**
  * Represents a track, which contains the basic metadata to display
  * it inside of a list.
  */
 export type Track = {
-  id: string;
+  id: Id;
   name: string;
   trackNumber: number;
   lengthInMs: number;
@@ -46,7 +48,7 @@ export type Track = {
  * it inside of a list.
  */
 export type Album = {
-  id: string;
+  id: Id;
   name: string;
   artistName: string;
   coverUrl: string;
@@ -61,7 +63,7 @@ export type Album = {
  * inside of a list.
  */
 export type Artist = {
-  id: string;
+  id: Id;
   name: string;
   imageUrl: string;
 };
@@ -75,7 +77,7 @@ export type Playable = Album;
  * Represents a track inside of a queued album.
  */
 export type QueuedAlbumTrack = {
-  id: string;
+  id: Id;
   name: string;
   lengthInMs: number;
   played: boolean;
@@ -85,7 +87,7 @@ export type QueuedAlbumTrack = {
  * Represents an album that has been queued.
  */
 export type QueuedAlbum = {
-  id: string;
+  id: Id;
   name: string;
   artistName: string;
   coverUrl: string;

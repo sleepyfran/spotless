@@ -21,7 +21,7 @@ export const PlayButton = ({ item, style }: PlayButtonProps) => {
 
   const onClick: MouseEventHandler<HTMLElement> = (event) => {
     event.stopPropagation();
-    player.play(item).subscribe();
+    player.play(item.id).subscribe();
   };
 
   return (

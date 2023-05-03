@@ -1,10 +1,9 @@
 import { AlbumsData } from "@spotless/data-albums";
-import { PlayerData } from "@spotless/data-player";
 import { Single, singleOf } from "@spotless/services-rx";
 import {
-  Album,
   AlbumMappers,
   CurrentlyPlaying,
+  Id,
   PlayerState,
   QueuedAlbum,
   QueuedAlbumTrack,
@@ -87,16 +86,15 @@ export const queueFromCurrentlyPlaying = (
 };
 
 /**
- * Creates a queue from an album that just started playing. Marks the first
- * track as played.
+ * Returns a queue that contains only the given album.
  */
-export const queueFromAlbumPlay = (player: PlayerData, album: Album) => {
-  const queuedAlbum = AlbumMappers.albumToQueuedAlbum(album);
-
-  player.setQueue(
-    markPreviouslyPlayed([queuedAlbum], {
-      ...queuedAlbum.trackList[0],
-      album: queuedAlbum,
-    })
-  );
+export const queueFromAlbumPlay = (
+  { albumsData }: CurrentlyPlayingQueueDeps,
+  albumId: Id
+) => {
+  return albumsData
+    .albumDetail(albumId)
+    .pipe(
+      map((album) => (album ? [AlbumMappers.albumToQueuedAlbum(album)] : []))
+    );
 };

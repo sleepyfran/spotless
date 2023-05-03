@@ -3,14 +3,9 @@ import { Player } from "@spotless/services-player";
 import { PlayerData } from "@spotless/data-player";
 import { Logger, LoggerFactory } from "@spotless/services-logger";
 import { Api } from "@spotless/data-api";
-import {
-  Album,
-  AlbumMappers,
-  AuthenticatedUser,
-  Playable,
-} from "@spotless/types";
+import { Album, AlbumMappers, AuthenticatedUser, Id } from "@spotless/types";
 import { Single, singleFrom, singleOf } from "@spotless/services-rx";
-import { EMPTY, switchMap, tap } from "rxjs";
+import { EMPTY, concatMap, ignoreElements, tap } from "rxjs";
 import {
   ConnectionStatus,
   connected,
@@ -63,10 +58,14 @@ export class SpotifyPlayer implements Player {
     return this.status.__status === "connected";
   }
 
-  public play(item: Playable): Single<void> {
+  public play(item: Id): Single<void> {
     return this.api.player.play(item).pipe(
-      switchMap(() => this.executePlayerAction((player) => player.resume())),
-      tap(() => queueFromAlbumPlay(this.playerState, item))
+      concatMap(() => this.executePlayerAction((player) => player.resume())),
+      concatMap(() =>
+        queueFromAlbumPlay({ albumsData: this.albumsData }, item)
+      ),
+      tap((queue) => this.playerState.setQueue(queue)),
+      ignoreElements()
     );
   }
 
@@ -86,7 +85,7 @@ export class SpotifyPlayer implements Player {
 
   public shuffleAlbums(items: Album[]): Single<void> {
     return shuffleAlbums(
-      { playerState: this.playerState, play: (item) => this.play(item) },
+      { playerState: this.playerState, play: (item) => this.play(item.id) },
       items
     );
   }
