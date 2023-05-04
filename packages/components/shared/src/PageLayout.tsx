@@ -2,7 +2,7 @@ import { Flex, Title, useMantineTheme, Loader } from "@mantine/core";
 import { PropsWithChildren } from "react";
 
 type PageLayoutProps = {
-  title: string;
+  title: string | React.ReactNode;
   isLoading: boolean;
 };
 
@@ -19,7 +19,7 @@ export const PageLayout = ({
   return (
     <Flex direction="column" gap={spacing.md} w="100%" h="100%">
       <Flex align="center" gap={spacing.md}>
-        <Title>{title}</Title>
+        {typeof title === "string" ? <Title>{title}</Title> : title}
         {isLoading && <Loader size="sm" />}
       </Flex>
       {children}

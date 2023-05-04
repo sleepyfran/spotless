@@ -1,5 +1,5 @@
 import { AlbumsData } from "@spotless/data-albums";
-import { Album } from "@spotless/types";
+import { Album, Artist } from "@spotless/types";
 import { bind } from "@react-rxjs/core";
 import { map } from "rxjs";
 import { useData } from "@spotless/components-shared";
@@ -31,6 +31,11 @@ const [nAlbums$] = bind(
     albums.fetchN(n, orderBy).pipe(mapToAlbumsResponse),
   loadingAlbums
 );
+const [artistAlbums$] = bind(
+  (albums: AlbumsData, artist: Artist) =>
+    albums.allAlbumsByArtist(artist).pipe(mapToAlbumsResponse),
+  loadingAlbums
+);
 
 /**
  * Hook that fetches the details of a specific album by its ID. Decorates each
@@ -60,4 +65,12 @@ export const useAllAlbums = (filter?: string) => {
 export const useAlbums = <K extends keyof Album>(n: number, orderBy?: K) => {
   const { albums } = useData();
   return nAlbums$(albums, n, orderBy);
+};
+
+/**
+ * Hook that fetches all the albums in the user's library by a specific artist.
+ */
+export const useArtistAlbums = (artist: Artist) => {
+  const { albums } = useData();
+  return artistAlbums$(albums, artist);
 };

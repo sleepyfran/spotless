@@ -1,6 +1,6 @@
 import { Database, fieldNameOf } from "@spotless/data-db";
 import { Api } from "@spotless/data-api";
-import { Album } from "@spotless/types";
+import { Album, Artist } from "@spotless/types";
 import { Single, singleFrom } from "@spotless/services-rx";
 import { String } from "@spotless/services-utils";
 import { Observable } from "rxjs";
@@ -42,6 +42,18 @@ export class AlbumsData {
             .toArray()
         : query.toArray();
     });
+  }
+
+  /**
+   * Returns all the albums in the user's library by a specific artist.
+   */
+  public allAlbumsByArtist(artist: Artist): Observable<Album[]> {
+    return this.db.observe(() =>
+      this.db.albums
+        .where(fieldNameOf<Album>("artistId"))
+        .equals(artist.id)
+        .toArray()
+    );
   }
 
   /**

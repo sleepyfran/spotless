@@ -14,6 +14,7 @@ export const createUserLibraryApi = (client: ApiClient): UserLibraryApi => ({
             id: album.album.id,
             name: album.album.name,
             artistName: album.album.artists[0].name,
+            artistId: album.album.artists[0].id,
             coverUrl: album.album.images[0].url,
             addedAt: new Date(album.added_at),
             releaseDate: new Date(album.album.release_date),

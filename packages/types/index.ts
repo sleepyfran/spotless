@@ -51,6 +51,7 @@ export type Album = {
   id: Id;
   name: string;
   artistName: string;
+  artistId: Id;
   coverUrl: string;
   addedAt: Date;
   releaseDate: Date;
