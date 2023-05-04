@@ -2,6 +2,7 @@ import { ArtistsData } from "@spotless/data-artists";
 import { Artist } from "@spotless/types";
 import { bind } from "@react-rxjs/core";
 import { map } from "rxjs";
+import { useData } from "@spotless/components-shared";
 
 type ArtistsResponse = [Artist[], boolean];
 
@@ -11,7 +12,8 @@ const mapToResponse = map(
 );
 
 const [allArtists$] = bind(
-  (artists: ArtistsData) => artists.allArtistsByName().pipe(mapToResponse),
+  (artists: ArtistsData, filter?: string) =>
+    artists.allArtistsByName(filter).pipe(mapToResponse),
   loading
 );
 
@@ -20,4 +22,7 @@ const [allArtists$] = bind(
  * observable response with a type to indicate if we're loading or if we've
  * finished loading.
  */
-export const useAllArtists = (artists: ArtistsData) => allArtists$(artists);
+export const useAllArtists = (filter?: string) => {
+  const { artists } = useData();
+  return allArtists$(artists, filter);
+};

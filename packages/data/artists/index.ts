@@ -1,6 +1,7 @@
 import { Database, fieldNameOf } from "@spotless/data-db";
 import { Artist } from "@spotless/types";
 import { Single } from "@spotless/services-rx";
+import { String } from "@spotless/services-utils";
 
 /**
  * Exposes the queries that the app can fetch from the artists table.
@@ -11,10 +12,22 @@ export class ArtistsData {
   /**
    * Returns all the artists in the user's library.
    */
-  public allArtistsByName(): Single<Artist[]> {
-    return this.db.observe(() =>
-      this.db.artists.orderBy(fieldNameOf<Artist>("name")).toArray()
-    );
+  public allArtistsByName(filter?: string): Single<Artist[]> {
+    const normalizedFilter = String.normalizeForComparison(filter || "");
+
+    return this.db.observe(() => {
+      const query = this.db.artists.orderBy(fieldNameOf<Artist>("name"));
+
+      return normalizedFilter
+        ? query
+            .filter((artist) =>
+              String.normalizeForComparison(artist.name).includes(
+                normalizedFilter
+              )
+            )
+            .toArray()
+        : query.toArray();
+    });
   }
 
   /**
