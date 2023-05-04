@@ -13,9 +13,9 @@ export class Database extends Dexie {
   constructor() {
     super("spotless");
     this.version(1).stores({
-      auth: ", accessToken, refreshToken, tokenType, scope, expirationTimestamp",
-      albums: "id, name, artistName, artistId, coverUrl, addedAt",
-      artists: "id, name, imageUrl",
+      auth: ", accessToken, refreshToken",
+      albums: "id, artistName, artistId, addedAt",
+      artists: "id, name",
     });
   }
 
