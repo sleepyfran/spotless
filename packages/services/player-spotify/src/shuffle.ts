@@ -1,8 +1,8 @@
 import { PlayerData } from "@spotless/data-player";
 import { Single } from "@spotless/services-rx";
 import { Album, AlbumMappers } from "@spotless/types";
-import { shuffle, drop } from "lodash";
-import { EMPTY, tap } from "rxjs";
+import { shuffle } from "lodash";
+import { EMPTY, finalize } from "rxjs";
 
 type ShuffleAlbumsDeps = {
   playerState: PlayerData;
@@ -19,10 +19,10 @@ export const shuffleAlbums = (
 
   const shuffledAlbums = shuffle(items);
   return play(shuffledAlbums[0]).pipe(
-    tap(() => {
+    finalize(() => {
       // Append the rest of the albums to the queue.
       playerState.addToQueue(
-        drop(shuffledAlbums, 1).flatMap(AlbumMappers.albumToQueuedAlbum)
+        shuffledAlbums.slice(1).flatMap(AlbumMappers.albumToQueuedAlbum)
       );
     })
   );

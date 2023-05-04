@@ -96,7 +96,10 @@ export class SpotifyPlayer implements Player {
 
   public shuffleAlbums(items: Album[]): Single<void> {
     return shuffleAlbums(
-      { playerState: this.playerState, play: (item) => this.play(item.id) },
+      {
+        playerState: this.playerState,
+        play: (item) => this.play(item.id),
+      },
       items
     );
   }
