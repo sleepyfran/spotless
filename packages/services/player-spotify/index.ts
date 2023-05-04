@@ -5,7 +5,14 @@ import { Logger, LoggerFactory } from "@spotless/services-logger";
 import { Api } from "@spotless/data-api";
 import { Album, AlbumMappers, AuthenticatedUser, Id } from "@spotless/types";
 import { Single, singleFrom, singleOf } from "@spotless/services-rx";
-import { EMPTY, concatMap, ignoreElements, tap } from "rxjs";
+import {
+  EMPTY,
+  concatMap,
+  distinctUntilChanged,
+  fromEvent,
+  ignoreElements,
+  tap,
+} from "rxjs";
 import {
   ConnectionStatus,
   connected,
@@ -14,7 +21,7 @@ import {
 } from "./src/types";
 import { transfer } from "./src/playback";
 import { loadSpotifyPlaybackLib } from "./src/lib";
-import { updateState } from "./src/state-change";
+import { getNextUpdateAction } from "./src/state-change";
 import { queueFromAlbumPlay } from "./src/queue";
 import { AlbumsData } from "@spotless/data-albums";
 import { shuffleAlbums } from "./src/shuffle";
@@ -58,13 +65,17 @@ export class SpotifyPlayer implements Player {
     return this.status.__status === "connected";
   }
 
-  public play(item: Id): Single<void> {
+  public play(item: Id, overrideQueue = true): Single<void> {
     return this.api.player.play(item).pipe(
       concatMap(() => this.executePlayerAction((player) => player.resume())),
       concatMap(() =>
         queueFromAlbumPlay({ albumsData: this.albumsData }, item)
       ),
-      tap((queue) => this.playerState.setQueue(queue)),
+      tap((queue) => {
+        if (overrideQueue) {
+          this.playerState.setQueue(queue);
+        }
+      }),
       ignoreElements()
     );
   }
@@ -158,21 +169,46 @@ export class SpotifyPlayer implements Player {
       this.status = errored;
     });
 
-    this.player.addListener(
+    fromEvent(
+      this.player,
       "player_state_changed",
-      (updatedSpotifyState: Spotify.PlaybackState) => {
-        this.logger.log("Playback state has changed to:", updatedSpotifyState);
-        updateState(
-          {
-            albumsData: this.albumsData,
-            logger: this.logger,
-            player: this.player,
-            playerState: this.playerState,
-          },
-          updatedSpotifyState
-        ).subscribe();
-      }
-    );
+      (event) => event as Spotify.PlaybackState
+    )
+      .pipe(
+        distinctUntilChanged(
+          (prev, curr) =>
+            prev.paused === curr.paused &&
+            prev.track_window.current_track.id ===
+              curr.track_window.current_track.id
+        ),
+        tap((state) => this.logger.log("Playback state changed", state)),
+        concatMap((updatedSpotifyState) =>
+          getNextUpdateAction(
+            {
+              albumsData: this.albumsData,
+              logger: this.logger,
+              player: this.player,
+              playerState: this.playerState,
+            },
+            updatedSpotifyState
+          )
+        ),
+        concatMap((action) => {
+          this.logger.log("New action received", action);
+          this.playerState.setState(action.state);
+
+          switch (action.kind) {
+            case "continueWithNewState":
+              return EMPTY;
+            case "replaceWithQueuePlayback":
+              return this.play(action.item, false);
+          }
+        })
+      )
+      .subscribe({
+        next: () => this.logger.log("Update emitted"),
+        complete: () => this.logger.warn("Stream completed, somehow"),
+      });
 
     return singleFrom(this.player.connect());
   }

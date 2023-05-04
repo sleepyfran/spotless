@@ -5,7 +5,7 @@ import {
   CurrentlyPlaying,
   Id,
   PlayerState,
-  QueuedAlbum,
+  Queue,
   QueuedAlbumTrack,
 } from "@spotless/types";
 import { map } from "rxjs";
@@ -25,34 +25,22 @@ const markPreviouslyPlayedTracks = (
 };
 
 const markPreviouslyPlayed = (
-  queue: QueuedAlbum[],
+  queue: Queue,
   currentlyPlaying: CurrentlyPlaying
-) => {
-  const currentlyPlayingAlbumIndex = queue.findIndex(
-    (album) => album.id === currentlyPlaying.album.id
-  );
+) =>
+  queue.map((queuedAlbum) => {
+    if (queuedAlbum.id === currentlyPlaying.album.id) {
+      return {
+        ...queuedAlbum,
+        trackList: markPreviouslyPlayedTracks(
+          queuedAlbum.trackList,
+          currentlyPlaying
+        ),
+      };
+    }
 
-  // Set all albums before the currently playing one to played.
-  const albumsPlayedSoFar = queue
-    .slice(0, currentlyPlayingAlbumIndex)
-    .map((album) => ({
-      ...album,
-      played: true,
-    }));
-
-  // Mark all tracks before the currently playing one as played.
-  const currentAlbum: QueuedAlbum = {
-    ...queue[currentlyPlayingAlbumIndex],
-    trackList: markPreviouslyPlayedTracks(
-      queue[currentlyPlayingAlbumIndex].trackList,
-      currentlyPlaying
-    ),
-  };
-
-  const restOfAlbums = queue.slice(currentlyPlayingAlbumIndex + 1);
-
-  return [...albumsPlayedSoFar, currentAlbum, ...restOfAlbums];
-};
+    return queuedAlbum;
+  });
 
 type CurrentlyPlayingQueueDeps = {
   albumsData: AlbumsData;
@@ -67,7 +55,7 @@ export const queueFromCurrentlyPlaying = (
   { albumsData }: CurrentlyPlayingQueueDeps,
   currentState: PlayerState,
   currentlyPlaying: CurrentlyPlaying
-): Single<QueuedAlbum[]> => {
+): Single<Queue> => {
   // If there's no queue, create one from the currently playing album.
   const updatedQueue =
     currentState.queue.length === 0
@@ -98,3 +86,21 @@ export const queueFromAlbumPlay = (
       map((album) => (album ? [AlbumMappers.albumToQueuedAlbum(album)] : []))
     );
 };
+
+/**
+ * Computes whether we should override the queue with the app's integrated one
+ * based on whether we have more items other than the current one and whether
+ * Spotify is paused and in the beginning of the playback.
+ *
+ * This can result in a false positive if the user pauses and sets the playback
+ * to position 0, but I don't want to play nicely with Spotify connect for now :^)
+ */
+export const shouldContinueFromQueue = (
+  currentState: PlayerState,
+  updatedSpotifyState: Spotify.PlaybackState
+) =>
+  currentState.queue.length > 1 &&
+  currentState.currentlyPlaying?.id ===
+    updatedSpotifyState.track_window.current_track.id &&
+  updatedSpotifyState.paused &&
+  updatedSpotifyState.position === 0;

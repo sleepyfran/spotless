@@ -1,10 +1,10 @@
 import { PlayerData } from "@spotless/data-player";
 import { getVolume } from "./volume";
-import { PlayerState, QueuedAlbum, CurrentlyPlaying } from "@spotless/types";
-import { queueFromCurrentlyPlaying } from "./queue";
+import { PlayerState, CurrentlyPlaying, Id, Queue } from "@spotless/types";
+import { queueFromCurrentlyPlaying, shouldContinueFromQueue } from "./queue";
 import { AlbumsData } from "@spotless/data-albums";
-import { singleOf } from "@spotless/services-rx";
-import { concatMap, map } from "rxjs";
+import { Single, singleFrom } from "@spotless/services-rx";
+import { concatMap, forkJoin, map } from "rxjs";
 import { Logger } from "@spotless/services-logger";
 
 const idFromUri = (uri: string) => uri.split(":").pop();
@@ -23,28 +23,63 @@ const toCurrentlyPlaying = (track: Spotify.Track): CurrentlyPlaying => ({
   played: false,
 });
 
+type StateUpdateResponse =
+  | {
+      kind: "continueWithNewState";
+      state: PlayerState;
+    }
+  | {
+      kind: "replaceWithQueuePlayback";
+      state: PlayerState;
+      item: Id;
+    };
+
 const createPlayerStateFromSpotifyState = (
-  currentState: PlayerState,
+  previousState: PlayerState,
   updatedSpotifyState:
-    | (Spotify.PlaybackState & { volume?: number; queue: QueuedAlbum[] })
+    | (Spotify.PlaybackState & { volume?: number; queue: Queue })
     | undefined
-): PlayerState => {
+): StateUpdateResponse => {
   if (!updatedSpotifyState) {
-    return currentState;
+    return {
+      kind: "continueWithNewState",
+      state: previousState,
+    };
   }
 
-  const currentlyPlaying = updatedSpotifyState.track_window?.current_track
-    ? toCurrentlyPlaying(updatedSpotifyState.track_window.current_track)
-    : undefined;
+  if (shouldContinueFromQueue(previousState, updatedSpotifyState)) {
+    // If playback has finished and we have more stuff to play on our queue,
+    // we keep the state as it is but replace the queue with the next item
+    // and return a command to play it.
+    const updatedQueue = previousState.queue.slice(1);
 
-  return {
-    currentlyPlaying: currentlyPlaying,
-    volume: updatedSpotifyState.volume ?? 50,
-    queue: updatedSpotifyState.queue,
-    paused: updatedSpotifyState.paused,
-    shuffle: updatedSpotifyState.shuffle,
-    positionInMs: updatedSpotifyState.position,
-  };
+    return {
+      kind: "replaceWithQueuePlayback",
+      state: {
+        ...previousState,
+        queue: updatedQueue,
+      },
+      item: updatedQueue[0].id,
+    };
+  } else {
+    // If we don't need to continue with our internal queue, update to the
+    // new state as specified by the player and keep playback as it is.
+    const currentlyPlaying = updatedSpotifyState.track_window?.current_track
+      ? toCurrentlyPlaying(updatedSpotifyState.track_window.current_track)
+      : undefined;
+
+    return {
+      kind: "continueWithNewState",
+      state: {
+        currentlyPlaying: currentlyPlaying,
+        volume: updatedSpotifyState.volume ?? 50,
+        queue: updatedSpotifyState.queue,
+        paused: updatedSpotifyState.paused,
+        shuffle: updatedSpotifyState.shuffle,
+        positionInMs: updatedSpotifyState.position,
+      },
+    };
+  }
 };
 
 type StateChangeDeps = {
@@ -54,48 +89,43 @@ type StateChangeDeps = {
   playerState: PlayerData;
 };
 
-const queueFromSpotifyUpdate = (
-  { albumsData, logger }: StateChangeDeps,
-  playerState: PlayerState,
+const deriveState = (
+  deps: StateChangeDeps,
+  currentState: PlayerState,
   updatedSpotifyState: Spotify.PlaybackState
-) => {
-  if (updatedSpotifyState.track_window.current_track) {
-    logger.log("Updating queue based on current track");
-    return queueFromCurrentlyPlaying(
-      { albumsData },
-      playerState,
-      toCurrentlyPlaying(updatedSpotifyState.track_window.current_track)
-    );
-  }
-
-  logger.log("No current track, returning empty queue");
-  return singleOf([]);
-};
+): Single<StateUpdateResponse> =>
+  singleFrom(
+    forkJoin({
+      queue: queueFromCurrentlyPlaying(
+        deps,
+        currentState,
+        toCurrentlyPlaying(updatedSpotifyState.track_window.current_track)
+      ),
+      volume: getVolume(deps),
+    }).pipe(
+      map(({ queue, volume }) =>
+        createPlayerStateFromSpotifyState(currentState, {
+          ...updatedSpotifyState,
+          volume,
+          queue,
+        })
+      )
+    )
+  );
 
 /**
- * Updates the player state given a new Spotify player state. This unifies
- * the queue of the app with the current playback state of the Spotify player
- * and updates the volume as well.
+ * Computes the next player action to perform based on the current player state
+ * and an updated Spotify state.
  */
-export const updateState = (
+export const getNextUpdateAction = (
   deps: StateChangeDeps,
   updatedSpotifyState: Spotify.PlaybackState
-) => {
-  const { player, playerState } = deps;
+): Single<StateUpdateResponse> => {
+  const { playerState } = deps;
 
-  return playerState.mapStateAsync((state) => {
-    return queueFromSpotifyUpdate(deps, state, updatedSpotifyState).pipe(
-      concatMap((queue) => {
-        return getVolume({ player }).pipe(
-          map((volume) =>
-            createPlayerStateFromSpotifyState(state, {
-              ...updatedSpotifyState,
-              volume,
-              queue,
-            })
-          )
-        );
-      })
-    );
-  });
+  return singleFrom(
+    playerState
+      .state()
+      .pipe(concatMap((state) => deriveState(deps, state, updatedSpotifyState)))
+  );
 };

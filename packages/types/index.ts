@@ -96,6 +96,11 @@ export type QueuedAlbum = {
 };
 
 /**
+ * Represents the queue of albums that are upcoming.
+ */
+export type Queue = QueuedAlbum[];
+
+/**
  * Represents a track that is currently being played.
  */
 export type CurrentlyPlaying = QueuedAlbumTrack & {
@@ -107,7 +112,7 @@ export type CurrentlyPlaying = QueuedAlbumTrack & {
  */
 export type PlayerState = {
   currentlyPlaying: CurrentlyPlaying | undefined;
-  queue: QueuedAlbum[];
+  queue: Queue;
   volume: number;
   paused: boolean;
   shuffle: boolean;
