@@ -1,5 +1,5 @@
-import { Artist } from "@spotless/types";
-import { AlbumGrid, useArtistAlbums } from "@spotless/components-albums";
+import { AlbumType, Artist } from "@spotless/types";
+import { AlbumsSection, useArtistAlbums } from "@spotless/components-albums";
 import { Flex, Loader } from "@mantine/core";
 import { useEffect } from "react";
 
@@ -11,7 +11,7 @@ type ArtistDetailProps = {
 };
 
 export const ArtistDetail = ({ artist }: ArtistDetailProps) => {
-  const [data, isLoading] = useArtistAlbums(artist);
+  const data = useArtistAlbums(artist);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -19,7 +19,15 @@ export const ArtistDetail = ({ artist }: ArtistDetailProps) => {
 
   return (
     <Flex align="center" gap="md">
-      {isLoading ? <Loader /> : <AlbumGrid albums={data} />}
+      {!data ? (
+        <Loader />
+      ) : (
+        <Flex direction="column" gap="xl" w="100%">
+          <AlbumsSection type={AlbumType.Album} groupedAlbums={data} />
+          <AlbumsSection type={AlbumType.EP} groupedAlbums={data} />
+          <AlbumsSection type={AlbumType.Single} groupedAlbums={data} />
+        </Flex>
+      )}
     </Flex>
   );
 };

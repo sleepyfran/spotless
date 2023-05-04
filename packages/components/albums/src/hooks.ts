@@ -32,9 +32,8 @@ const [nAlbums$] = bind(
   loadingAlbums
 );
 const [artistAlbums$] = bind(
-  (albums: AlbumsData, artist: Artist) =>
-    albums.allAlbumsByArtist(artist).pipe(mapToAlbumsResponse),
-  loadingAlbums
+  (albums: AlbumsData, artist: Artist) => albums.allAlbumsByArtist(artist),
+  undefined
 );
 
 /**

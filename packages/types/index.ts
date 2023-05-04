@@ -44,6 +44,15 @@ export type Track = {
 };
 
 /**
+ * Represents the type of an album.
+ */
+export enum AlbumType {
+  Album = "album",
+  EP = "ep",
+  Single = "single",
+}
+
+/**
  * Represents a album, which contains the basic metadata to display
  * it inside of a list.
  */
@@ -52,11 +61,21 @@ export type Album = {
   name: string;
   artistName: string;
   artistId: Id;
+  type: AlbumType;
   coverUrl: string;
   addedAt: Date;
   releaseDate: Date;
   totalTracks: number;
   trackList: Track[];
+};
+
+/**
+ * Represents a dictionary of albums grouped by their type.
+ */
+export type GroupedAlbums = {
+  [AlbumType.Album]: Album[];
+  [AlbumType.EP]: Album[];
+  [AlbumType.Single]: Album[];
 };
 
 /**

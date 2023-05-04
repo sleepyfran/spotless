@@ -1,5 +1,21 @@
+import { AlbumType, Track } from "@spotless/types";
 import { ApiClient, UserLibraryApi } from "@spotless/data-api";
 import { map } from "rxjs";
+
+const thirtyMinutesInMs = 30 * 60 * 1000;
+
+const albumTypeFromTrackList = (trackList: Track[]) => {
+  const totalLengthInMs = trackList.reduce(
+    (total, track) => total + track.lengthInMs,
+    0
+  );
+
+  if (totalLengthInMs >= thirtyMinutesInMs) {
+    return AlbumType.Album;
+  }
+
+  return trackList.length > 1 ? AlbumType.EP : AlbumType.Single;
+};
 
 export const createUserLibraryApi = (client: ApiClient): UserLibraryApi => ({
   getAlbums: ({ next, limit }) =>
@@ -10,22 +26,27 @@ export const createUserLibraryApi = (client: ApiClient): UserLibraryApi => ({
       .pipe(
         map((response) => ({
           next: response.next || undefined,
-          items: response.items.map((album) => ({
-            id: album.album.id,
-            name: album.album.name,
-            artistName: album.album.artists[0].name,
-            artistId: album.album.artists[0].id,
-            coverUrl: album.album.images[0].url,
-            addedAt: new Date(album.added_at),
-            releaseDate: new Date(album.album.release_date),
-            totalTracks: album.album.total_tracks,
-            trackList: album.album.tracks.items.map((track) => ({
+          items: response.items.map((album) => {
+            const trackList = album.album.tracks.items.map((track) => ({
               id: track.id,
               name: track.name,
               trackNumber: track.track_number,
               lengthInMs: track.duration_ms,
-            })),
-          })),
+            }));
+
+            return {
+              id: album.album.id,
+              name: album.album.name,
+              type: albumTypeFromTrackList(trackList),
+              artistName: album.album.artists[0].name,
+              artistId: album.album.artists[0].id,
+              coverUrl: album.album.images[0].url,
+              addedAt: new Date(album.added_at),
+              releaseDate: new Date(album.album.release_date),
+              totalTracks: album.album.total_tracks,
+              trackList,
+            };
+          }),
         }))
       ),
   removeAlbum: (id) => client.delete(`/me/albums?ids=${id}`),
