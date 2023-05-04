@@ -52,7 +52,8 @@ export class AlbumsData {
       this.db.albums
         .where(fieldNameOf<Album>("artistId"))
         .equals(artist.id)
-        .toArray()
+        .reverse()
+        .sortBy(fieldNameOf<Album>("releaseDate"))
     );
   }
 
