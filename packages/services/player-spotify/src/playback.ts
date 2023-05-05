@@ -14,7 +14,8 @@ type TransferDeps = {
  * Transfers the playback to the current device if it's connected and there's
  * no other active playback in another device. If `force` is provided then
  * the playback will be transferred even if there's another active playback
- * in another device.
+ * in another device. After transferring the playback, it will disable shuffle
+ * and repeat.
  */
 export const transfer = (
   { api, connectionStatus, logger }: TransferDeps,
@@ -29,7 +30,21 @@ export const transfer = (
     .put("/me/player", {
       device_ids: [currentDeviceId],
     })
-    .pipe(ignoreElements());
+    .pipe(
+      concatMap(() =>
+        api.client.put(
+          `/me/player/shuffle?state=false&device_id=${connectionStatus.deviceId}`,
+          {}
+        )
+      ),
+      concatMap(() =>
+        api.client.put(
+          `/me/player/repeat?state=off&device_id=${connectionStatus.deviceId}`,
+          {}
+        )
+      ),
+      ignoreElements()
+    );
 
   if (force) {
     return transferPlayback;

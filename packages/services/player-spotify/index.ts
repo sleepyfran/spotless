@@ -107,10 +107,6 @@ export class SpotifyPlayer implements Player {
     );
   }
 
-  public setShuffle(state: boolean): Single<void> {
-    return this.api.player.setShuffle(state);
-  }
-
   public setVolume(volume: number): Single<void> {
     const normalizedVolume = volume / 100;
     return this.executePlayerAction((player) =>

@@ -40,11 +40,6 @@ export interface PlayerApi {
    * Plays the given album.
    */
   play(id: Id): Single<void>;
-
-  /**
-   * Sets the shuffle to the given value.
-   */
-  setShuffle(enabled: boolean): Single<void>;
 }
 
 /**

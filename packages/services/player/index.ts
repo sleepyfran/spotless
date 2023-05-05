@@ -29,12 +29,6 @@ export interface Player {
   shuffleAlbums(items: Album[]): Single<void>;
 
   /**
-   * Sets the shuffle to the given value.
-   * @param state The state to set the shuffle to.
-   */
-  setShuffle(state: boolean): Single<void>;
-
-  /**
    * Sets the volume of the player. If the player is not currently connected,
    * does nothing.
    * @param volume The volume to set, between 0 and 100.

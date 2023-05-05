@@ -6,5 +6,4 @@ export const createPlayerApi = (client: ApiClient): PlayerApi => ({
       context_uri: `spotify:album:${id}`,
       position_ms: 0,
     }),
-  setShuffle: (state) => client.put(`/me/player/shuffle?state=${state}`, {}),
 });

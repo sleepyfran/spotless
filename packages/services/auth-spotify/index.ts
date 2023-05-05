@@ -6,7 +6,7 @@ import { AppConfig } from "@spotless/types";
 const SPOTIFY_AUTH_URL = "https://accounts.spotify.com/authorize";
 const SPOTIFY_TOKEN_URL = "https://accounts.spotify.com/api/token";
 const DEFAULT_SCOPES =
-  "streaming user-read-private user-read-playback-state user-read-email user-library-read user-library-modify user-follow-read";
+  "streaming user-read-private user-read-playback-state user-modify-playback-state user-read-email user-library-read user-library-modify user-follow-read";
 
 const DEFAULT_AUTH_TIMEOUT = 1000 * 60 * 5; // 5 minutes.
 

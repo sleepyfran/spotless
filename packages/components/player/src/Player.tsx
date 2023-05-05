@@ -11,7 +11,6 @@ import {
 import { INITIAL_PLAYER_STATE, PlayerData } from "@spotless/data-player";
 import { CoverArtPlayButton } from "./CoverArtPlayButton";
 import { QueueButton } from "./QueueButton";
-import { ShuffleButton } from "./ShuffleButton";
 import { QueuedAlbumItem } from "./Queue";
 import { PropsWithChildren, useState } from "react";
 import { VolumePopoverButton } from "./VolumeControls";
@@ -102,7 +101,6 @@ export const Player = () => {
                 </Text>
               </Flex>
               <Flex component={motion.div} layout="position">
-                <ShuffleButton shuffling={playerState.shuffle} />
                 <QueueButton
                   onClick={onQueueClick}
                   queueVisible={queueVisible}
