@@ -89,8 +89,11 @@ export class SpotifyPlayer implements Player {
     return EMPTY;
   }
 
-  public emptyQueue(): Single<void> {
-    this.playerState.setQueue([]);
+  public clearQueue(): Single<void> {
+    this.playerState.mapState((state) => ({
+      queue: state.queue.slice(0, 1),
+    }));
+
     return EMPTY;
   }
 

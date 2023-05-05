@@ -42,6 +42,17 @@ export class PlayerData {
   }
 
   /**
+   * Changes the current state by applying the given map function over the
+   * current state.
+   */
+  public mapState(map: (state: PlayerState) => Partial<PlayerState>) {
+    this.playerState.next({
+      ...this.playerState.getValue(),
+      ...map(this.playerState.getValue()),
+    });
+  }
+
+  /**
    * Sets the currently playing queue to the given value.
    */
   public setQueue(items: Queue) {

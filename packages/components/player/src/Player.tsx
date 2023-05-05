@@ -56,7 +56,7 @@ export const Player = () => {
   const playerState = usePlayer$(player);
 
   const onQueueClick = () => setQueueVisible((visible) => !visible);
-  const onClearQueueClick = () => playerService.emptyQueue().subscribe();
+  const onClearQueueClick = () => playerService.clearQueue().subscribe();
 
   return (
     <motion.div layout ref={ref}>
