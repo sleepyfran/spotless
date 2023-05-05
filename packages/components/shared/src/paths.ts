@@ -6,7 +6,6 @@ export const Paths = {
   artists: "/artists",
   albums: "/albums",
   genres: "/genres",
-  explore: "/explore",
   auth: {
     root: "/auth",
     callback: "/auth/callback",

@@ -10,7 +10,7 @@ import { AlbumsPage } from "@spotless/components-albums";
 import { Paths } from "@spotless/components-shared";
 import { Root } from "@spotless/components-root";
 import { HomePage } from "@spotless/components-home";
-import { Title } from "@mantine/core";
+import { Title, Text, Flex } from "@mantine/core";
 
 export const router = createBrowserRouter([
   {
@@ -37,11 +37,12 @@ export const router = createBrowserRouter([
       },
       {
         path: Paths.genres,
-        element: <Title>Genres</Title>,
-      },
-      {
-        path: Paths.explore,
-        element: <Title>Explore</Title>,
+        element: (
+          <Flex direction="column">
+            <Title>Genres</Title>
+            <Text>Coming soon</Text>
+          </Flex>
+        ),
       },
     ],
   },
