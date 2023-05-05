@@ -67,6 +67,7 @@ export type Album = {
   releaseDate: Date;
   totalTracks: number;
   trackList: Track[];
+  durationInMinutes: number;
 };
 
 /**

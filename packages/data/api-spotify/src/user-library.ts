@@ -2,15 +2,11 @@ import { AlbumType, Track } from "@spotless/types";
 import { ApiClient, UserLibraryApi } from "@spotless/data-api";
 import { map } from "rxjs";
 
-const thirtyMinutesInMs = 30 * 60 * 1000;
-
-const albumTypeFromTrackList = (trackList: Track[]) => {
-  const totalLengthInMs = trackList.reduce(
-    (total, track) => total + track.lengthInMs,
-    0
-  );
-
-  if (totalLengthInMs >= thirtyMinutesInMs) {
+const albumTypeFromTrackList = (
+  trackList: Track[],
+  totalLengthInMinutes: number
+) => {
+  if (totalLengthInMinutes >= 30) {
     return AlbumType.Album;
   }
 
@@ -34,15 +30,22 @@ export const createUserLibraryApi = (client: ApiClient): UserLibraryApi => ({
               lengthInMs: track.duration_ms,
             }));
 
+            const durationInMs = trackList.reduce(
+              (total, track) => total + track.lengthInMs,
+              0
+            );
+            const durationInMinutes = Math.round(durationInMs / 1000 / 60);
+
             return {
               id: album.album.id,
               name: album.album.name,
-              type: albumTypeFromTrackList(trackList),
+              type: albumTypeFromTrackList(trackList, durationInMinutes),
               artistName: album.album.artists[0].name,
               artistId: album.album.artists[0].id,
               coverUrl: album.album.images[0].url,
               addedAt: new Date(album.added_at),
               releaseDate: new Date(album.album.release_date),
+              durationInMinutes,
               totalTracks: album.album.total_tracks,
               trackList,
             };

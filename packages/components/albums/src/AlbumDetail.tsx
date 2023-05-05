@@ -99,6 +99,9 @@ const AlbumInfo = ({ status }: AlbumDetailsChildProps) => {
             <Text fz="sm" className={styles.classes.albumInfoItem}>
               {createTrackListSummary(status.album)}
             </Text>
+            <Text fz="sm" className={styles.classes.albumInfoItem}>
+              {status.album.durationInMinutes} minutes
+            </Text>
           </Flex>
         ) : (
           <Skeleton width={150} height="1rem" />
