@@ -1,7 +1,6 @@
 import { AlbumType, Artist } from "@spotless/types";
 import { AlbumsSection, useArtistAlbums } from "@spotless/components-albums";
 import { Flex, Loader } from "@mantine/core";
-import { useEffect } from "react";
 
 type ArtistDetailProps = {
   /**
@@ -12,10 +11,6 @@ type ArtistDetailProps = {
 
 export const ArtistDetail = ({ artist }: ArtistDetailProps) => {
   const data = useArtistAlbums(artist);
-
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, []);
 
   return (
     <Flex align="center" gap="md">

@@ -1,6 +1,6 @@
 import { Database, fieldNameOf } from "@spotless/data-db";
-import { Artist } from "@spotless/types";
-import { Single } from "@spotless/services-rx";
+import { Artist, Id } from "@spotless/types";
+import { Single, singleFrom } from "@spotless/services-rx";
 import { String } from "@spotless/services-utils";
 
 /**
@@ -8,6 +8,15 @@ import { String } from "@spotless/services-utils";
  */
 export class ArtistsData {
   constructor(readonly db: Database) {}
+
+  /**
+   * Returns the artist with the given ID.
+   */
+  public byId(id: Id): Single<Artist | undefined> {
+    return singleFrom(
+      this.db.artists.where(fieldNameOf<Artist>("id")).equals(id).first()
+    );
+  }
 
   /**
    * Returns all the artists in the user's library.

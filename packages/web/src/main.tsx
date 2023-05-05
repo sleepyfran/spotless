@@ -1,7 +1,7 @@
 import { createRoot } from "react-dom/client";
 import { RouterProvider } from "react-router-dom";
 import { MantineProvider } from "@mantine/core";
-import { router } from "./router";
+import { createRouter } from "./router";
 import {
   DataContext,
   ServiceContext,
@@ -36,6 +36,8 @@ const { services, data } = initializeContexts(appConfig);
 startAlbumsWorker(appConfig);
 startArtistsWorker(appConfig);
 startSpotifyAuthWorker(appConfig);
+
+const router = createRouter(data);
 
 const Main = () => {
   const colorScheme = useColorScheme();
