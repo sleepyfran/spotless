@@ -11,7 +11,6 @@ import { AlbumsPage } from "@spotless/components-albums";
 import { Paths } from "@spotless/components-shared";
 import { Root } from "@spotless/components-root";
 import { HomePage } from "@spotless/components-home";
-import { Title, Text, Flex } from "@mantine/core";
 import { firstValueFrom } from "rxjs";
 
 export const createRouter = ({ artists }: Data) =>
@@ -50,15 +49,6 @@ export const createRouter = ({ artists }: Data) =>
         {
           path: Paths.albums,
           element: <AlbumsPage />,
-        },
-        {
-          path: Paths.genres,
-          element: (
-            <Flex direction="column">
-              <Title>Genres</Title>
-              <Text>Coming soon</Text>
-            </Flex>
-          ),
         },
       ],
     },

@@ -20,7 +20,6 @@ export const Header = () => {
           { label: "Home", value: Paths.root },
           { label: "Artists", value: Paths.artists },
           { label: "Albums", value: Paths.albums },
-          { label: "Genres", value: Paths.genres },
         ]}
         value={matchedLocation.pathname}
         onChange={navigate}

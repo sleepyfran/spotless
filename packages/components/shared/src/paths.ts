@@ -8,7 +8,6 @@ export const Paths = {
   artists: "/artists",
   artist: (id: Id) => `/artists/${id}`,
   albums: "/albums",
-  genres: "/genres",
   auth: {
     root: "/auth",
     callback: "/auth/callback",
