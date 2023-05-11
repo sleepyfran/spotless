@@ -14,60 +14,65 @@ import { HomePage } from "@spotless/components-home";
 import { firstValueFrom } from "rxjs";
 
 export const createRouter = ({ artists }: Data) =>
-  createBrowserRouter([
-    {
-      path: Paths.root,
-      element: (
-        <RequireLogin>
-          <Root>
+  createBrowserRouter(
+    [
+      {
+        path: Paths.root,
+        element: (
+          <RequireLogin>
+            <Root>
+              <Outlet />
+            </Root>
+          </RequireLogin>
+        ),
+        children: [
+          {
+            path: "",
+            element: <HomePage />,
+          },
+          {
+            path: Paths.artists,
+            children: [
+              {
+                path: "",
+                element: <ArtistsPage />,
+              },
+              {
+                path: ":artistId",
+                loader: ({ params }) =>
+                  // The ID is guaranteed to be present because of the route definition.
+                  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                  firstValueFrom(artists.byId(params.artistId!)),
+                element: <ArtistPageRoute />,
+              },
+            ],
+          },
+          {
+            path: Paths.albums,
+            element: <AlbumsPage />,
+          },
+        ],
+      },
+      {
+        path: Paths.auth.root,
+        element: (
+          <RedirectIfLoggedIn>
             <Outlet />
-          </Root>
-        </RequireLogin>
-      ),
-      children: [
-        {
-          path: "",
-          element: <HomePage />,
-        },
-        {
-          path: Paths.artists,
-          children: [
-            {
-              path: "",
-              element: <ArtistsPage />,
-            },
-            {
-              path: ":artistId",
-              loader: ({ params }) =>
-                // The ID is guaranteed to be present because of the route definition.
-                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                firstValueFrom(artists.byId(params.artistId!)),
-              element: <ArtistPageRoute />,
-            },
-          ],
-        },
-        {
-          path: Paths.albums,
-          element: <AlbumsPage />,
-        },
-      ],
-    },
+          </RedirectIfLoggedIn>
+        ),
+        children: [
+          {
+            path: "",
+            element: <AuthLanding />,
+          },
+          {
+            path: Paths.auth.callback,
+            element: <AuthCallback />,
+          },
+        ],
+      },
+    ],
     {
-      path: Paths.auth.root,
-      element: (
-        <RedirectIfLoggedIn>
-          <Outlet />
-        </RedirectIfLoggedIn>
-      ),
-      children: [
-        {
-          path: "",
-          element: <AuthLanding />,
-        },
-        {
-          path: Paths.auth.callback,
-          element: <AuthCallback />,
-        },
-      ],
-    },
-  ]);
+      basename: import.meta.env.VITE_BASENAME,
+    }
+  );

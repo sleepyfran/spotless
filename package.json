@@ -10,8 +10,8 @@
   "scripts": {
     "ci": "yarn typecheck && yarn lint && yarn format",
     "web:dev": "concurrently \"yarn typecheck:watch\" \"vite serve packages/web\"",
-    "web:build": "tsc && vite build packages/web",
-    "web:preview": "vite preview",
+    "web:build": "tsc && vite build --base=\"/spotless/\"",
+    "web:preview": "vite preview --base=\"/spotless/\"",
     "lint": "eslint --max-warnings 0 --ext .ts,.tsx .",
     "lint:fix": "eslint --max-warnings 0 --ext .ts,.tsx . --fix",
     "gen": "plop",
