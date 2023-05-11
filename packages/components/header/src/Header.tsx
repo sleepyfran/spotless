@@ -1,6 +1,6 @@
 import { Flex, SegmentedControl } from "@mantine/core";
 import { Paths } from "@spotless/components-shared";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useMatches, useNavigate } from "react-router-dom";
 
 /**
  * Creates the main header of the app which displays each main section as a
@@ -8,7 +8,10 @@ import { useLocation, useNavigate } from "react-router-dom";
  */
 export const Header = () => {
   const navigate = useNavigate();
-  const location = useLocation();
+
+  // TODO: This is a hacky way to get the currently matched location. Fix me?
+  const matches = useMatches();
+  const matchedLocation = matches[1] || matches[0];
 
   return (
     <Flex justify="center" py="1rem">
@@ -19,7 +22,7 @@ export const Header = () => {
           { label: "Albums", value: Paths.albums },
           { label: "Genres", value: Paths.genres },
         ]}
-        value={location.pathname}
+        value={matchedLocation.pathname}
         onChange={navigate}
         size="md"
         radius={16}
