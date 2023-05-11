@@ -47,30 +47,36 @@ export class AlbumsData {
   /**
    * Returns all the albums in the user's library by a specific artist.
    */
-  public allAlbumsByArtist(artist: Artist): Observable<GroupedAlbums> {
-    return this.db
-      .observe(() =>
-        this.db.albums
-          .where(fieldNameOf<Album>("artistId"))
-          .equals(artist.id)
-          .reverse()
-          .sortBy(fieldNameOf<Album>("releaseDate"))
-      )
-      .pipe(
-        map((albums) =>
-          albums.reduce(
-            (acc, album) => {
-              acc[album.type].push(album);
-              return acc;
-            },
-            {
-              [AlbumType.Album]: [],
-              [AlbumType.EP]: [],
-              [AlbumType.Single]: [],
-            } as GroupedAlbums
-          )
+  public allAlbumsByArtist(artist: Artist): Observable<Album[]> {
+    return this.db.observe(() =>
+      this.db.albums
+        .where(fieldNameOf<Album>("artistId"))
+        .equals(artist.id)
+        .reverse()
+        .sortBy(fieldNameOf<Album>("releaseDate"))
+    );
+  }
+
+  /**
+   * Returns all the albums in the user's library by a specific artist, grouped
+   * by the album type.
+   */
+  public allGroupedAlbumsByArtist(artist: Artist): Observable<GroupedAlbums> {
+    return this.allAlbumsByArtist(artist).pipe(
+      map((albums) =>
+        albums.reduce(
+          (acc, album) => {
+            acc[album.type].push(album);
+            return acc;
+          },
+          {
+            [AlbumType.Album]: [],
+            [AlbumType.EP]: [],
+            [AlbumType.Single]: [],
+          } as GroupedAlbums
         )
-      );
+      )
+    );
   }
 
   /**

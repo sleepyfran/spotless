@@ -4,6 +4,7 @@ import { Artist } from "@spotless/types";
 import { IconArrowLeft } from "@tabler/icons-react";
 import { useLoaderData, useNavigate } from "react-router-dom";
 import { ArtistDetail } from "./ArtistDetail";
+import { PlayArtist } from "./PlayArtist";
 import { useEffect } from "react";
 
 type ArtistPageProps = {
@@ -50,6 +51,7 @@ const ArtistTitle = ({ artist }: ArtistTitleProps) => {
         <IconArrowLeft />
       </ActionIcon>
       <Title>{artist.name}</Title>
+      <PlayArtist artist={artist} />
     </Flex>
   );
 };

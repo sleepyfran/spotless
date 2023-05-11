@@ -1,5 +1,8 @@
 import { AlbumType, Artist } from "@spotless/types";
-import { AlbumsSection, useArtistAlbums } from "@spotless/components-albums";
+import {
+  AlbumsSection,
+  useGroupedArtistAlbums,
+} from "@spotless/components-albums";
 import { Flex, Loader } from "@mantine/core";
 
 type ArtistDetailProps = {
@@ -10,7 +13,7 @@ type ArtistDetailProps = {
 };
 
 export const ArtistDetail = ({ artist }: ArtistDetailProps) => {
-  const data = useArtistAlbums(artist);
+  const data = useGroupedArtistAlbums(artist);
 
   return (
     <Flex align="center" gap="md">

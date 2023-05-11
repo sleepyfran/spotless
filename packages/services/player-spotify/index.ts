@@ -1,14 +1,21 @@
 import { AuthData } from "@spotless/data-auth";
-import { Player } from "@spotless/services-player";
+import { PlayArtistDiscographyMode, Player } from "@spotless/services-player";
 import { PlayerData } from "@spotless/data-player";
 import { Logger, LoggerFactory } from "@spotless/services-logger";
 import { Api } from "@spotless/data-api";
-import { Album, AlbumMappers, AuthenticatedUser, Id } from "@spotless/types";
+import {
+  Album,
+  AlbumMappers,
+  Artist,
+  AuthenticatedUser,
+  Id,
+} from "@spotless/types";
 import { Single, singleFrom, singleOf } from "@spotless/services-rx";
 import {
   EMPTY,
   concatMap,
   distinctUntilChanged,
+  finalize,
   fromEvent,
   ignoreElements,
   tap,
@@ -25,6 +32,7 @@ import { getNextUpdateAction } from "./src/state-change";
 import { queueFromAlbumPlay } from "./src/queue";
 import { AlbumsData } from "@spotless/data-albums";
 import { shuffleAlbums } from "./src/shuffle";
+import { playDiscography } from "./src/artist-discography";
 
 /**
  * Service dealing with the playback part of Spotify. Connects with the Playback
@@ -80,6 +88,21 @@ export class SpotifyPlayer implements Player {
     );
   }
 
+  public playMultiple(items: Album[]): Single<void> {
+    if (items.length === 0) {
+      return EMPTY;
+    }
+
+    return this.play(items[0].id).pipe(
+      finalize(() => {
+        // Append the rest of the albums to the queue.
+        this.playerState.addToQueue(
+          items.slice(1).flatMap(AlbumMappers.albumToQueuedAlbum)
+        );
+      })
+    );
+  }
+
   public togglePlayback(): Single<void> {
     return this.executePlayerAction((player) => player.togglePlay());
   }
@@ -97,11 +120,24 @@ export class SpotifyPlayer implements Player {
     return EMPTY;
   }
 
+  public playArtistDiscography(
+    artist: Artist,
+    mode: PlayArtistDiscographyMode
+  ): Single<void> {
+    return playDiscography(
+      {
+        albumsData: this.albumsData,
+        playMultiple: (items) => this.playMultiple(items),
+      },
+      artist,
+      mode
+    );
+  }
+
   public shuffleAlbums(items: Album[]): Single<void> {
     return shuffleAlbums(
       {
-        playerState: this.playerState,
-        play: (item) => this.play(item.id),
+        playMultiple: (items) => this.playMultiple(items),
       },
       items
     );

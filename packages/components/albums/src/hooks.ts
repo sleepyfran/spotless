@@ -31,8 +31,9 @@ const [nAlbums$] = bind(
     albums.fetchN(n, orderBy).pipe(mapToAlbumsResponse),
   loadingAlbums
 );
-const [artistAlbums$] = bind(
-  (albums: AlbumsData, artist: Artist) => albums.allAlbumsByArtist(artist),
+const [groupedArtistAlbums$] = bind(
+  (albums: AlbumsData, artist: Artist) =>
+    albums.allGroupedAlbumsByArtist(artist),
   undefined
 );
 
@@ -69,7 +70,7 @@ export const useAlbums = <K extends keyof Album>(n: number, orderBy?: K) => {
 /**
  * Hook that fetches all the albums in the user's library by a specific artist.
  */
-export const useArtistAlbums = (artist: Artist) => {
+export const useGroupedArtistAlbums = (artist: Artist) => {
   const { albums } = useData();
-  return artistAlbums$(albums, artist);
+  return groupedArtistAlbums$(albums, artist);
 };

@@ -1,11 +1,21 @@
-import { Album, Id } from "@spotless/types";
+import { Album, Artist, Id } from "@spotless/types";
 import { Single } from "@spotless/services-rx";
+
+export enum PlayArtistDiscographyMode {
+  FromNewest,
+  FromOldest,
+}
 
 export interface Player {
   /**
    * Plays the given album and resumes the playback.
    */
   play(id: Id): Single<void>;
+
+  /**
+   * Plays the given set of albums and resumes playback.
+   */
+  playMultiple(items: Album[]): Single<void>;
 
   /**
    * Resumes or pauses the playback of the current track, if any. If there is no
@@ -22,6 +32,14 @@ export interface Player {
    * Removes all items from the queue, except for the one currently playing.
    */
   clearQueue(): Single<void>;
+
+  /**
+   * Plays the discography of the given artist sorted by either newest or oldest.
+   */
+  playArtistDiscography(
+    artist: Artist,
+    mode: PlayArtistDiscographyMode
+  ): Single<void>;
 
   /**
    * Shuffles the given albums playing each song in order inside of the album.
