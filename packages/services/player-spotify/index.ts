@@ -128,6 +128,7 @@ export class SpotifyPlayer implements Player {
       {
         albumsData: this.albumsData,
         playMultiple: (items) => this.playMultiple(items),
+        shuffle: (items) => this.shuffleAlbums(items),
       },
       artist,
       mode

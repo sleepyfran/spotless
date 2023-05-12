@@ -4,6 +4,7 @@ import {
   IconSortAscending2,
   IconPlayerPlayFilled,
   IconCircleCheckFilled,
+  IconArrowsShuffle,
 } from "@tabler/icons-react";
 import { Artist } from "@spotless/types";
 import { useServices } from "@spotless/components-shared";
@@ -63,6 +64,12 @@ export const PlayArtist = ({ artist }: PlayArtistProps) => {
           onClick={() => onModeSelected(PlayArtistDiscographyMode.FromOldest)}
         >
           From oldest to newest
+        </Menu.Item>
+        <Menu.Item
+          icon={<IconArrowsShuffle />}
+          onClick={() => onModeSelected(PlayArtistDiscographyMode.Shuffled)}
+        >
+          Shuffled
         </Menu.Item>
       </Menu.Dropdown>
     </Menu>

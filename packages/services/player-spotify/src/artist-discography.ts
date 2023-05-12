@@ -7,16 +7,19 @@ import { concatMap, map } from "rxjs";
 type DiscographyDeps = {
   albumsData: AlbumsData;
   playMultiple: (items: Album[]) => Single<void>;
+  shuffle: (items: Album[]) => Single<void>;
 };
 
 export const playDiscography = (
-  { albumsData, playMultiple }: DiscographyDeps,
+  { albumsData, playMultiple, shuffle }: DiscographyDeps,
   artist: Artist,
   mode: PlayArtistDiscographyMode
 ) =>
   singleFrom(albumsData.allAlbumsByArtist(artist)).pipe(
     map((albums) =>
-      mode === PlayArtistDiscographyMode.FromNewest ? albums : albums.reverse()
+      mode === PlayArtistDiscographyMode.FromOldest ? albums.reverse() : albums
     ),
-    concatMap(playMultiple)
+    concatMap(
+      mode === PlayArtistDiscographyMode.Shuffled ? shuffle : playMultiple
+    )
   );

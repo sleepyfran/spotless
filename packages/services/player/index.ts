@@ -4,6 +4,7 @@ import { Single } from "@spotless/services-rx";
 export enum PlayArtistDiscographyMode {
   FromNewest,
   FromOldest,
+  Shuffled,
 }
 
 export interface Player {
