@@ -1,6 +1,7 @@
 import { AppConfig } from "@spotless/types";
 import AlbumsWorker from "./src/albums-worker?worker";
 import ArtistsWorker from "./src/artists-worker?worker";
+import GenresWorker from "./src/genres-worker?worker";
 import SpotifyAuthWorker from "./src/spotify-auth-worker?worker";
 
 /**
@@ -24,6 +25,21 @@ export const startAlbumsWorker = (appConfig: AppConfig) => {
  */
 export const startArtistsWorker = (appConfig: AppConfig) => {
   const worker = new ArtistsWorker();
+
+  worker.postMessage({
+    __type: "init",
+    appConfig,
+  });
+
+  return worker;
+};
+
+/**
+ * Starts the genres worker with the given config.
+ * @param appConfig configuration loaded from the environment.
+ */
+export const startGenresWorker = (appConfig: AppConfig) => {
+  const worker = new GenresWorker();
 
   worker.postMessage({
     __type: "init",

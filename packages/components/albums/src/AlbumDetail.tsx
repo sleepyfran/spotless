@@ -41,6 +41,15 @@ export const AlbumDetails = ({ albumId }: AlbumDetailProps) => {
     <Flex gap={10} direction="column">
       <AlbumInfo status={status} />
       {status.__type === "loaded" && (
+        <Flex columnGap="sm" wrap="wrap">
+          {status.album.genres.map((genre) => (
+            <Text fz="sm" color="blue" key={genre}>
+              {genre}
+            </Text>
+          ))}
+        </Flex>
+      )}
+      {status.__type === "loaded" && (
         <Flex gap="sm">
           <PlayButton item={status.album} />
           <AddToQueueButton item={status.album} />

@@ -29,5 +29,6 @@ module.exports = {
     ".eslintrc.cjs",
     "plopfile.cjs",
     "generator.cjs",
+    "jest.config.cjs",
   ],
 };

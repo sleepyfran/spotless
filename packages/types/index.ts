@@ -53,6 +53,11 @@ export enum AlbumType {
 }
 
 /**
+ * Represents a genre of an album.
+ */
+export type Genre = string;
+
+/**
  * Represents a album, which contains the basic metadata to display
  * it inside of a list.
  */
@@ -65,6 +70,7 @@ export type Album = {
   coverUrl: string;
   addedAt: Date;
   releaseDate: Date;
+  genres: Genre[];
   totalTracks: number;
   trackList: Track[];
   durationInMinutes: number;

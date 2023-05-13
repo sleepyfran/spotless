@@ -10,6 +10,7 @@ import {
 import {
   startAlbumsWorker,
   startArtistsWorker,
+  startGenresWorker,
   startSpotifyAuthWorker,
 } from "@spotless/workers";
 import { Subscribe } from "@react-rxjs/core";
@@ -35,6 +36,7 @@ const { services, data } = initializeContexts(appConfig);
 
 startAlbumsWorker(appConfig);
 startArtistsWorker(appConfig);
+startGenresWorker(appConfig);
 startSpotifyAuthWorker(appConfig);
 
 const router = createRouter(data);
