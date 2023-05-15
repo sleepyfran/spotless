@@ -56,7 +56,6 @@ export class GenresMusicBrainzData implements GenreDataSource {
   private get headers() {
     return {
       Accept: "application/json",
-      "User-Agent": "Spotless/1.0.0 (https://sleepyfran.github.io/spotless)",
     };
   }
 }

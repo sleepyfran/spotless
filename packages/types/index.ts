@@ -58,6 +58,14 @@ export enum AlbumType {
 export type Genre = string;
 
 /**
+ * Represents a genre of an album that is stored separately and can be referenced.
+ */
+export type IndexedGenre = {
+  id: Id;
+  name: Genre;
+};
+
+/**
  * Represents a album, which contains the basic metadata to display
  * it inside of a list.
  */

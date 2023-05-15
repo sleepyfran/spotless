@@ -1,6 +1,11 @@
 import Dexie, { Table, liveQuery } from "dexie";
 import { Observable, from } from "rxjs";
-import { Album, Artist, AuthenticatedUser } from "@spotless/types";
+import {
+  Album,
+  Artist,
+  AuthenticatedUser,
+  IndexedGenre,
+} from "@spotless/types";
 
 /**
  * Wrapper around Dexie that provides a way of interacting with the database.
@@ -9,13 +14,15 @@ export class Database extends Dexie {
   auth!: Table<AuthenticatedUser>;
   albums!: Table<Album>;
   artists!: Table<Artist>;
+  genres!: Table<IndexedGenre>;
 
   constructor() {
     super("spotless");
     this.version(1).stores({
       auth: ", accessToken, refreshToken",
-      albums: "id, artistName, artistId, addedAt",
+      albums: "id, artistName, artistId, addedAt, *genres",
       artists: "id, name",
+      genres: "++id, &name",
     });
   }
 
