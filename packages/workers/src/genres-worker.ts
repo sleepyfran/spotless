@@ -70,14 +70,21 @@ const hydrateOnAlbumChanges = (
   services: WorkerServices,
   logger: Logger
 ): Observable<Album> =>
-  data.albums.allAlbumsByName().pipe(
-    mergeAll(1),
-    concatMap((album) =>
-      tryHydrateAlbumGenres(data.genresSource, services.db, album, logger).pipe(
-        delay(DEFAULT_DELAY_IN_MS)
+  data.albums
+    .fetch({
+      orderBy: "addedAt",
+    })
+    .pipe(
+      mergeAll(1),
+      concatMap((album) =>
+        tryHydrateAlbumGenres(
+          data.genresSource,
+          services.db,
+          album,
+          logger
+        ).pipe(delay(DEFAULT_DELAY_IN_MS))
       )
-    )
-  );
+    );
 
 const tryHydrateAlbumGenres = (
   genres: GenreDataSource,

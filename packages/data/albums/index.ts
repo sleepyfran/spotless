@@ -1,4 +1,4 @@
-import { Database, fieldNameOf } from "@spotless/data-db";
+import { Database, FetchOptions, fieldNameOf } from "@spotless/data-db";
 import { Api } from "@spotless/data-api";
 import { Album, AlbumType, Artist, GroupedAlbums } from "@spotless/types";
 import { Single, singleFrom } from "@spotless/services-rx";
@@ -83,16 +83,13 @@ export class AlbumsData {
    * Returns the first `n` albums in the user's library, ordered by the given
    * field. If not given, orders by the album's name by default.
    */
-  public fetchN<K extends keyof Album>(
-    n: number,
-    orderBy?: K
-  ): Observable<Album[]> {
-    return this.db.observe(() =>
-      this.db.albums
-        .orderBy(fieldNameOf<Album>(orderBy || "name"))
-        .reverse()
-        .limit(n)
-        .toArray()
-    );
+  public fetch(opts: FetchOptions<Album>): Observable<Album[]> {
+    return this.db.observe(() => {
+      let query = this.db.albums
+        .orderBy(fieldNameOf<Album>(opts.orderBy || "name"))
+        .reverse();
+      query = opts.limit ? query.limit(opts.limit) : query;
+      return query.toArray();
+    });
   }
 }

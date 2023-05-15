@@ -42,7 +42,7 @@ export class ArtistsData {
   /**
    * Returns the first n records in the artists table.
    */
-  public fetchN(n: number): Single<Artist[]> {
+  public fetch(n: number): Single<Artist[]> {
     return this.db.observe(() => this.db.artists.limit(n).toArray());
   }
 }

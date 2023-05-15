@@ -28,7 +28,12 @@ const [allAlbums$] = bind(
 );
 const [nAlbums$] = bind(
   <K extends keyof Album>(albums: AlbumsData, n: number, orderBy?: K) =>
-    albums.fetchN(n, orderBy).pipe(mapToAlbumsResponse),
+    albums
+      .fetch({
+        limit: n,
+        orderBy,
+      })
+      .pipe(mapToAlbumsResponse),
   loadingAlbums
 );
 const [groupedArtistAlbums$] = bind(
