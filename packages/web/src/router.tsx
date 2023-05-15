@@ -1,4 +1,4 @@
-import { createBrowserRouter, Outlet } from "react-router-dom";
+import { createHashRouter, Outlet } from "react-router-dom";
 import {
   AuthLanding,
   AuthCallback,
@@ -14,7 +14,7 @@ import { HomePage } from "@spotless/components-home";
 import { firstValueFrom } from "rxjs";
 
 export const createRouter = ({ artists }: Data) =>
-  createBrowserRouter(
+  createHashRouter(
     [
       {
         path: Paths.root,
