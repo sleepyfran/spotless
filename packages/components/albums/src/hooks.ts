@@ -3,6 +3,7 @@ import { Album, Artist } from "@spotless/types";
 import { bind } from "@react-rxjs/core";
 import { map } from "rxjs";
 import { useData } from "@spotless/components-shared";
+import { FetchOptions } from "@spotless/data-db";
 
 type AlbumResponse = [Album | undefined, boolean];
 type AlbumsResponse = [Album[], boolean];
@@ -32,13 +33,8 @@ const [allAlbums$] = bind(
   loadingAlbums
 );
 const [nAlbums$] = bind(
-  <K extends keyof Album>(albums: AlbumsData, n: number, orderBy?: K) =>
-    albums
-      .fetch({
-        limit: n,
-        orderBy,
-      })
-      .pipe(mapToAlbumsResponse),
+  (albums: AlbumsData, opts: FetchOptions<Album>) =>
+    albums.fetch(opts).pipe(mapToAlbumsResponse),
   loadingAlbums
 );
 const [groupedArtistAlbums$] = bind(
@@ -72,9 +68,9 @@ export const useAllAlbums = (filter?: string) => {
  * a specific field. Decorates each observable response with a type to indicate
  * if we're loading or if we've finished loading.
  */
-export const useAlbums = <K extends keyof Album>(n: number, orderBy?: K) => {
+export const useNAlbums = (opts: FetchOptions<Album>) => {
   const { albums } = useData();
-  return nAlbums$(albums, n, orderBy);
+  return nAlbums$(albums, opts);
 };
 
 /**

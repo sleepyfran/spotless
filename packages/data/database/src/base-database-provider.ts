@@ -13,7 +13,7 @@ export type OrderBy<T> = {
 
   /**
    * The direction to use to order the records. If left undefined, then it will
-   * default to desc.
+   * default to asc.
    */
   direction?: "asc" | "desc";
 };
@@ -77,9 +77,11 @@ export class DataProvider<T> {
    * options or ordered by a given key.
    */
   public fetch(opts?: FetchOptions<T>): Single<T[]> {
-    return this.db.observe(() => {
-      return this.createQuery(opts).toArray();
-    });
+    return singleFrom(
+      this.db.observe(() => {
+        return this.createQuery(opts).toArray();
+      })
+    );
   }
 
   /**
@@ -107,7 +109,7 @@ export class DataProvider<T> {
     opts?: FetchOptions<T>
   ): Collection<T, IndexableType> => {
     let query = this.table.orderBy(this.orderingKey(opts));
-    query = this.orderingDirection(opts) === "desc" ? query : query.reverse();
+    query = this.orderingDirection(opts) === "desc" ? query.reverse() : query;
     query = opts?.limit ? query.limit(opts.limit) : query;
     return query;
   };
@@ -122,7 +124,7 @@ export class DataProvider<T> {
   private orderingDirection = (opts?: FetchOptions<T>): "asc" | "desc" => {
     const direction =
       typeof opts?.orderBy === "object" ? opts.orderBy.direction : undefined;
-    return direction || "desc";
+    return direction || "asc";
   };
 
   private fieldValues = (field: T, opts: FilterOptions<T>): string[] => {
