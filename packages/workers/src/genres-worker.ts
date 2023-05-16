@@ -72,7 +72,10 @@ const hydrateOnAlbumChanges = (
 ): Observable<Album> =>
   data.albums
     .fetch({
-      orderBy: "addedAt",
+      orderBy: {
+        key: "addedAt",
+        direction: "desc",
+      },
     })
     .pipe(
       mergeAll(1),
