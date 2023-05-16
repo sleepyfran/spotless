@@ -19,6 +19,7 @@ export type Data = {
   albums: AlbumsData;
   artists: ArtistsData;
   auth: AuthData;
+  db: Database;
   genresSource: GenreDataSource;
   genres: GenresData;
   player: PlayerData;
@@ -28,7 +29,6 @@ type BaseServices = {
   api: Api;
   authService: AuthService;
   createLogger: LoggerFactory;
-  db: Database;
   library: Library;
 };
 
@@ -62,13 +62,13 @@ const initializeBase = (
       api,
       authService,
       createLogger: createConsoleLogger,
-      db,
       library,
     },
     data: {
       albums: albumsData,
       auth: authData,
       artists: artistsData,
+      db,
       genresSource,
       genres: genresData,
       player: playerData,

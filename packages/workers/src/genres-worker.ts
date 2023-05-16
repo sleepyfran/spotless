@@ -1,8 +1,4 @@
-import {
-  Data,
-  WorkerServices,
-  initializeWorkerServices,
-} from "@spotless/services-bootstrap";
+import { Data, initializeWorkerServices } from "@spotless/services-bootstrap";
 import { GenreDataSource } from "@spotless/data-genres";
 import { Single, singleFrom } from "@spotless/services-rx";
 import { Album, AppConfig, Genre, IndexedGenre } from "@spotless/types";
@@ -55,7 +51,7 @@ const initializeAndStartHydration = (appConfig: AppConfig) => {
       delay(
         TWO_MINUTES_IN_MS
       ) /* Give a chance to the population of albums to finish. */,
-      concatMap(() => hydrateOnAlbumChanges(data, services, logger))
+      concatMap(() => hydrateOnAlbumChanges(data, logger))
     )
     .subscribe({
       next: (album) =>
@@ -65,11 +61,7 @@ const initializeAndStartHydration = (appConfig: AppConfig) => {
     });
 };
 
-const hydrateOnAlbumChanges = (
-  data: Data,
-  services: WorkerServices,
-  logger: Logger
-): Observable<Album> =>
+const hydrateOnAlbumChanges = (data: Data, logger: Logger): Observable<Album> =>
   data.albums
     .fetch({
       orderBy: {
@@ -80,12 +72,9 @@ const hydrateOnAlbumChanges = (
     .pipe(
       mergeAll(1),
       concatMap((album) =>
-        tryHydrateAlbumGenres(
-          data.genresSource,
-          services.db,
-          album,
-          logger
-        ).pipe(delay(DEFAULT_DELAY_IN_MS))
+        tryHydrateAlbumGenres(data.genresSource, data.db, album, logger).pipe(
+          delay(DEFAULT_DELAY_IN_MS)
+        )
       )
     );
 

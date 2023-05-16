@@ -1,5 +1,5 @@
 import { AppConfig } from "@spotless/types";
-import { WorkerServices } from "@spotless/services-bootstrap";
+import { Data, WorkerServices } from "@spotless/services-bootstrap";
 import { BulkError } from "@spotless/data-db";
 import { Single } from "@spotless/services-rx";
 import { initHydration } from "./workers.common";
@@ -15,13 +15,17 @@ export type WorkerMessage = InitWorkerMessage;
 const HYDRATION_INTERVAL_MS = 1000 * 60 * 5; // 5 minutes.
 
 self.onmessage = async (event: MessageEvent<WorkerMessage>) => {
-  const { data } = event;
+  const { data: eventData } = event;
 
-  switch (data.__type) {
+  switch (eventData.__type) {
     case "init":
-      await initHydration(data.appConfig, HYDRATION_INTERVAL_MS, (services) => {
-        return hydrateDatabase(services);
-      });
+      await initHydration(
+        eventData.appConfig,
+        HYDRATION_INTERVAL_MS,
+        (data, services) => {
+          return hydrateDatabase(data, services);
+        }
+      );
       break;
     default:
       console.error("Unrecognized message sent to albums worker", event);
@@ -29,7 +33,10 @@ self.onmessage = async (event: MessageEvent<WorkerMessage>) => {
   }
 };
 
-const hydrateDatabase = (services: WorkerServices): Single<void> => {
+const hydrateDatabase = (
+  data: Data,
+  services: WorkerServices
+): Single<void> => {
   const logger = services.createLogger("AlbumsWorker");
   logger.log("Starting album database hydration...");
 
@@ -43,7 +50,7 @@ const hydrateDatabase = (services: WorkerServices): Single<void> => {
       logger.log(
         `Fetched ${albums.items.length} albums from API. Bulk adding to database...`
       );
-      services.db.albums
+      data.db.albums
         .bulkAdd(albums.items)
         .then(() => {
           logger.log("Bulk add finished.");

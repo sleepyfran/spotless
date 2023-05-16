@@ -7,7 +7,7 @@ import { AppConfig } from "@spotless/types";
 import { Single } from "@spotless/services-rx";
 import { throwError, timeout } from "rxjs";
 
-type HydrationFn<T> = (services: WorkerServices) => Single<T>;
+type HydrationFn<T> = (data: Data, services: WorkerServices) => Single<T>;
 
 let serviceContext: WorkerServices | null = null;
 let dataContext: Data | null = null;
@@ -61,8 +61,8 @@ const startHydrationInterval = <T>(
  * takes longer than one minute, it will be cancelled.
  */
 const tryHydrate = <T>(hydrate: HydrationFn<T>) => {
-  if (serviceContext) {
-    hydrate(serviceContext)
+  if (dataContext && serviceContext) {
+    hydrate(dataContext, serviceContext)
       .pipe(
         timeout({
           each: TIMEOUT_MS,

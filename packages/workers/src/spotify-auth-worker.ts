@@ -10,7 +10,7 @@ import {
   map,
   tap,
 } from "rxjs";
-import { WorkerServices } from "@spotless/services-bootstrap";
+import { Data, WorkerServices } from "@spotless/services-bootstrap";
 import { isValidToken } from "@spotless/services-auth";
 import {
   SpotifyAuthResponse,
@@ -30,13 +30,17 @@ export type WorkerMessage = InitWorkerMessage;
 const HYDRATION_INTERVAL_MS = 1000 * 60 * 5; // 5 minutes.
 
 self.onmessage = async (event: MessageEvent<WorkerMessage>) => {
-  const { data } = event;
+  const { data: eventData } = event;
 
-  switch (data.__type) {
+  switch (eventData.__type) {
     case "init":
-      await initHydration(data.appConfig, HYDRATION_INTERVAL_MS, (services) => {
-        return hydrateToken(data.appConfig, services);
-      });
+      await initHydration(
+        eventData.appConfig,
+        HYDRATION_INTERVAL_MS,
+        (data, services) => {
+          return hydrateToken(eventData.appConfig, data, services);
+        }
+      );
       break;
     default:
       console.error("Unrecognized message sent to albums worker", event);
@@ -46,15 +50,16 @@ self.onmessage = async (event: MessageEvent<WorkerMessage>) => {
 
 const hydrateToken = (
   appConfig: AppConfig,
+  data: Data,
   services: WorkerServices
 ): Observable<void> => {
   const logger = services.createLogger("SpotifyAuthWorker");
   logger.log("Checking auth token...");
 
-  return from(services.db.auth.toArray()).pipe(
+  return from(data.db.auth.toArray()).pipe(
     map((cachedAuthResults) => cachedAuthResults.at(0)),
     concatMap((cachedAuth) =>
-      refreshTokenIfNeeded(appConfig, services, logger, cachedAuth)
+      refreshTokenIfNeeded(appConfig, data, services, logger, cachedAuth)
     ),
     ignoreElements()
   );
@@ -64,6 +69,7 @@ const SPOTIFY_TOKEN_URL = "https://accounts.spotify.com/api/token";
 
 const refreshTokenIfNeeded = (
   appConfig: AppConfig,
+  data: Data,
   services: WorkerServices,
   logger: Logger,
   cachedAuth: AuthenticatedUser | undefined
@@ -80,7 +86,7 @@ const refreshTokenIfNeeded = (
 
   logger.log("Tokens are either expired or about to expire. Refreshing...");
 
-  return refreshToken(appConfig, services, logger, cachedAuth);
+  return refreshToken(appConfig, data, services, logger, cachedAuth);
 };
 
 /**
@@ -88,6 +94,7 @@ const refreshTokenIfNeeded = (
  */
 const refreshToken = (
   appConfig: AppConfig,
+  data: Data,
   services: WorkerServices,
   logger: Logger,
   auth: AuthenticatedUser
@@ -113,7 +120,7 @@ const refreshToken = (
           ...response,
           refresh_token: auth.refreshToken,
         },
-        services.db
+        data.db
       );
     }),
     ignoreElements()
