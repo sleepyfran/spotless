@@ -6,6 +6,7 @@ import { GenresMusicBrainzData } from "@spotless/data-genres-musicbrainz";
 import { LoggerFactory, createConsoleLogger } from "@spotless/services-logger";
 import { AuthService } from "@spotless/services-auth";
 import { SpotifyAuth } from "@spotless/services-auth-spotify";
+import { GenreHydrator } from "@spotless/services-genres";
 import { Library } from "@spotless/services-library";
 import { Player } from "@spotless/services-player";
 import { SpotifyPlayer } from "@spotless/services-player-spotify";
@@ -32,7 +33,11 @@ type BaseServices = {
   library: Library;
 };
 
-export type WorkerServices = BaseServices;
+export type WorkerServices = BaseServices & {
+  hydrators: {
+    genres: GenreHydrator;
+  };
+};
 export type MainServices = BaseServices & { player: Player };
 export type SpotifyServices = { player: SpotifyPlayer };
 
@@ -89,7 +94,24 @@ export const initializeWorkerServices = (
   const logger = createConsoleLogger("worker");
   logger.log("Initializing worker services");
 
-  return initializeBase(appConfig);
+  const { services, data } = initializeBase(appConfig);
+
+  const genreHydrator = new GenreHydrator(
+    data.db,
+    data.albums,
+    data.genresSource,
+    services.createLogger
+  );
+
+  return {
+    services: {
+      ...services,
+      hydrators: {
+        genres: genreHydrator,
+      },
+    },
+    data,
+  };
 };
 
 /**
