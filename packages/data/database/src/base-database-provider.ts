@@ -3,6 +3,7 @@ import { Id } from "@spotless/types";
 import { String } from "@spotless/services-utils";
 import { Database } from "./database";
 import { fieldNameOf } from "./utils";
+import { Observable } from "rxjs";
 import { Collection, IndexableType, Table } from "dexie";
 
 export type OrderBy<T> = {
@@ -76,12 +77,10 @@ export class DataProvider<T> {
    * Returns all the records in the database, optionally limited by the given
    * options or ordered by a given key.
    */
-  public fetch(opts?: FetchOptions<T>): Single<T[]> {
-    return singleFrom(
-      this.db.observe(() => {
-        return this.createQuery(opts).toArray();
-      })
-    );
+  public fetch(opts?: FetchOptions<T>): Observable<T[]> {
+    return this.db.observe(() => {
+      return this.createQuery(opts).toArray();
+    });
   }
 
   /**
@@ -89,7 +88,7 @@ export class DataProvider<T> {
    * options or ordered by a given key. The records will be filtered to match
    * the specified filter, applied over the specified field.
    */
-  public filtered(opts: FilterOptions<T>): Single<T[]> {
+  public filtered(opts: FilterOptions<T>): Observable<T[]> {
     const normalizedFilter = String.normalizeForComparison(opts.filter);
 
     return this.db.observe(() => {
