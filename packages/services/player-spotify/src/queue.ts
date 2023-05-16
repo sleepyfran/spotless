@@ -60,7 +60,7 @@ export const queueFromCurrentlyPlaying = (
   const updatedQueue =
     currentState.queue.length === 0
       ? albumsData
-          .albumDetail(currentlyPlaying.album.id)
+          .byId(currentlyPlaying.album.id)
           .pipe(
             map((album) =>
               album ? [AlbumMappers.albumToQueuedAlbum(album)] : []
@@ -81,7 +81,7 @@ export const queueFromAlbumPlay = (
   albumId: Id
 ) => {
   return albumsData
-    .albumDetail(albumId)
+    .byId(albumId)
     .pipe(
       map((album) => (album ? [AlbumMappers.albumToQueuedAlbum(album)] : []))
     );

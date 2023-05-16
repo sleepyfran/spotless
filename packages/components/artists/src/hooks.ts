@@ -13,7 +13,12 @@ const mapToResponse = map(
 
 const [allArtists$] = bind(
   (artists: ArtistsData, filter?: string) =>
-    artists.allArtistsByName(filter).pipe(mapToResponse),
+    artists
+      .filtered({
+        filter: filter || "",
+        filterField: "name",
+      })
+      .pipe(mapToResponse),
   loading
 );
 

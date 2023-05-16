@@ -8,14 +8,6 @@ import {
 } from "@spotless/types";
 
 /**
- * Defines the options that can be passed to the fetch methods.
- */
-export type FetchOptions<T> = {
-  limit?: number;
-  orderBy?: keyof T;
-};
-
-/**
  * Wrapper around Dexie that provides a way of interacting with the database.
  */
 export class Database extends Dexie {

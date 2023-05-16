@@ -17,13 +17,18 @@ const mapToAlbumsResponse = map(
 );
 
 const [albumDetail$] = bind(
-  (albums: AlbumsData, id: string) =>
-    albums.albumDetail(id).pipe(mapToAlbumResponse),
+  (albums: AlbumsData, id: string) => albums.byId(id).pipe(mapToAlbumResponse),
   loadingAlbum
 );
 const [allAlbums$] = bind(
   (albums: AlbumsData, filter?: string) =>
-    albums.allAlbumsByName(filter).pipe(mapToAlbumsResponse),
+    albums
+      .filtered({
+        filter: filter || "",
+        filterField: ["artistName", "name"],
+        orderBy: "artistName",
+      })
+      .pipe(mapToAlbumsResponse),
   loadingAlbums
 );
 const [nAlbums$] = bind(
