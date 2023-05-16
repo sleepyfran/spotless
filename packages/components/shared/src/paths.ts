@@ -12,4 +12,5 @@ export const Paths = {
     root: "/auth",
     callback: "/auth/callback",
   },
+  genres: "/genres",
 };

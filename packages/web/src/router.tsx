@@ -8,6 +8,7 @@ import {
 import { Data } from "@spotless/services-bootstrap";
 import { ArtistPageRoute, ArtistsPage } from "@spotless/components-artists";
 import { AlbumsPage } from "@spotless/components-albums";
+import { GenresPage } from "@spotless/components-genres";
 import { Paths } from "@spotless/components-shared";
 import { Root } from "@spotless/components-root";
 import { HomePage } from "@spotless/components-home";
@@ -50,6 +51,10 @@ export const createRouter = ({ artists }: Data) =>
           {
             path: Paths.albums,
             element: <AlbumsPage />,
+          },
+          {
+            path: Paths.genres,
+            element: <GenresPage />,
           },
         ],
       },

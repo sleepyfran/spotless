@@ -1,6 +1,12 @@
 import { Database, DataProvider, fieldNameOf } from "@spotless/data-db";
 import { Api } from "@spotless/data-api";
-import { Album, AlbumType, Artist, GroupedAlbums } from "@spotless/types";
+import {
+  Album,
+  AlbumType,
+  Artist,
+  Genre,
+  GroupedAlbums,
+} from "@spotless/types";
 import { Observable, map } from "rxjs";
 
 /**
@@ -21,6 +27,18 @@ export class AlbumsData extends DataProvider<Album> {
         .equals(artist.id)
         .reverse()
         .sortBy(fieldNameOf<Album>("releaseDate"))
+    );
+  }
+
+  /**
+   * Returns all the albums in the user's library of a specific genre.
+   */
+  public allAlbumsOfGenre(genre: Genre): Observable<Album[]> {
+    return this.db.observe(() =>
+      this.db.albums
+        .where(fieldNameOf<Album>("genres"))
+        .equals(genre)
+        .sortBy(fieldNameOf<Album>("artistName"))
     );
   }
 

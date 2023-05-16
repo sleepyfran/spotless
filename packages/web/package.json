@@ -13,6 +13,7 @@
     "@spotless/components-albums": "^1.0.0",
     "@spotless/components-auth": "^1.0.0",
     "@spotless/components-artists": "^1.0.0",
+    "@spotless/components-genres": "^1.0.0",
     "@spotless/components-home": "^1.0.0",
     "@spotless/components-root": "^1.0.0",
     "@spotless/components-shared": "^1.0.0",

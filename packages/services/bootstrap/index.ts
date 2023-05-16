@@ -1,7 +1,7 @@
 import { Database } from "@spotless/data-db";
 import { Api } from "@spotless/data-api";
 import { createSpotifyApi } from "@spotless/data-api-spotify";
-import { GenreDataSource } from "@spotless/data-genres";
+import { GenreDataSource, GenresData } from "@spotless/data-genres";
 import { GenresMusicBrainzData } from "@spotless/data-genres-musicbrainz";
 import { LoggerFactory, createConsoleLogger } from "@spotless/services-logger";
 import { AuthService } from "@spotless/services-auth";
@@ -20,6 +20,7 @@ export type Data = {
   artists: ArtistsData;
   auth: AuthData;
   genresSource: GenreDataSource;
+  genres: GenresData;
   player: PlayerData;
 };
 
@@ -45,7 +46,8 @@ const initializeBase = (
 
   const albumsData = new AlbumsData(db, api);
   const artistsData = new ArtistsData(db);
-  const genresData = new GenresMusicBrainzData();
+  const genresSource = new GenresMusicBrainzData();
+  const genresData = new GenresData(db);
   const playerData = new PlayerData();
 
   const authService: AuthService = new SpotifyAuth(
@@ -67,7 +69,8 @@ const initializeBase = (
       albums: albumsData,
       auth: authData,
       artists: artistsData,
-      genresSource: genresData,
+      genresSource,
+      genres: genresData,
       player: playerData,
     },
   };
