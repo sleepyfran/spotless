@@ -11,7 +11,6 @@ import {
   map,
   mergeAll,
   mergeMap,
-  throwError,
   timer,
 } from "rxjs";
 import { BulkError, Database } from "@spotless/data-db";
@@ -79,9 +78,7 @@ export class GenreHydrator {
           "Error while fetching album genres, waiting until continuing...",
           e
         );
-        return timer(DEFAULT_DELAY_IN_MS).pipe(
-          mergeMap(() => throwError(() => e))
-        );
+        return timer(DEFAULT_DELAY_IN_MS).pipe(mergeMap(() => EMPTY));
       })
     );
   }

@@ -17,7 +17,9 @@
     "gen": "plop",
     "format": "prettier --check \"packages/**/*.{ts, tsx}\"",
     "format:fix": "prettier --write \"packages/**/*.{ts, tsx}\"",
-    "test:e2e": "jest -t e2e",
+    "test:unit": "jest --testPathIgnorePatterns e2e",
+    "test:unit:watch": "jest --testPathIgnorePatterns e2e --watch",
+    "test:e2e": "jest --testPathPattern e2e",
     "typecheck": "yarn workspace @spotless/web typecheck",
     "typecheck:watch": "yarn workspace @spotless/web typecheck:watch",
     "prepare": "husky install"
