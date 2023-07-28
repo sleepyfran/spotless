@@ -192,7 +192,10 @@ export class SpotifyPlayer implements Player {
           `Ready with Device ID ${device_id}, transferring playback...`
         );
         this.status = connected(device_id);
-        this.transferPlayback().subscribe();
+
+        this.executePlayerAction((player) => player.activateElement())
+          .pipe(concatMap(() => this.transferPlayback()))
+          .subscribe();
       }
     );
 
