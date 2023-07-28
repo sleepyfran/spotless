@@ -103,6 +103,10 @@ export class SpotifyPlayer implements Player {
     );
   }
 
+  public skip(): Single<void> {
+    return this.executePlayerAction((player) => player.nextTrack());
+  }
+
   public togglePlayback(): Single<void> {
     return this.executePlayerAction((player) => player.togglePlay());
   }

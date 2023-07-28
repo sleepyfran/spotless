@@ -19,6 +19,12 @@ export interface Player {
   playMultiple(items: Album[]): Single<void>;
 
   /**
+   * Skips to the next track in the queue, if any. If there is no next track,
+   * does nothing.
+   */
+  skip(): Single<void>;
+
+  /**
    * Resumes or pauses the playback of the current track, if any. If there is no
    * current track, does nothing.
    */

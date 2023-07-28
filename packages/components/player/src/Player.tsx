@@ -11,6 +11,7 @@ import {
 import { INITIAL_PLAYER_STATE, PlayerData } from "@spotless/data-player";
 import { CoverArtPlayButton } from "./CoverArtPlayButton";
 import { QueueButton } from "./QueueButton";
+import { SkipButton } from "./SkipButton";
 import { QueuedAlbumItem } from "./Queue";
 import { PropsWithChildren, useState } from "react";
 import { VolumePopoverButton } from "./VolumeControls";
@@ -56,6 +57,7 @@ export const Player = () => {
 
   const onQueueClick = () => setQueueVisible((visible) => !visible);
   const onClearQueueClick = () => playerService.clearQueue().subscribe();
+  const onSkipClick = () => playerService.skip().subscribe();
 
   return (
     <motion.div layout ref={ref}>
@@ -106,6 +108,7 @@ export const Player = () => {
                   queueVisible={queueVisible}
                 />
                 <VolumePopoverButton currentVolume={playerState.volume} />
+                <SkipButton onClick={onSkipClick} />
               </Flex>
             </Flex>
           )}
