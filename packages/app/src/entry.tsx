@@ -1,6 +1,7 @@
 import { createRoot } from "react-dom/client";
 import { RouterProvider } from "react-router-dom";
 import { createRouter } from "./router";
+import "./global-styles.scss";
 
 const baseUrl = import.meta.env.VITE_BASE_APP;
 const clientId = import.meta.env.VITE_CLIENT_ID;

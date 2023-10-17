@@ -1,0 +1,164 @@
+/////////////////////// RESET
+// Based on: https://andy-bell.co.uk/a-more-modern-css-reset/
+/* Box sizing rules */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+/* Prevent font size inflation */
+html {
+  -moz-text-size-adjust: none;
+  -webkit-text-size-adjust: none;
+  text-size-adjust: none;
+}
+
+/* Remove default margin in favour of better control in authored CSS */
+body,
+h1,
+h2,
+h3,
+h4,
+p,
+figure,
+blockquote,
+dl,
+dd {
+  margin: 0;
+}
+
+/* Remove list styles on ul, ol elements with a list role, which suggests default styling will be removed */
+ul[role="list"],
+ol[role="list"] {
+  list-style: none;
+}
+
+/* Set core body defaults */
+body {
+  min-height: 100vh;
+  line-height: 1.5;
+}
+
+/* Set shorter line heights on headings and interactive elements */
+h1,
+h2,
+h3,
+h4,
+button,
+input,
+label {
+  line-height: 1.1;
+}
+
+/* Balance text wrapping on headings */
+h1,
+h2,
+h3,
+h4 {
+  text-wrap: balance;
+}
+
+/* A elements that don't have a class get default styles */
+a:not([class]) {
+  text-decoration-skip-ink: auto;
+  color: currentColor;
+}
+
+/* Make images easier to work with */
+img,
+picture {
+  max-width: 100%;
+  display: block;
+}
+
+/* Inherit fonts for inputs and buttons */
+input,
+button,
+textarea,
+select {
+  font: inherit;
+}
+
+/* Make sure textareas without a rows attribute are not tiny */
+textarea:not([rows]) {
+  min-height: 10em;
+}
+
+/* Anything that has been anchored to should have extra scroll margin */
+:target {
+  scroll-margin-block: 5ex;
+}
+
+/////////////////////// END RESET
+
+$phone-size: 760px;
+$tablet-size: 1024px;
+$desktop-size: 1440px;
+$large-desktop-size: 1600px;
+
+@mixin phone-only {
+  @media screen and (max-width: $phone-size) {
+    @content;
+  }
+}
+
+@mixin tablet-only {
+  @media screen and (min-width: $phone-size) and (max-width: $tablet-size) {
+    @content;
+  }
+}
+
+@mixin from-desktop {
+  @media screen and (min-width: $desktop-size) {
+    @content;
+  }
+}
+
+@mixin from-large-desktop {
+  @media screen and (min-width: $large-desktop-size) {
+    @content;
+  }
+}
+
+// Base styles.
+html,
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI",
+    "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Web", sans-serif;
+}
+
+// Hero styles.
+div.hero-container {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  height: 100%;
+  width: 100%;
+}
+
+div.hero-children {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  max-width: 100%;
+  padding: 0 1rem;
+
+  @include tablet-only {
+    max-width: 50%;
+  }
+
+  @include from-desktop {
+    max-width: 40%;
+  }
+
+  @include from-large-desktop {
+    max-width: 30%;
+  }
+}
+
+// Text.
+.error {
+  color: red;
+}
