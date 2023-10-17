@@ -1,0 +1,10 @@
+{
+    "name": "@spotless/services-auth-spotify",
+    "version": "1.0.0",
+    "description": "Contains specific Spotify implementation for the auth service",
+    "main": "index.js",
+    "dependencies": {
+        "@spotless/types": "^1.0.0",
+        "@spotless/services-auth": "^1.0.0"
+    }
+}

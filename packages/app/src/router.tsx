@@ -1,6 +1,11 @@
 import { createHashRouter, Outlet } from "react-router-dom";
 import { Paths } from "@spotless/components-shared";
-import { AuthLanding, RequireLogin } from "@spotless/components-auth";
+import {
+  AuthLanding,
+  RedirectIfLoggedIn,
+  RequireLogin,
+} from "@spotless/components-auth";
+import { AuthCallback } from "@spotless/components-auth/src/Auth";
 
 export const createRouter = () =>
   createHashRouter([
@@ -20,7 +25,11 @@ export const createRouter = () =>
     },
     {
       path: Paths.auth.root,
-      element: <Outlet />,
+      element: (
+        <RedirectIfLoggedIn>
+          <Outlet />
+        </RedirectIfLoggedIn>
+      ),
       children: [
         {
           path: Paths.auth.root,
@@ -28,7 +37,7 @@ export const createRouter = () =>
         },
         {
           path: Paths.auth.callback,
-          element: <h1>Oi!</h1>,
+          element: <AuthCallback />,
         },
       ],
     },

@@ -1,6 +1,11 @@
 import { createRoot } from "react-dom/client";
 import { RouterProvider } from "react-router-dom";
 import { createRouter } from "./router";
+import {
+  DataContext,
+  ServiceContext,
+  initialize as initializeContexts,
+} from "@spotless/components-shared";
 import "./global-styles.scss";
 
 const baseUrl = import.meta.env.VITE_BASE_APP;
@@ -14,14 +19,21 @@ if (!baseUrl || !clientId || !clientSecret) {
   );
 }
 
-// const appConfig = {
-//   baseUrl,
-//   clientId,
-//   clientSecret,
-// };
+const appConfig = {
+  baseUrl,
+  clientId,
+  clientSecret,
+};
+const { services, data } = initializeContexts(appConfig);
 
 const router = createRouter();
-const Main = () => <RouterProvider router={router} />;
+const Main = () => (
+  <ServiceContext.Provider value={services}>
+    <DataContext.Provider value={data}>
+      <RouterProvider router={router} />
+    </DataContext.Provider>
+  </ServiceContext.Provider>
+);
 
 const root = createRoot(document.getElementById("root") as HTMLElement);
 root.render(<Main />);

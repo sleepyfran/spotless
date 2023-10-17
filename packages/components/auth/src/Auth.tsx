@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Loader, Paths } from "@spotless/components-shared";
+import { Loader, Paths, useServices } from "@spotless/components-shared";
 import { AuthLayout } from "./AuthLayout";
 
 type AuthStatus = "not-requested" | "loading" | "finished" | "errored";
@@ -18,15 +18,16 @@ const AuthorizeButton = ({ onAuthorize }: AuthorizeButtonProps) => (
  * authentication flow and handles what happens after the auth finishes.
  */
 export const AuthLanding = () => {
+  const { authService } = useServices();
   const [authStatus, setAuthStatus] = useState<AuthStatus>("not-requested");
   const navigate = useNavigate();
 
   const authorizeAccount = () => {
     setAuthStatus("loading");
-    // authService
-    //   .authorize()
-    //   .then(() => setAuthStatus("finished"))
-    //   .catch(() => setAuthStatus("errored"));
+    authService
+      .authorize()
+      .then(() => setAuthStatus("finished"))
+      .catch(() => setAuthStatus("errored"));
   };
 
   useEffect(() => {

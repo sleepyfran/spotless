@@ -1,0 +1,11 @@
+{
+    "name": "@spotless/data-auth",
+    "version": "1.0.0",
+    "description": "Contains utilities to access the Auth table",
+    "main": "index.js",
+    "dependencies": {
+        "@spotless/data-db": "^1.0.0",
+        "@spotless/types": "^1.0.0",
+        "rxjs": "^7.8.0"
+    }
+}
