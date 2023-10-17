@@ -1,12 +1,7 @@
-import { PropsWithChildren, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Paths } from "@spotless/components-shared";
-
-const AuthLayout = ({ children }: PropsWithChildren) => (
-  <div className="hero-container">
-    <div className="hero-children">{children}</div>
-  </div>
-);
+import { Loader, Paths } from "@spotless/components-shared";
+import { AuthLayout } from "./AuthLayout";
 
 type AuthStatus = "not-requested" | "loading" | "finished" | "errored";
 
@@ -50,7 +45,7 @@ export const AuthLanding = () => {
           <AuthorizeButton onAuthorize={authorizeAccount} />
         </>
       ) : authStatus === "loading" ? (
-        <h1>Loading...</h1>
+        <Loader />
       ) : authStatus === "errored" ? (
         <>
           <h3 className="error">
@@ -70,6 +65,6 @@ export const AuthLanding = () => {
  */
 export const AuthCallback = () => (
   <AuthLayout>
-    <h1>Loading...</h1>
+    <Loader />
   </AuthLayout>
 );

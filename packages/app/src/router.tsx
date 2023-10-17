@@ -1,12 +1,16 @@
 import { createHashRouter, Outlet } from "react-router-dom";
 import { Paths } from "@spotless/components-shared";
-import { AuthLanding } from "@spotless/components-auth";
+import { AuthLanding, RequireLogin } from "@spotless/components-auth";
 
 export const createRouter = () =>
   createHashRouter([
     {
       path: Paths.root,
-      element: <Outlet />,
+      element: (
+        <RequireLogin>
+          <Outlet />
+        </RequireLogin>
+      ),
       children: [
         {
           path: "/",
