@@ -1,9 +1,0 @@
-{
-  "name": "@spotless/services-auth",
-  "version": "1.0.0",
-  "description": "Contains the interfaces to the auth service",
-  "main": "index.js",
-  "dependencies": {
-    "@spotless/types": "^1.0.0"
-  }
-}

@@ -1,9 +1,0 @@
-{
-    "name": "@spotless/services-utils",
-    "version": "1.0.0",
-    "description": "Contains the Utils related services",
-    "main": "index.js",
-    "dependencies": {
-        "@spotless/types": "^1.0.0"
-    }
-}

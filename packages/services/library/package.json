@@ -1,9 +1,0 @@
-{
-    "name": "@spotless/services-library",
-    "version": "1.0.0",
-    "description": "Contains the Library related services",
-    "main": "index.js",
-    "dependencies": {
-        "@spotless/types": "^1.0.0"
-    }
-}

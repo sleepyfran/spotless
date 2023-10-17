@@ -1,6 +1,10 @@
 {
-  "name": "@spotless/components-{{dashCase name}}",
+  "name": "@spotless/app",
   "version": "1.0.0",
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "typecheck:watch": "tsc --watch --noEmit"
+  },
   "dependencies": {
     "react": "^18.2.0",
     "react-dom": "^18.2.0",

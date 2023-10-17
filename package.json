@@ -9,7 +9,7 @@
   "homepage": "https://github.com/sleepyfran/spotless#readme",
   "scripts": {
     "ci": "yarn typecheck && yarn lint && yarn format",
-    "web:dev": "concurrently \"yarn typecheck:watch\" \"vite serve packages/web\"",
+    "web:dev": "concurrently \"yarn typecheck:watch\" \"vite serve packages/app\"",
     "web:build": "tsc && vite build --base=\"/spotless/\"",
     "web:preview": "vite preview --base=\"/spotless/\"",
     "lint": "eslint --max-warnings 0 --ext .ts,.tsx .",
@@ -20,8 +20,8 @@
     "test:unit": "jest --testPathIgnorePatterns e2e",
     "test:unit:watch": "jest --testPathIgnorePatterns e2e --watch",
     "test:e2e": "jest --testPathPattern e2e",
-    "typecheck": "yarn workspace @spotless/web typecheck",
-    "typecheck:watch": "yarn workspace @spotless/web typecheck:watch",
+    "typecheck": "yarn workspace @spotless/app typecheck",
+    "typecheck:watch": "yarn workspace @spotless/app typecheck:watch",
     "prepare": "husky install"
   },
   "devDependencies": {
