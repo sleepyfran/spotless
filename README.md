@@ -1,3 +1,6 @@
+> [!WARNING]  
+> Spotless is no longer maintained and has been superseded by [Echo](https://github.com/sleepyfran/echo)
+
 # Spotless
 
 Spotless is a little Spotify companion client that focuses on albums and genres instead of songs, letting you play the entire discography of an artist easily and letting you shuffle entire albums instead of just songs.
